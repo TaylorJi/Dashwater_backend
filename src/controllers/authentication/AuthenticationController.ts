@@ -14,7 +14,7 @@ const authControllerTest = (req: Request, res: Response) => {
         const response = OrdersModel.authModelTest(msg);
 
         if (response) {
-            res.status(200).json({ data: response });
+            res.status(200).json({ text: response });
 
         } else {
             res.status(500).json({ message: 'There was an error with the request.' });
