@@ -10,7 +10,6 @@ const authControllerTest = (req: Request, res: Response) => {
 
     } else {
 
-        // casting is for demo, postman sends strings only
         const response = OrdersModel.authModelTest(msg);
 
         if (response) {
