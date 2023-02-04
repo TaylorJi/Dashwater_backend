@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const TrackedDeviceSchema = new Schema({
     id: {
-        type: Number,
+        type: Schema.Types.ObjectId,
         unique: true
     },
 
