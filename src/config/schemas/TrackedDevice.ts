@@ -21,6 +21,6 @@ const TrackedDeviceSchema = new Schema({
 })
 
 
-const TrackedDevice =  mongoose.model('Session', TrackedDeviceSchema);
+const TrackedDevice =  mongoose.model('TrackedDevice', TrackedDeviceSchema);
 
 export default TrackedDevice
