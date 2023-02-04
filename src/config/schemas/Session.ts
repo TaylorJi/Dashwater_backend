@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const SessionSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true
     },
 

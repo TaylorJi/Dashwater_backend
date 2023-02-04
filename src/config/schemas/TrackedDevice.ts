@@ -10,12 +10,14 @@ const TrackedDeviceSchema = new Schema({
 
     userId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: "User"
     },
 
     deviceId: {
         type: Number,
-        required: true
+        required: true,
+        ref: "Device"
     }
 
 })
