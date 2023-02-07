@@ -27,4 +27,6 @@ server.listen(port, () => {
 
 //Routing
 import { router as authRouter } from './routes/AuthenticationRoutes';
+import { router as sessionRouter } from "./routes/SessionRoutes"
 server.use('/api/auth', authRouter);
+server.use('/api/session', sessionRouter);
