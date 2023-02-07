@@ -11,7 +11,8 @@ const SessionSchema = new Schema({
 
     sessionId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        unique: true
     },
 
     session_expiry: {

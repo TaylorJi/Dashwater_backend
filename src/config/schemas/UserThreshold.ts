@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const ThresholdSchema = new Schema({
+const UserThresholdSchema = new Schema({
     id: {
         type: Schema.Types.ObjectId,
         unique: true
@@ -20,24 +20,23 @@ const ThresholdSchema = new Schema({
         ref: "Device"
     },
 
-    label: {
-        type: String,
-        required: true
+    thresholdMetricId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        unique: true
     },
 
-    min: {
-        type: Number,
-        required: true
+    customMin: {
+        type: Number
     },
 
-    max: {
-        type: Number,
-        required: true
+    customMax: {
+        type: Number
     }
 
 })
 
 
-const Threshold =  mongoose.model('Threshold', ThresholdSchema);
+const UserThreshold =  mongoose.model('UserThreshold', UserThresholdSchema);
 
-export default Threshold
+export default UserThreshold
