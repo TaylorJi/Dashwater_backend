@@ -3,22 +3,16 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const TrackedDeviceSchema = new Schema({
-    id: {
-        type: Schema.Types.ObjectId,
-        unique: true,
-        required: true
-    },
-
     userId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "users"
     },
 
     deviceId: {
-        type: Number,
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: "Device"
+        ref: "devices"
     }
 
 })

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const SessionSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'users',
         required: true
     },
 
@@ -16,8 +16,9 @@ const SessionSchema = new Schema({
     },
 
     session_expiry: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: null,
+        required: true
     }
 
 })

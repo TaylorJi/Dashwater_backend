@@ -3,35 +3,32 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const UserThresholdSchema = new Schema({
-    id: {
-        type: Schema.Types.ObjectId,
-        unique: true
-    },
-
+    
     userId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "users"
     },
 
     deviceId: {
         type: Number,
         required: true,
-        ref: "Device"
+        ref: "devices"
     },
 
     thresholdMetricId: {
         type: Schema.Types.ObjectId,
-        required: true,
-        unique: true
+        required: true
     },
 
     customMin: {
-        type: Number
+        type: Number,
+        default: null
     },
 
     customMax: {
-        type: Number
+        type: Number,
+        default: null
     }
 
 })
