@@ -6,13 +6,13 @@ const TrackedDeviceSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "users"
+        ref: 'users'
     },
 
     deviceId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "devices"
+        ref: 'devices'
     }
 
 })

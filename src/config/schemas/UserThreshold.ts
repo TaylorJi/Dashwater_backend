@@ -7,13 +7,13 @@ const UserThresholdSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "users"
+        ref: 'users'
     },
 
     deviceId: {
         type: Number,
         required: true,
-        ref: "devices"
+        ref: 'devices'
     },
 
     thresholdMetricId: {
