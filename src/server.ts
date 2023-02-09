@@ -7,7 +7,7 @@ import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
 
-// To load .env variables --> npm install dotenv
+//Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -25,9 +25,6 @@ server.use(
         origin: '*',
     })
 );
-
-
-
 
 server.listen(port, () => {
     console.log(`Server started on port ${port}!`);
