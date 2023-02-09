@@ -6,6 +6,7 @@ import cors from 'cors';
 import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
+import mongoose from 'mongoose';
 
 const port = Environment.port;
 const server = express();
@@ -23,6 +24,13 @@ server.use(
 
 server.listen(port, () => {
     console.log(`Server started on port ${port}!`);
+    mongoose.connect('mongodb+srv://IoT_dashboard:IMDhYdetq8mkVE1f@iotdashboard.hyyz1ps.mongodb.net/IoT_database');
+    const db = mongoose.connection;
+
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', () => {
+        console.log('Connected to MongoDB');
+    });
 });
 
 //Routing
