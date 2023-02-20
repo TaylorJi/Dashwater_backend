@@ -44,5 +44,10 @@ server.use('/api/auth', authRouter);
 
 
 ///////////////////////////////////////////////////
+// Login
 import { router as loginRouter} from './routes/LoginRoutes';
-server.use('/api', loginRouter)
+server.use('/api', loginRouter);
+
+// Register
+import { router as registerRouter} from './routes/RegisterRoutes';
+server.use('/api', registerRouter);
