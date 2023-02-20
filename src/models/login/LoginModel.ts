@@ -1,4 +1,5 @@
 import User from "../../config/schemas/User";
+const bcrypt = require("bcrypt");
 
 const loginModel =  async (userEmail: String, userPassword: String) => {
     try {
@@ -8,7 +9,7 @@ const loginModel =  async (userEmail: String, userPassword: String) => {
             return "No User";
         }
 
-        if (userDb.password !== userPassword) {
+        if (!(await bcrypt.compare(userPassword, userDb.password))) {
             return "Password Mismatch";
         } else {
             return userDb;
