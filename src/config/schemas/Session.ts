@@ -15,7 +15,7 @@ const SessionSchema = new Schema({
         unique: true
     },
 
-    session_expiry: {
+    sessionExpiry: {
         type: String,
         default: null,
         required: true

@@ -5,7 +5,7 @@ const createSession = async (sessionId: String, expirationTime: String, userId: 
     try {
         const newSession = await Session.create({
                 "userId": userId,
-                "session_expiry": expirationTime,
+                "sessionExpiry": expirationTime,
                 "sessionId": sessionId
         });
 
@@ -17,19 +17,6 @@ const createSession = async (sessionId: String, expirationTime: String, userId: 
         return null;
     }
 }
-
-// const getSession = async (sessionId: String) => {
-//     try {
-//         const existingSession = await Session.findOne({"sessionId": sessionId});
-
-//         if (existingSession) {
-//             return existingSession;
-//         }
-//         return null;
-//     } catch (err) {
-//         return null;
-//     }
-// }
 
 const deleteSession = async (sessionId: string) => {
     try {
@@ -57,7 +44,7 @@ const validateSession = async (sessionId: string) => {
     try {
         const session = await Session.findOne({"sessionId": sessionId});
 
-        if (session && new Date(session.session_expiry) > currentTime) {
+        if (session && new Date(session.sessionExpiry) > currentTime) {
             const user = await User.findOne({"_id": session.userId});
             
             return user;
@@ -73,7 +60,7 @@ const validateSession = async (sessionId: string) => {
 
 const updateSessionExpiry = async (sessionID: string, newExpiry: string) => {
     try {
-        const updatedSession = await Session.findOneAndUpdate({"sessionId": sessionID}, {"session_expiry": newExpiry});
+        const updatedSession = await Session.findOneAndUpdate({"sessionId": sessionID}, {"sessionExpiry": newExpiry});
 
         if (updatedSession) {
             return updatedSession;
