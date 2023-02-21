@@ -43,11 +43,10 @@ import { router as authRouter } from './routes/AuthenticationRoutes';
 server.use('/api/auth', authRouter);
 
 
-///////////////////////////////////////////////////
 // Login
 import { router as loginRouter} from './routes/LoginRoutes';
 server.use('/api', loginRouter);
 
-// Register
-import { router as registerRouter} from './routes/RegisterRoutes';
-server.use('/api', registerRouter);
+// User
+import { router as userRouter } from './routes/UserRoutes';
+server.use('/api/user', userRouter);

@@ -6,17 +6,24 @@ const loginModel =  async (userEmail: String, userPassword: String) => {
         const userDb = await User.findOne({'email': userEmail});
 
         if (!userDb) {
-            return "No User";
+            return { message: "User not found"};
         }
 
-        if (!(await bcrypt.compare(userPassword, userDb.password))) {
-            return "Password Mismatch";
-        } else {
-            return userDb;
+        try {
+            const passwordIsValid = await bcrypt.compare(userPassword, userDb.password)
+
+            if (passwordIsValid) {
+                return { message: "Logged in", userDb}
+            }
+
+            return { message: "Invalid password"}
+
+        } catch (err) {
+            return { message: "Server error", err};
         }
 
     } catch (err) {
-        return null;
+        return { message: "Database error", err };
     }
 }
 
