@@ -11,12 +11,7 @@ const ALL_COLUMNS = `SELECT *
 const DEVICE_IDS = `SELECT buoy_id
                     FROM ${queryInfo.DATABASE_NAME}.${queryInfo.TABLE_NAME}
                     GROUP BY buoy_id ORDER BY buoy_id ASC`;
-
-
-
-
-
-
+                    
 export default module.exports = {
     ALL_COLUMNS,
     DEVICE_IDS

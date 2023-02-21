@@ -8,7 +8,7 @@ import queryInfo from '../constants/queryInfo';
 
 // This function creates and initializes the query and querystring objects.
 // Returns an array to be destructured into the seperate objects.
-export function createTSQuery(queryString: string): any {
+const createTSQuery = (queryString: string): any => {
     //Configure the region
     AWS.config.update({region: queryInfo.REGION})
     //Create credentials
@@ -31,11 +31,8 @@ export function createTSQuery(queryString: string): any {
     }
     //Pack query and query string objects into array.
     return [timeStreamQuery, queryParams] as const;
-
 }
 
-
-
-
-
-
+export default module.exports = {
+    createTSQuery,
+};
