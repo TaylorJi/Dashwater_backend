@@ -10,7 +10,7 @@ const getAllDeviceIds = async (req: Request, res: Response) => {
   else {
     const response = await TimestreamModel.getAllDevices(sqlQueries.DEVICE_IDS);
     if (response) 
-      res.status(200).json({response})
+      res.status(200).json({data: response})
      else 
       res.status(500).json({error: "Server response failed."})
   } 
