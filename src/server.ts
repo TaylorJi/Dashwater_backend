@@ -40,13 +40,7 @@ server.listen(port, () => {
 
 //Routing
 import { router as authRouter } from './routes/AuthenticationRoutes';
-server.use('/api/auth', authRouter);
-
-
-// Login
-import { router as loginRouter} from './routes/LoginRoutes';
-server.use('/api', loginRouter);
-
-// User
 import { router as userRouter } from './routes/UserRoutes';
+
+server.use('/api/auth', authRouter);
 server.use('/api/user', userRouter);

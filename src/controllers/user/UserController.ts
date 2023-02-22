@@ -3,23 +3,48 @@ import { Request, Response} from "express";
 import UserModel from "../../models/user/UserModel";
 
 
-const createNewUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
 
     const { email, password } =  req.body;
 
     if (!email || !password) {
         res.status(400).json({ message: "Invalid request: email and password are required." });
     } else {
-        const response = await UserModel.createNewUser( email, password );
+        const response = await UserModel.createUser( email, password );
 
-        if (response.message === "User created") {
+
+        if (response) {
             res.status(200).json({ text: response });
         } else {
-            res.status(500).json({ message: response.message });
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
+};
+
+
+const validateUser = async (req: Request, res: Response) => {
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({ message: "Invalid request: email and password are required." });
+    } else {
+        const response = await UserModel.validateUser( email, password );
+
+        if (!response) {
+            res.status(500).json({ message: "There was an error with the request." });
+        } else if ( response === "User not found") {
+            res.status(400).json({ message: "User does not exist" });
+        } else if ( response === "Invalid password") {
+            res.status(400).json({ message: "Wrong password" });
+        } else {
+            res.status(200).json({ text: response });
         }
     }
 }
 
+
 export default module.exports = {
-    createNewUser
+    createUser,
+    validateUser
 };
