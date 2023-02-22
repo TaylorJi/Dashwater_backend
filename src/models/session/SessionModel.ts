@@ -4,9 +4,7 @@ import User from "../../config/schemas/User";
 const createSession = async (sessionId: String, userId: String) => {
     try {
         const expirationTime = new Date();
-        console.log(expirationTime)
         expirationTime.setHours(expirationTime.getHours() + 2);
-        console.log(expirationTime)
 
         const newSession = await Session.create({
                 "userId": userId,
