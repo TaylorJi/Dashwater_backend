@@ -1,11 +1,16 @@
 import Session from "../../config/schemas/Session";
 import User from "../../config/schemas/User";
 
-const createSession = async (sessionId: String, expirationTime: String, userId: String) => {
+const createSession = async (sessionId: String, userId: String) => {
     try {
+        const expirationTime = new Date();
+        console.log(expirationTime)
+        expirationTime.setHours(expirationTime.getHours() + 2);
+        console.log(expirationTime)
+
         const newSession = await Session.create({
                 "userId": userId,
-                "sessionExpiry": expirationTime,
+                "sessionExpiry": expirationTime.toISOString(),
                 "sessionId": sessionId
         });
 
@@ -25,7 +30,7 @@ const deleteSession = async (sessionId: string) => {
             try {
                 const deletedSession = await Session.deleteOne({"sessionId": sessionId});
 
-                if (deletedSession) return true;
+                if (deletedSession.deletedCount) return true;
                 return false;
             } catch (err) {
                 return false;
@@ -48,19 +53,19 @@ const validateSession = async (sessionId: string) => {
             const user = await User.findOne({"_id": session.userId});
             
             return user;
-        } else if (!session) {
-            return "Not found"
         } else {
-            return "Expired"
+            return null;
         }
     } catch (err) {
         return null;
     }
 }
 
-const updateSessionExpiry = async (sessionID: string, newExpiry: string) => {
+const updateSessionExpiry = async (sessionID: string) => {
     try {
-        const updatedSession = await Session.findOneAndUpdate({"sessionId": sessionID}, {"sessionExpiry": newExpiry});
+        const expirationTime = new Date();
+        expirationTime.setHours(expirationTime.getHours() + 2);
+        const updatedSession = await Session.findOneAndUpdate({"sessionId": sessionID}, {"sessionExpiry": expirationTime.toISOString()});
 
         if (updatedSession) {
             return updatedSession;
