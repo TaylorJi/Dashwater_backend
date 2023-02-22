@@ -18,25 +18,18 @@ const createUser = async (email: String, password: String) => {
 
 const validateUser = async (email: String, password: String) => {
     try {
-        const user = await User.findOne({ "email": email });
+        const user = await User.findOne({ "email": email, "password": password});
 
         if (user) {
-
-            if (user.password === password) {
-                return user;
-            }
-            return "Invalid password";
-
+            return user;
         } else {
-            return "User not found";
+            return "No user";
         }
 
     } catch (err) {
         return null;
     }
 };
-
-
 
 
 export default module.exports = {
