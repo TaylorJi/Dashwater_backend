@@ -8,9 +8,6 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 
-// Cache
-import AppCache from './models/cache/AppCache';
-
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -31,17 +28,17 @@ server.use(
 
 server.listen(port, async () => {
 
-    // Register cache
-    await AppCache.register();
-
-    console.log(`Server started on port ${port}!`);
-    mongoose.connect('mongodb+srv://IoT_dashboard:IMDhYdetq8mkVE1f@iotdashboard.hyyz1ps.mongodb.net/IoT_database');
+    mongoose.set('strictQuery', false);
+    mongoose.connect(`${process.env.MONGO_URL};
+}`);
     const db = mongoose.connection;
 
-    db.on('error', console.error.bind(console, 'connection error:'));
+    db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
     });
+
+    console.log(`Server started on port ${port}!`);
 });
 
 //Routing

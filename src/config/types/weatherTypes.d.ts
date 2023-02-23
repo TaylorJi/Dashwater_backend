@@ -2,8 +2,8 @@ type weatherDataType = {
     currWeather: string;
     temp: number;
     iconURL: string;
-    windSpeed: string;
-    windPressure: string;
+    windSpeed: number;
+    windPressure: number;
     forecast: weatherForecastType[];
 };
 

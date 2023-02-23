@@ -27,8 +27,8 @@ const getWeather = async () => {
                 currWeather: data['current']['condition']['text'],
                 temp: data['current']['condition']['temp_c'],
                 iconURL: data['current']['condition']['icon'],
-                windSpeed: data['current']['condition']['wind_kph'],
-                windPressure: data['current']['condition']['pressure_mb'],
+                windSpeed: data['current']['wind_kph'],
+                windPressure: data['current']['pressure_mb'],
                 forecast: forecastData
             };
 
