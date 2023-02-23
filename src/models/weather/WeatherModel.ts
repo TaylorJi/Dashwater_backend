@@ -1,4 +1,5 @@
 import axios from "axios";
+import AppCache from "../cache/AppCache";
 
 const getWeather = async () => {
 
@@ -45,6 +46,22 @@ const getWeather = async () => {
 
 };
 
+const getTide = async () => {
+
+    try {
+        const data = await AppCache.getTideData();
+
+        if (data) {
+            return data;
+        }
+        return null;
+
+    } catch (_err) {
+        return null;
+    }
+};
+
 export default module.exports = {
-    getWeather
+    getWeather,
+    getTide
 };

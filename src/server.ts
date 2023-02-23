@@ -12,6 +12,9 @@ import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+// Cache
+import AppCache from './models/cache/AppCache';
+
 const port = Environment.port;
 const server = express();
 server.use(express.json());
@@ -27,6 +30,9 @@ server.use(
 );
 
 server.listen(port, async () => {
+
+    // Register cache
+    await AppCache.registerTideCache();
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL};
