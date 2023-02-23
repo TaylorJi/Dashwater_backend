@@ -1,10 +1,3 @@
-/**
- * SETUP
- */
-//env variables
-import * as dotenv from 'dotenv';
-dotenv.config({ path: `${__dirname}/../.env` });
-
 // security
 import helmet from 'helmet';
 import cors from 'cors';
@@ -13,6 +6,10 @@ import cors from 'cors';
 import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
+
+//Load .env (must be loaded ASAP)
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const port = Environment.port;
 const server = express();
