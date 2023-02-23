@@ -72,26 +72,14 @@ class AppCacheManager {
 
                 const data = response.data.data;
 
-                const tideHeights = data.map((interval: any) => interval['sg']);
-
-                const highest = Math.max(...tideHeights);
-                const lowest = Math.min(...tideHeights);
+                const tideHeightsSorted = data.sort((a: any, b: any) => a['sg'] - b['sg']);
 
                 const tideData: tideDataType = {
-                    high: highest,
-                    low: lowest,
-                    highTime: '',
-                    lowTime: ''
+                    high: tideHeightsSorted[tideHeightsSorted.length - 1]['sg'],
+                    low: tideHeightsSorted[0]['sg'],
+                    highTime: this.timeHelper(tideHeightsSorted[tideHeightsSorted.length - 1]['time']),
+                    lowTime: this.timeHelper(tideHeightsSorted[0]['time'])
                 };
-
-                data.map((interval: any) => {
-                    if (interval['sg'] === highest) {
-                        tideData['highTime'] = this.timeHelper(interval['time']);
-
-                    } else if (interval['sg'] === lowest) {
-                        tideData['lowTime'] = this.timeHelper(interval['time']);
-                    }
-                });
 
                 return tideData;
             }
