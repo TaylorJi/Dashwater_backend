@@ -66,7 +66,8 @@ class AppCacheManager {
 
             if (response.status === 200) {
 
-                const data = response.data;
+                const data = response.data.data;
+
                 const tideHeights = data.map((interval: any) => interval['sg']);
 
                 const highest = Math.max(...tideHeights);
