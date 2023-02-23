@@ -50,9 +50,9 @@ const validateSession = async (sessionId: string) => {
         if (session && new Date(session.sessionExpiry) > currentTime) {
             const user = await User.findOne({"_id": session.userId});
             
-            return user;
+            return {"userId": user?._id, "email": user?.email, "role": user?.role};
         } else {
-            return null;
+            return false;
         }
     } catch (err) {
         return null;
