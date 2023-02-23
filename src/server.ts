@@ -51,14 +51,9 @@ server.listen(port, async () => {
 import { router as authRouter } from './routes/AuthenticationRoutes';
 import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
+import { router as apiRouter } from './routes/TimestreamRoutes';
 
 server.use('/api/auth', authRouter);
-
-
-// Testing the timestreamAPI
-import { router as apiRouter } from './routes/TimestreamRoutes';
 server.use('/api/ts', apiRouter)
-
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
-
