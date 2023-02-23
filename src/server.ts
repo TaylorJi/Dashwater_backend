@@ -7,6 +7,9 @@ import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
 
+// Cache
+import AppCache from './models/cache/AppCache';
+
 const port = Environment.port;
 const server = express();
 server.use(express.json());
@@ -21,7 +24,11 @@ server.use(
     })
 );
 
-server.listen(port, () => {
+server.listen(port, async () => {
+
+    // Register cache
+    await AppCache.register();
+
     console.log(`Server started on port ${port}!`);
 });
 
