@@ -1,3 +1,10 @@
+/**
+ * SETUP
+ */
+//env variables
+import * as dotenv from 'dotenv';
+dotenv.config({ path: `${__dirname}/../.env` });
+
 // security
 import helmet from 'helmet';
 import cors from 'cors';
@@ -27,4 +34,6 @@ server.listen(port, () => {
 
 //Routing
 import { router as authRouter } from './routes/AuthenticationRoutes';
+import { router as weatherRouter } from './routes/WeatherRoutes';
 server.use('/api/auth', authRouter);
+server.use('/api/weather', weatherRouter);
