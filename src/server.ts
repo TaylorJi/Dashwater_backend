@@ -7,6 +7,9 @@ import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
 
+// Cache
+import AppCache from './models/cache/AppCache';
+
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -25,7 +28,11 @@ server.use(
     })
 );
 
-server.listen(port, () => {
+server.listen(port, async () => {
+
+    // Register cache
+    await AppCache.register();
+
     console.log(`Server started on port ${port}!`);
 });
 
