@@ -12,6 +12,11 @@ import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+//Load .env (must be loaded ASAP)
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
 const port = Environment.port;
 const server = express();
 server.use(express.json());
@@ -47,5 +52,12 @@ import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 
 server.use('/api/auth', authRouter);
+
+
+// Testing the timestreamAPI
+import {router as apiRouter} from './routes/TimestreamRoutes';
+server.use('/api/ts', apiRouter)
+
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
+
