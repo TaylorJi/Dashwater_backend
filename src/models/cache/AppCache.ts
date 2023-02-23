@@ -10,7 +10,7 @@ class AppCacheManager {
     private interval: NodeJS.Timer | null;
 
     constructor() {
-        this.cachedDeviceData = this.fetchData;
+        this.cachedDeviceData = null; 
         this.interval = null;
     };
 
