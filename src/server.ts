@@ -32,7 +32,10 @@ server.use(
 server.listen(port, async () => {
 
     // Register cache
-    await AppCache.registerTideCache();
+    const registration = await AppCache.registerTideCache();
+    if (!registration) {
+        console.log('There was a problem populating the tide data cache. Check your query limits.');
+    }
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL};

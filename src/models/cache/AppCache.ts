@@ -37,10 +37,14 @@ class AppCacheManager {
     };
 
     public registerTideCache = async () => {
+
         const tideData = await this.fetchTideData();
 
         if (tideData) {
             this.cachedTideData = tideData;
+
+        } else {
+            return null;
         }
 
         this.tideInterval = setInterval(async () => {
