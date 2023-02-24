@@ -38,8 +38,7 @@ server.listen(port, async () => {
     }
 
     mongoose.set('strictQuery', false);
-    mongoose.connect(`${process.env.MONGO_URL};
-}`);
+    mongoose.connect(`${process.env.MONGO_URL}`);
     const db = mongoose.connection;
 
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
