@@ -36,7 +36,5 @@ server.use('/api/auth', authRouter);
 
 
 // Testing the timestreamAPI
-import {router as apiRouter} from './routes/TimestreamRoutes';
-server.use('/api/ts', apiRouter)
-
-
+import {router as tsAPIRouter} from './routes/TimestreamRoutes';
+server.use('/api/ts', tsAPIRouter)
