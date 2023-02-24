@@ -8,14 +8,12 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 
-//Load .env (must be loaded ASAP)
-import * as dotenv from 'dotenv';
-dotenv.config();
+// Middleware
+// import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
 dotenv.config();
-
 
 const port = Environment.port;
 const server = express();
@@ -34,8 +32,7 @@ server.use(
 server.listen(port, async () => {
 
     mongoose.set('strictQuery', false);
-    mongoose.connect(`${process.env.MONGO_URL};
-}`);
+    mongoose.connect(`${process.env.MONGO_URL}`);
     const db = mongoose.connection;
 
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
