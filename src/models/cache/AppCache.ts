@@ -15,7 +15,7 @@ class AppCacheManager {
     // private cachedDeviceData: Array<JSON> | null;
     // private timestreamInterval: NodeJS.Timer | null;
 
-    private cachedTideData: tideDataType | null;
+    private cachedTideData: rawTideDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
 
     constructor() {
@@ -70,18 +70,9 @@ class AppCacheManager {
 
             if (response.status === 200) {
 
-                const data = response.data.data;
+                const data: rawTideDataType[] = response.data.data;
 
-                const tideHeightsSorted = data.sort((a: any, b: any) => a['sg'] - b['sg']);
-
-                const tideData: tideDataType = {
-                    high: tideHeightsSorted[tideHeightsSorted.length - 1]['sg'],
-                    low: tideHeightsSorted[0]['sg'],
-                    highTime: this.timeHelper(tideHeightsSorted[tideHeightsSorted.length - 1]['time']),
-                    lowTime: this.timeHelper(tideHeightsSorted[0]['time'])
-                };
-
-                return tideData;
+                return data;
             }
             return null;
 
@@ -91,13 +82,6 @@ class AppCacheManager {
 
     };
 
-
-    private timeHelper = (timeString: string) => {
-
-        let splitTimeDay = timeString.split('T')[1];
-        return splitTimeDay.split('+')[0];
-
-    };
 
     // public registerTS = async () => {
 

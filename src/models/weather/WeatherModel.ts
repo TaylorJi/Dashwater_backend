@@ -1,5 +1,6 @@
 import axios from "axios";
 import AppCache from "../cache/AppCache";
+import { timeHelper } from "./weatherHelpers";
 
 const getWeather = async () => {
 
@@ -51,7 +52,23 @@ const getTide = async () => {
         const data = await AppCache.getTideData();
 
         if (data) {
-            return data;
+
+            const tideHeightsSorted: rawTideDataType[] = data.sort((a: any, b: any) => a['sg'] - b['sg']);
+
+            const tideData: tideDataType[] = [
+                {
+                    name: 'high',
+                    height: tideHeightsSorted[tideHeightsSorted.length - 1]['sg'],
+                    time: timeHelper(tideHeightsSorted[tideHeightsSorted.length - 1]['time'])
+                },
+                {
+                    name: 'low',
+                    height: tideHeightsSorted[0]['sg'],
+                    time: timeHelper(tideHeightsSorted[0]['time'])
+                }
+            ];
+
+            return tideData;
         }
         return null;
 

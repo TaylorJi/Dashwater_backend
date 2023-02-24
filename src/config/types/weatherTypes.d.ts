@@ -15,8 +15,12 @@ type weatherForecastType = {
 };
 
 type tideDataType = {
-    high: number;
-    low: number;
-    highTime: string;
-    lowTime: string;
+    name: string;
+    height: number;
+    time: string;
 };
+
+type rawTideDataType = {
+    sg: number;
+    time: string;
+}
