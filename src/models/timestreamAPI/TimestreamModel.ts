@@ -2,12 +2,11 @@
  * This module contains the timestream data model, to interact with AWS timestream db
  */
 
-import AWSHelpers from "../../helpers/timestreamAPI/functions/awsHelpers";
-
+import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 const getAllDeviceIds = (queryString: string) => {
   try {
     const [timestreamQuery, queryParams] =
-      AWSHelpers.createTSQuery(queryString);
+      queryBuilder.createTSQuery(queryString);
     const data = timestreamQuery.query(queryParams).promise();
     if (data) return data;
     return null;
@@ -18,8 +17,8 @@ const getAllDeviceIds = (queryString: string) => {
 
 const getDeviceInfo = (buoyIdList: string) => {
   try {
-    const query = AWSHelpers.buildCurrentQuery(buoyIdList);
-    const [timestreamQuery, queryParams] = AWSHelpers.createTSQuery(query);
+    const query = queryBuilder.buildCurrentQuery(buoyIdList);
+    const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
     const data = timestreamQuery.query(queryParams).promise();
     if (data) return data;
     return null;
