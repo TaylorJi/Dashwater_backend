@@ -55,7 +55,7 @@ const getTide = async () => {
 
         if (data) {
 
-            const tideHeightsSorted: rawTideDataType[] = data.sort((a: any, b: any) => a['sg'] - b['sg']);
+            const tideHeightsSorted: rawTideDataType[] = data.sort((a, b) => a['sg'] - b['sg']);
 
             const tideData: tideDataType[] = [
                 {
