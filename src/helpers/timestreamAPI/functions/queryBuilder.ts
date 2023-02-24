@@ -49,11 +49,18 @@ const createTSQuery = (
   return [timeStreamQuery, queryParams] as const;
 };
 
+// To be re-used to parse an array of ids delimited by commas
+const parseDeviceList = (buoyIdList: string) => {
+  return "('" + buoyIdList.split(",").join("', '") + "')";
+};
+
+// Build current resource query
 const buildCurrentQuery = (buoyIdList: string) => {
-  const buoyIds = "('" + buoyIdList.split(",").join("', '") + "')";
+  const buoyIds = parseDeviceList(buoyIdList);
   return sqlQueries.DEVICE_ID_MEASURE_TIME + buoyIds + sqlQueries.CURRENT_INFO;
 };
 
+// Build query for each device's historical data
 const buildHistoricalQuery = (
   buoyIdList: string,
   measureName: string,
@@ -64,11 +71,41 @@ const buildHistoricalQuery = (
     sqlQueries.DEVICE_INFO +
     buoyIdList +
     sqlQueries.MEASURE_NAME +
+    "'" +
     measureName +
+    "'" +
     sqlQueries.START_TIME +
     start +
     sqlQueries.END_TIME +
-    end
+    end +
+    sqlQueries.ORDER_ASC
+  );
+};
+
+// Build query for each device's historical data
+const buildThresholdQuery = (
+  buoyIdList: string,
+  measureName: string,
+  start: string,
+  end: string,
+  measureValueType: any,
+  thresholdAmount: any,
+) => {
+  return (
+    sqlQueries.DEVICE_INFO +
+    buoyIdList +
+    sqlQueries.MEASURE_NAME +
+    "'" +
+    measureName +
+    "'" +
+    sqlQueries.START_TIME +
+    start +
+    sqlQueries.END_TIME +
+    end +
+    "') AND " +
+    measureValueType +
+    thresholdAmount +
+    " " + "ORDER BY time ASC"
   );
 };
 
@@ -76,4 +113,8 @@ export default module.exports = {
   createTSQuery,
   buildCurrentQuery,
   buildHistoricalQuery,
+  parseDeviceList,
+  buildThresholdQuery
 };
+
+

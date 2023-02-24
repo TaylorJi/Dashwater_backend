@@ -1,3 +1,8 @@
+/**
+ * This module contains functions to parse the AWS query response 
+ *    to extract relevant data.
+ */
+
 interface QueryResult {
   QueryStatus: any;
   ColumnInfo: any[];
