@@ -9,8 +9,8 @@ class AppCacheManager {
     readonly timestreamRefreshRate = 3600000;
 
     readonly tideRefreshRate = 10800000; // 3 hours
-    readonly stevestonLat = '49.1337';
-    readonly stevestonLong = '123.1793';
+    readonly stevestonLat = '49.1967';
+    readonly stevestonLong = '123.1815';
 
     // private cachedDeviceData: Array<JSON> | null;
     // private timestreamInterval: NodeJS.Timer | null;
