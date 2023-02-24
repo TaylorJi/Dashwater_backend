@@ -5,7 +5,7 @@ import { timeHelper } from "./weatherHelpers";
 const getWeather = async () => {
 
     try {
-        const response = await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=steveston&aqi=yes&days=3`);
+        const response = await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=steveston&aqi=yes&days=4`);
         if (response.status === 200) {
 
             const data = response.data;
@@ -27,9 +27,11 @@ const getWeather = async () => {
 
             const currWeatherData: weatherDataType = {
                 currWeather: data['current']['condition']['text'],
-                temp: data['current']['condition']['temp_c'],
+                temp: data['current']['temp_c'],
                 iconURL: data['current']['condition']['icon'],
                 windSpeed: data['current']['wind_kph'],
+                windDir: data['current']['wind_dir'],
+                windDeg: data['current']['wind_degree'],
                 windPressure: data['current']['pressure_mb'],
                 forecast: forecastData
             };

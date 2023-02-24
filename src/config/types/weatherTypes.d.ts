@@ -3,6 +3,8 @@ type weatherDataType = {
     temp: number;
     iconURL: string;
     windSpeed: number;
+    windDir: string;
+    windDeg: number;
     windPressure: number;
     forecast: weatherForecastType[];
 };
