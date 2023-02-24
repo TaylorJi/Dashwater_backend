@@ -9,8 +9,8 @@ class AppCacheManager {
     readonly timestreamRefreshRate = 3600000;
 
     readonly tideRefreshRate = 10800000; // 3 hours
-    readonly stevestonLat = '49.1967';
-    readonly stevestonLong = '123.1815';
+    readonly yvrLat = '49.1967';
+    readonly yvrLong = '123.1815';
 
     // private cachedDeviceData: Array<JSON> | null;
     // private timestreamInterval: NodeJS.Timer | null;
@@ -64,7 +64,7 @@ class AppCacheManager {
             const tomorrow =
                 new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
 
-            const response = await axios.get(`https://api.stormglass.io/v2/tide/sea-level/point?lat=${this.stevestonLat}&lng=${this.stevestonLong}&start=${today}&end=${tomorrow}`,
+            const response = await axios.get(`https://api.stormglass.io/v2/tide/sea-level/point?lat=${this.yvrLat}&lng=${this.yvrLong}&start=${today}&end=${tomorrow}`,
                 { headers: { Authorization: process.env.TIDE_API_KEY } }
             );
 
