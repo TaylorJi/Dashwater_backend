@@ -67,6 +67,8 @@ const START_TIME = " AND time BETWEEN from_iso8601_timestamp('";
 
 const END_TIME = "') " + "ORDER BY time ASC";
 
+const TIMESTREAM_TABLES = `SHOW TABLES IN ${queryInfo.DATABASE_NAME}`
+
 export default module.exports = {
   DEVICE_IDS,
   DEVICE_ID_MEASURE_TIME,
@@ -74,5 +76,6 @@ export default module.exports = {
   DEVICE_INFO,
   MEASURE_NAME,
   START_TIME,
-  END_TIME
+  END_TIME,
+  TIMESTREAM_TABLES
 };

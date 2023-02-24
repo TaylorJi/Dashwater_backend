@@ -1,6 +1,5 @@
 /**
  * This module contains the timestream data model, to interact with AWS timestream db
- *
  */
 
 import AWSHelpers from "../../helpers/timestreamAPI/functions/awsHelpers";
