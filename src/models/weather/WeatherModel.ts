@@ -39,8 +39,7 @@ const getWeather = async () => {
         }
         return null;
 
-    } catch (err) {
-        console.log(err);
+    } catch (_err) {
         return null;
     }
 
