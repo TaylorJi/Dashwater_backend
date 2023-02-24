@@ -6,7 +6,8 @@ import AWSHelpers from "../../helpers/timestreamAPI/functions/awsHelpers";
 
 const getAllDeviceIds = (queryString: string) => {
   try {
-    const [timestreamQuery, queryParams] = AWSHelpers.createTSQuery(queryString);
+    const [timestreamQuery, queryParams] =
+      AWSHelpers.createTSQuery(queryString);
     const data = timestreamQuery.query(queryParams).promise();
     if (data) return data;
     return null;
@@ -17,7 +18,7 @@ const getAllDeviceIds = (queryString: string) => {
 
 const getDeviceInfo = (buoyIdList: string) => {
   try {
-    const query =  AWSHelpers.buildCurrentQuery(buoyIdList);
+    const query = AWSHelpers.buildCurrentQuery(buoyIdList);
     const [timestreamQuery, queryParams] = AWSHelpers.createTSQuery(query);
     const data = timestreamQuery.query(queryParams).promise();
     if (data) return data;
@@ -26,8 +27,6 @@ const getDeviceInfo = (buoyIdList: string) => {
     return err;
   }
 };
-
-
 
 export default module.exports = {
   getAllDeviceIds,

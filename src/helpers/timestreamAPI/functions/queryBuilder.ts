@@ -14,8 +14,6 @@ interface QueryParams {
   QueryString: string;
 }
 
-
-
 // This function creates and initializes the query and querystring objects.
 // Returns an array to be destructured into the seperate objects.
 const createTSQuery = (
@@ -73,7 +71,6 @@ const buildHistoricalQuery = (
     end
   );
 };
-
 
 export default module.exports = {
   createTSQuery,
