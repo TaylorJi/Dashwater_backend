@@ -8,7 +8,7 @@ class AppCacheManager {
 
     readonly timestreamRefreshRate = 3600000;
 
-    readonly tideRefreshRate = 86400000; // 1 day
+    readonly tideRefreshRate = 10800000; // 3 hours
     readonly stevestonLat = '49.1337';
     readonly stevestonLong = '123.1793';
 
