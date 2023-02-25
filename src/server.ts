@@ -53,4 +53,3 @@ server.use('/api/auth', authRouter);
 server.use('/api/ts', apiRouter)
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
-
