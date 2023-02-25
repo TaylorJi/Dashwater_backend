@@ -116,5 +116,3 @@ export default module.exports = {
   parseDeviceList,
   buildThresholdQuery
 };
-
-

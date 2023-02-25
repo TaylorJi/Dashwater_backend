@@ -1,5 +1,5 @@
 /**
- * This module contains functions to parse the AWS query response 
+ * This module contains functions to parse the AWS query response
  *    to extract relevant data.
  */
 
