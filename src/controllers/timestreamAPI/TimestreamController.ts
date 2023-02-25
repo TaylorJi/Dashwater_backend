@@ -21,7 +21,7 @@ const getAllBuoyIds = async (req: Request, res: Response) => {
   }
 };
 
-//GET request for 
+//GET request for current buoy data (based on 365 days)
 const getCurrentBuoyData = async (
   req: Request<never, never, never, { buoyIdList: string }>,
   res: Response
@@ -55,7 +55,7 @@ const getBuoyHistory = async (
 
     if (buoyIdList && measureName && start && end) {
       const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-      
+
       const response = await TimestreamModel.getHistoricalData(
         deviceIds,
         measureName,
@@ -73,6 +73,8 @@ const getBuoyHistory = async (
   }
 };
 
+// GET request for buoy data for each buoy id in the list 
+//  based on the threshold which is a comparator and number,
 const getBuoyThreshold = async (
   req: Request<
     never,
@@ -102,8 +104,7 @@ const getBuoyThreshold = async (
       threshold
     ) {
       const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-   
-      
+
       const response = await TimestreamModel.getThresholdData(
         deviceIds,
         measureName,
@@ -112,7 +113,7 @@ const getBuoyThreshold = async (
         measureValueType,
         threshold
       );
-      
+
       if (response)
         res.status(200).json({ data: queryParser.parseQueryResult(response) });
       else res.status(404).json({ error: "Not found." });

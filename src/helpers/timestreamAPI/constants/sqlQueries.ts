@@ -1,6 +1,10 @@
 /**
  * This module contains the SQL queries to send to AWS timestream db.
  * To do: queries need to have user inputs (read from db) before being sent.
+ * 
+ * Note:
+ *  The idea behind storing all the SQL queries here is to make a transition to sql builders easier.
+ *  Recommended to switch to a more readable format (ie: ts-sql-query)
  */
 
 import queryInfo from "./queryInfo";
@@ -81,5 +85,4 @@ export default module.exports = {
   ORDER_ASC,
   END_TIME,
   TIMESTREAM_TABLES,
-  
 };
