@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import OrdersModel from "../../models/authentication/AuthenticationModel";
+import SessionModel from "../../models/session/SessionModel";
 
 const authControllerTest = (req: Request, res: Response) => {
 
@@ -23,6 +24,21 @@ const authControllerTest = (req: Request, res: Response) => {
 
 };
 
+const validateAuth = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.sessionId) {
+        const sessionCheck = await SessionModel.validateSession(req.body.sessionId);
+
+        if (sessionCheck) {
+            next();
+        } else {
+            res.status(403).json({ message: "You must be logged in to perform this action." });
+        }
+    } else {
+        res.status(403).json({ message: "You must be logged in to perform this action." });
+    }
+}
+
 export default module.exports = {
-    authControllerTest
+    authControllerTest,
+    validateAuth
 };
