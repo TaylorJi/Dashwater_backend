@@ -52,13 +52,16 @@ server.listen(port, async () => {
     console.log(`Server started on port ${port}!`);
 });
 
+
 //Routing
 import { router as authRouter } from './routes/AuthenticationRoutes';
 import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 import { router as apiRouter } from './routes/TimestreamRoutes';
+import { router as userRouter } from './routes/UserRoutes';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', apiRouter)
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
+server.use('/api/user', userRouter);
