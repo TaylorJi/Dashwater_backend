@@ -23,7 +23,7 @@ const validateUser = async (email: String, password: String) => {
         if (user) {
             return user;
         } else {
-            return "No user";
+            return false;
         }
 
     } catch (err) {
