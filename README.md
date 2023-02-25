@@ -11,3 +11,6 @@ Jackson Marsnas
 Semih Erguven
 
 Basil Kim
+
+## Starting the Server
+Run the command `npm run dev` in the terminal. This will compile TypeScript and start the server.
