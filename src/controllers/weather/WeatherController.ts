@@ -11,6 +11,17 @@ const getWeather = async (_req: Request, res: Response) => {
     }
 };
 
+const getTide = async (_req: Request, res: Response) => {
+
+    const response = await WeatherModel.getTide();
+    if (response) {
+        res.status(200).json({ message: 'Sucessfully fetched tide data.', data: response });
+    } else {
+        res.status(500).json({ message: 'There was a problem fetching the tide data.' });
+    }
+};
+
 export default module.exports = {
-    getWeather
+    getWeather,
+    getTide
 };
