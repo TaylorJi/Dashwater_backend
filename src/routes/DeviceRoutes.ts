@@ -8,3 +8,4 @@ router.route('/createDevice').post(DeviceController.createDevice);
 router.route('/updateDevice').post(DeviceController.updateDevice);
 router.route('/deleteDevice').post(DeviceController.deleteDevice);
 router.route('/getAllDevices').post(DeviceController.getAllDevices);
+router.route('/getSingleDevice').post(DeviceController.getSingleDevice);

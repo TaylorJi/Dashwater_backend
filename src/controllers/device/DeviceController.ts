@@ -42,6 +42,7 @@ const updateDevice = async (req: Request, res: Response) => {
 
 // I think only "Admin" type users should have access to this operation. So, should I check if the user admin or not here?
 const deleteDevice = async (req: Request, res: Response) => {
+
     const id = req.body.id;
 
     if (!id) {
@@ -70,6 +71,24 @@ const getAllDevices = async (_req: Request, res: Response) => {
 }
 
 
+const getSingleDevice = async (req: Request, res: Response) => {
+
+    const id = req.body.id;
+
+    if (!id) {
+        res.status(400).json({ message: "Invalid request: device id is required." });
+    } else {
+        const response = await DeviceModel.getSingleDevice( id );
+
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
+}
+
+
 
 
 
@@ -78,5 +97,6 @@ export default module.exports = {
     createDevice,
     updateDevice,
     deleteDevice,
-    getAllDevices
+    getAllDevices,
+    getSingleDevice
 }
