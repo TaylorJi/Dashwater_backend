@@ -40,6 +40,22 @@ const updateDevice = async (req: Request, res: Response) => {
 }
 
 
+const deleteDevice = async (req: Request, res: Response) => {
+    const id = req.body.id;
+
+    if (!id) {
+        res.status(400).json({ message: "Invalid request: device id is required." });
+    } else {
+        const response = await DeviceModel.deleteDevice( id );
+
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
+}
+
 
 
 
@@ -47,5 +63,6 @@ const updateDevice = async (req: Request, res: Response) => {
 
 export default module.exports = {
     createDevice,
-    updateDevice
+    updateDevice,
+    deleteDevice
 }

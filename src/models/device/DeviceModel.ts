@@ -33,6 +33,20 @@ const updateDevice = async (id: Number, latitude: String, longitude: String) => 
 }
 
 
+const deleteDevice = async (id: Number) => {
+    try {
+        const deletedDevice = await Device.findOneAndDelete({ "id": id });
+
+        if (deletedDevice) {
+            return deletedDevice;
+        }
+        return null;
+
+    } catch (err) {
+        return null;
+    }
+}
+
 
 
 
@@ -42,5 +56,6 @@ const updateDevice = async (id: Number, latitude: String, longitude: String) => 
 
 export default module.exports = {
     createDevice,
-    updateDevice
+    updateDevice,
+    deleteDevice
 }
