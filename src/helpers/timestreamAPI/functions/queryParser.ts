@@ -3,16 +3,7 @@
  *    to extract relevant data.
  */
 
-interface QueryResult {
-  QueryStatus: any;
-  ColumnInfo: any[];
-  Rows: any[];
-}
-
-interface ColumnInfo {
-  Name: string;
-  Type: any;
-}
+import { QueryResult, ColumnInfo } from "./query";
 
 const parseRow = (columnInfo: ColumnInfo[], row: any): string => {
   const data = row.Data;
@@ -28,21 +19,21 @@ const parseRow = (columnInfo: ColumnInfo[], row: any): string => {
 };
 
 const parseDatum = (info: ColumnInfo, datum: any): string => {
-  if (datum.NullValue != null && datum.NullValue === true) {
+  if (datum.NullValue && datum.NullValue) {
     return `"${info.Name}":null`;
   }
 
   const columnType = info.Type;
 
-  if (columnType.TimeSeriesMeasureValueColumnInfo != null) {
+  if (columnType.TimeSeriesMeasureValueColumnInfo) {
     return parseTimeSeries(info, datum);
-  } else if (columnType.ArrayColumnInfo != null) {
+  } else if (columnType.ArrayColumnInfo) {
     const arrayValues = datum.ArrayValue;
     return `"${info.Name}": "${parseArray(
       info.Type.ArrayColumnInfo,
       arrayValues
     )}"`;
-  } else if (columnType.RowColumnInfo != null) {
+  } else if (columnType.RowColumnInfo) {
     const rowColumnInfo = info.Type.RowColumnInfo;
     const rowValues = datum.RowValue;
     return parseRow(rowColumnInfo, rowValues);
@@ -52,16 +43,12 @@ const parseDatum = (info: ColumnInfo, datum: any): string => {
 };
 
 const parseTimeSeries = (info: ColumnInfo, datum: any): string => {
-  const timeSeriesOutput: string[] = [];
-  datum.TimeSeriesValue.forEach(function (dataPoint: any) {
-    timeSeriesOutput.push(
-      `{time=${dataPoint.Time}, value=${parseDatum(
-        info.Type.TimeSeriesMeasureValueColumnInfo,
-        dataPoint.Value
-      )}}`
-    );
+  const timeSeriesOutput = datum.TimeSeriesValue.map((dataPoint: any) => {
+    return `{time=${dataPoint.Time}, value=${parseDatum(
+      info.Type.TimeSeriesMeasureValueColumnInfo,
+      dataPoint.Value
+    )}}`;
   });
-
   return `[${timeSeriesOutput.join(", ")}]`;
 };
 
@@ -70,7 +57,7 @@ const parseScalarType = (info: ColumnInfo, datum: any): string => {
 };
 
 const parseColumnName = (info: ColumnInfo): string => {
-  return info.Name == null ? "" : `"${info.Name}":`;
+  return info.Name === null ? "" : `"${info.Name}":`;
 };
 
 const parseArray = (arrayColumnInfo: any, arrayValues: any[]): string => {
