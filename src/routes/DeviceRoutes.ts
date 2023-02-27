@@ -5,5 +5,6 @@ import DeviceController from "../controllers/device/DeviceController";
 
 
 router.route('/createDevice').post(DeviceController.createDevice);
-router.route('/updateDevice').put(DeviceController.updateDevice);
-router.route('/deleteDevice').delete(DeviceController.deleteDevice);
+router.route('/updateDevice').post(DeviceController.updateDevice);
+router.route('/deleteDevice').post(DeviceController.deleteDevice);
+router.route('/getAllDevices').post(DeviceController.getAllDevices);

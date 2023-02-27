@@ -48,6 +48,20 @@ const deleteDevice = async (id: Number) => {
 }
 
 
+const getAllDevices = async () => {
+    try {
+        const devices = await Device.find({});
+
+        if (devices.length !== 0) {
+            return devices;
+        }
+        return null;
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 
 
@@ -57,5 +71,6 @@ const deleteDevice = async (id: Number) => {
 export default module.exports = {
     createDevice,
     updateDevice,
-    deleteDevice
+    deleteDevice,
+    getAllDevices
 }
