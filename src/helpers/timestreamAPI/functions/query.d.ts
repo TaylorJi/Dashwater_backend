@@ -1,5 +1,5 @@
 /**
- * This module contains query types to be used for AWS teim
+ * This module contains query types to be used for AWS timestream queries. 
  */
 
 export type QueryResult = {

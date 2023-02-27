@@ -8,13 +8,6 @@ import queryInfo from "../constants/queryInfo";
 import sqlQueries from "../constants/sqlQueries";
 import { QueryParams } from "./query";
 
-// interface QueryParams {
-//   ClientToken?: string;
-//   MaxRows?: number;
-//   NextToken?: string;
-//   QueryString: string;
-// }
-
 // This function creates and initializes the query and querystring objects.
 // Returns an array to be destructured into the seperate objects.
 const createTSQuery = (
