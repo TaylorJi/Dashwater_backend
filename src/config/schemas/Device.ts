@@ -13,6 +13,7 @@ const DeviceSchema = new Schema({
     location: {
         type: {
             type: String,
+            enum: ["Point"],
             default: "Point"
         },
         coordinates: {
@@ -33,8 +34,11 @@ const DeviceSchema = new Schema({
 
 });
 
+DeviceSchema.index({ location: "2dsphere" });
 
 
-const Device = mongoose.model('Device', DeviceSchema)
+const Device = mongoose.model('Device', DeviceSchema);
+
+Device.collection.createIndex({ location: "2dsphere" });
 
 export default Device

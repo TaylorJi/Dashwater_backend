@@ -3,14 +3,7 @@ import Device from "../../config/schemas/Device";
 const createDevice = async (id: Number, coordinates: [Number]) => {
     try {
 
-        console.log("Model");
-        console.log(coordinates);
-
-        // const newDevice = await Device.create({ "id": id, "latitude": latitude, "longitude": longitude });
         const newDevice = await Device.create({ "id": id, "location.coordinates": coordinates });
-
-
-        console.log(newDevice);
 
 
         if (newDevice) {
@@ -84,16 +77,36 @@ const getSingleDevice = async (id: Number) => {
 }
 
 
+const getDevicesWithinRadius = async (coordinates: [Number], radius: Number) => {
+    try {
 
+        const devices = await Device.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        "type": "Point",
+                        "coordinates": coordinates
+                    },
+                    $maxDistance: radius // Radius should be meter
+                }
+            }
+        })
 
+        if (devices.length !== 0) {
+            return devices;
+        }
+        return null;
 
-
-
+    } catch (err) {
+        return null;
+    }
+}
 
 export default module.exports = {
     createDevice,
     updateDevice,
     deleteDevice,
     getAllDevices,
-    getSingleDevice
+    getSingleDevice,
+    getDevicesWithinRadius
 }

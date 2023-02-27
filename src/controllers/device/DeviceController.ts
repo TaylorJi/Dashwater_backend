@@ -5,19 +5,11 @@ import DeviceModel from "../../models/device/DeviceModel";
 
 const createDevice = async (req: Request, res: Response) => {
 
-    // const { id, latitude, longitude } = req.body;
     const { id, location } = req.body;
-
-    console.log("Controller");
-    console.log(req.body);
-    console.log("=======");
-    console.log(location);
-    console.log(location.coordinates);
 
     if (!id || !location ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
-        // const response = await DeviceModel.createDevice( id, latitude, longitude );
         const response = await DeviceModel.createDevice( id, location.coordinates );
 
         if (response) {
@@ -32,10 +24,9 @@ const createDevice = async (req: Request, res: Response) => {
 // I think only "Admin" type users should have access to this operation. So, should I check if the user admin or not here?
 const updateDevice = async (req: Request, res: Response) => {
 
-    // const { id, latitude, longitude } = req.body;
     const { id, location } = req.body;
 
-    if (!id || !location ) {
+    if (!id || location.coordinates.length === 0 ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
         const response = await DeviceModel.updateDevice( id, location.coordinates );
@@ -98,8 +89,23 @@ const getSingleDevice = async (req: Request, res: Response) => {
 }
 
 
+const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
+    const { coordinates, radius } = req.body;
 
+    if (coordinates.length === 0 || !radius) {
+        res.status(400).json({ message: "Invalid request: location coordinates (longitude, latitude) and radius information are required." })
+    } else {
+        const response = await DeviceModel.getDevicesWithinRadius( coordinates, radius );
+
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ meesage: "There was an error with the request." });
+        }
+    }
+
+}
 
 
 export default module.exports = {
@@ -107,5 +113,6 @@ export default module.exports = {
     updateDevice,
     deleteDevice,
     getAllDevices,
-    getSingleDevice
+    getSingleDevice,
+    getDevicesWithinRadius
 }

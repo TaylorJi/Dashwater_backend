@@ -9,3 +9,4 @@ router.route('/updateDevice').post(DeviceController.updateDevice);
 router.route('/deleteDevice').post(DeviceController.deleteDevice);
 router.route('/getAllDevices').post(DeviceController.getAllDevices);
 router.route('/getSingleDevice').post(DeviceController.getSingleDevice);
+router.route("/getDevicesWithinRadius").post(DeviceController.getDevicesWithinRadius)
