@@ -7,18 +7,29 @@ const createDevice = async (req: Request, res: Response) => {
 
     const { id, latitude, longitude } = req.body;
 
-    console.log("controller");
-    console.log(req.body);
-    console.log(id);
-    console.log(latitude);
-    console.log(longitude);
-
     if (!id || !latitude || !longitude ) {
-        res.status(400).json({ message: "Invalid request: id, longitude and latitude information of the device is required." });
+        res.status(400).json({ message: "Invalid request: id, latitude and longitude information of the device is required." });
     } else {
         const response = await DeviceModel.createDevice( id, latitude, longitude );
 
-        console.log(response);
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
+}
+
+
+// I think only "Admin" type users should have access to this operation. So, should I check if the user admin or not here?
+const updateDevice = async (req: Request, res: Response) => {
+
+    const { id, latitude, longitude } = req.body;
+
+    if (!id || !latitude || !longitude ) {
+        res.status(400).json({ message: "Invalid request: id, latitude and longitude information of the device is required." });
+    } else {
+        const response = await DeviceModel.updateDevice( id, latitude, longitude );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -30,6 +41,11 @@ const createDevice = async (req: Request, res: Response) => {
 
 
 
+
+
+
+
 export default module.exports = {
-    createDevice
+    createDevice,
+    updateDevice
 }
