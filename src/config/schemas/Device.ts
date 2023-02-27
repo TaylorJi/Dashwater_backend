@@ -10,15 +10,26 @@ const DeviceSchema = new Schema({
         unique: true
     },
 
-    longitude: {
-        type: String,
-        required: true
-    },
-
-    latitude: {
-        type: String,
-        required: true
+    location: {
+        type: {
+            type: String,
+            default: "Point"
+        },
+        coordinates: {
+            type: [Number],  // [ longitude, latitude ]
+            required: true
+        }
     }
+
+    // longitude: {
+    //     type: String,
+    //     required: true
+    // },
+
+    // latitude: {
+    //     type: String,
+    //     required: true
+    // }
 
 });
 

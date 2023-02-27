@@ -1,9 +1,16 @@
 import Device from "../../config/schemas/Device";
 
-const createDevice = async (id: Number, latitude: String, longitude: String) => {
+const createDevice = async (id: Number, coordinates: [Number]) => {
     try {
 
-        const newDevice = await Device.create({ "id": id, "latitude": latitude, "longitude": longitude });
+        console.log("Model");
+        console.log(coordinates);
+
+        // const newDevice = await Device.create({ "id": id, "latitude": latitude, "longitude": longitude });
+        const newDevice = await Device.create({ "id": id, "location.coordinates": coordinates });
+
+
+        console.log(newDevice);
 
 
         if (newDevice) {
@@ -17,13 +24,13 @@ const createDevice = async (id: Number, latitude: String, longitude: String) => 
 }
 
 
-const updateDevice = async (id: Number, latitude: String, longitude: String) => {
+const updateDevice = async (id: Number, coordinates: [Number]) => {
     try {
 
-        const updatedDevice = await Device.findOneAndUpdate({ "id": id }, { "latitude": latitude, "longitude": longitude });
+        const updatedDevice = await Device.findOneAndUpdate({ "id": id }, { "location.coordinates": coordinates }, {new: true});
 
         if (updatedDevice) {
-            return updateDevice;
+            return updatedDevice;
         }
         return null;
 
