@@ -32,7 +32,7 @@ const validateSession = async (req: Request, res: Response) => {
             const updatedSession = await SessionModel.updateSessionExpiry(sessionId)
 
             if (updatedSession) {
-                res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ message: 'Session is not expired', data: updatedSession });
+                res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ message: 'Session is not expired', data: response });
             } else {
                 res.status(500).json({ text: 'Could not update session expiration time.' });
             }
