@@ -7,6 +7,7 @@ import express from 'express';
 import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 
 // Middleware
 // import AuthenticationController from './controllers/authentication/AuthenticationController';
@@ -31,6 +32,8 @@ server.use(
         origin: '*',
     })
 );
+
+server.use(cookieParser());
 
 server.listen(port, async () => {
 

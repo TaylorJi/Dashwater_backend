@@ -1,23 +1,25 @@
 import { Request, Response } from "express";
 import SessionModel from "../../models/session/SessionModel";
+import { v4 as uuid } from 'uuid'
 
 const createSession = async (req: Request, res: Response) => {
-    const { sessionId, userId } = req.body;
+    const { userId } = req.body;
+    const sessionId = uuid();
 
-    if (!sessionId || !userId) {
-        res.status(400).json({ message: "Invalid request: session ID and user ID are required." });
+    if (!userId) {
+        res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
     }
 
     const response = await SessionModel.createSession(sessionId, userId);
     if (response) {
-        res.status(200).json({ text: response });
+        res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ text: response })
     } else {
         res.status(500).json({ message: "There was an error with the request." });
     }
 };
 
 const validateSession = async (req: Request, res: Response) => {
-    const { sessionId } = req.body;
+    const sessionId = req.cookies.sessionCookie.sessionId;
 
     if (!sessionId) {
         res.status(400).json({ message: "Invalid request: session ID is required." });
@@ -30,7 +32,7 @@ const validateSession = async (req: Request, res: Response) => {
             const updatedSession = await SessionModel.updateSessionExpiry(sessionId)
 
             if (updatedSession) {
-                res.status(200).json({ message: 'Session is not expired', data: updatedSession });
+                res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ message: 'Session is not expired', data: updatedSession });
             } else {
                 res.status(500).json({ text: 'Could not update session expiration time.' });
             }
@@ -43,7 +45,7 @@ const validateSession = async (req: Request, res: Response) => {
 }
 
 const deleteSession = async (req: Request, res: Response) => {
-    const { sessionId } = req.body;
+    const sessionId = req.cookies.sessionCookie.sessionId;
 
     if (!sessionId) {
         res.status(400).json({ message: "Invalid request: session ID is required." });
@@ -51,7 +53,7 @@ const deleteSession = async (req: Request, res: Response) => {
 
     const response = await SessionModel.deleteSession(sessionId);
     if (response) {
-        res.status(200).json({ message: "Session deleted." });
+        res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': 'localhost:8085'}).status(200).json({ message: "Session deleted." });
     } else {
         res.status(500).json({ message: "There was an error with the request." });
     }
