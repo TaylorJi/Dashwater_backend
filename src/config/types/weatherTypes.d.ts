@@ -25,3 +25,9 @@ type rawTideDataType = {
     sg: number;
     time: string;
 }
+
+type tideDataResType = {
+    high: tideDataType;
+    low: tideDataType;
+    allData: tideDataType[];
+};

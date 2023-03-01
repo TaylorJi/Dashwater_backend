@@ -62,7 +62,18 @@ const getTide = async () => {
                 }
             });
 
-            return tideData;
+            const sortedTideData = [...tideData];
+
+            const tideHeightsSorted: tideDataType[] = sortedTideData.sort((a, b) => a['height'] - b['height']);
+
+            const tideResponse: tideDataResType = {
+                high: tideHeightsSorted[tideHeightsSorted.length - 1],
+                low: tideHeightsSorted[0],
+                allData: tideData
+            };
+
+
+            return tideResponse;
         }
         return null;
 
