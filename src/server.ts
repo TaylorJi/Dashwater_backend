@@ -12,7 +12,7 @@ import mongoose from 'mongoose';
 // import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
-// import AppCache from './models/cache/AppCache';
+import AppCache from './models/cache/AppCache';
 
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
@@ -35,10 +35,10 @@ server.use(
 server.listen(port, async () => {
 
     // Register cache
-    // const registration = await AppCache.registerTideCache();
-    // if (!registration) {
-    //     console.log('There was a problem populating the tide data cache. Check your query limits.');
-    // }
+    const registration = await AppCache.registerTideCache();
+    if (!registration) {
+        console.log('There was a problem populating the tide data cache. Check your query limits.');
+    }
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);

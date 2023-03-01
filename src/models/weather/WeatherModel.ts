@@ -55,20 +55,27 @@ const getTide = async () => {
 
         if (data) {
 
-            const tideHeightsSorted: rawTideDataType[] = data.sort((a, b) => a['sg'] - b['sg']);
+            // const tideHeightsSorted: rawTideDataType[] = data.sort((a, b) => a['sg'] - b['sg']);
 
-            const tideData: tideDataType[] = [
-                {
-                    name: 'high',
-                    height: tideHeightsSorted[tideHeightsSorted.length - 1]['sg'],
-                    time: timeHelper(tideHeightsSorted[tideHeightsSorted.length - 1]['time'])
-                },
-                {
-                    name: 'low',
-                    height: tideHeightsSorted[0]['sg'],
-                    time: timeHelper(tideHeightsSorted[0]['time'])
+            // const tideData: tideDataType[] = [
+            //     {
+            //         name: 'high',
+            //         height: tideHeightsSorted[tideHeightsSorted.length - 1]['sg'],
+            //         time: timeHelper(tideHeightsSorted[tideHeightsSorted.length - 1]['time'])
+            //     },
+            //     {
+            //         name: 'low',
+            //         height: tideHeightsSorted[0]['sg'],
+            //         time: timeHelper(tideHeightsSorted[0]['time'])
+            //     }
+            // ];
+
+            const tideData: tideDataType[] = data.map((period) => {
+                return {
+                    height: period['sg'],
+                    time: timeHelper(period['time'])
                 }
-            ];
+            });
 
             return tideData;
         }

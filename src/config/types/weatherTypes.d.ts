@@ -17,7 +17,6 @@ type weatherForecastType = {
 };
 
 type tideDataType = {
-    name: string;
     height: number;
     time: string;
 };
