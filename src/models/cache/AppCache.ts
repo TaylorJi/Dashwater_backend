@@ -1,19 +1,14 @@
 import axios from "axios";
 
 class AppCacheManager {
-    /**
-     * AppCacheManager is the AppCache class meant to be instantiated as a singleton cache
-     * with a given cacheRefreshRate.
-     */
 
-    readonly timestreamRefreshRate = 3600000;
+    // readonly timestreamRefreshRate = 3600000;
+    // private cachedDeviceData: Array<JSON> | null;
+    // private timestreamInterval: NodeJS.Timer | null;
 
     readonly tideRefreshRate = 10800000; // 3 hours
     readonly yvrLat = '49.1967';
     readonly yvrLong = '123.1815';
-
-    // private cachedDeviceData: Array<JSON> | null;
-    // private timestreamInterval: NodeJS.Timer | null;
 
     private cachedTideData: rawTideDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
