@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const DeviceSchema = new Schema({
 
-    id: {
+    deviceId: {
         type: Number,
         required: true,
         unique: true
@@ -21,17 +21,6 @@ const DeviceSchema = new Schema({
             required: true
         }
     }
-
-    // longitude: {
-    //     type: String,
-    //     required: true
-    // },
-
-    // latitude: {
-    //     type: String,
-    //     required: true
-    // }
-
 });
 
 DeviceSchema.index({ location: "2dsphere" });

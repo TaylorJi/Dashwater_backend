@@ -5,12 +5,12 @@ import DeviceModel from "../../models/device/DeviceModel";
 
 const createDevice = async (req: Request, res: Response) => {
 
-    const { id, location } = req.body;
+    const { deviceId, coordinates } = req.body;
 
-    if (!id || !location ) {
+    if (!deviceId || coordinates.length !== 2 ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
-        const response = await DeviceModel.createDevice( id, location.coordinates );
+        const response = await DeviceModel.createDevice( deviceId, coordinates );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -21,15 +21,15 @@ const createDevice = async (req: Request, res: Response) => {
 }
 
 
-// I think only "Admin" type users should have access to this operation. So, should I check if the user admin or not here?
 const updateDevice = async (req: Request, res: Response) => {
 
-    const { id, location } = req.body;
+    const { deviceId, coordinates } = req.body;
 
-    if (!id || location.coordinates.length === 0 ) {
+    if (!deviceId || coordinates.length !== 2 ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
-        const response = await DeviceModel.updateDevice( id, location.coordinates );
+        const response = await DeviceModel.updateDevice( deviceId, coordinates );
+
 
         if (response) {
             res.status(200).json({ text: response });
@@ -40,15 +40,14 @@ const updateDevice = async (req: Request, res: Response) => {
 }
 
 
-// I think only "Admin" type users should have access to this operation. So, should I check if the user admin or not here?
 const deleteDevice = async (req: Request, res: Response) => {
 
-    const id = req.body.id;
+    const deviceId = req.body.deviceId;
 
-    if (!id) {
+    if (!deviceId) {
         res.status(400).json({ message: "Invalid request: device id is required." });
     } else {
-        const response = await DeviceModel.deleteDevice( id );
+        const response = await DeviceModel.deleteDevice( deviceId );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -73,12 +72,12 @@ const getAllDevices = async (_req: Request, res: Response) => {
 
 const getSingleDevice = async (req: Request, res: Response) => {
 
-    const id = req.body.id;
+    const deviceId = req.body.deviceId;
 
-    if (!id) {
+    if (!deviceId) {
         res.status(400).json({ message: "Invalid request: device id is required." });
     } else {
-        const response = await DeviceModel.getSingleDevice( id );
+        const response = await DeviceModel.getSingleDevice( deviceId );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -93,7 +92,7 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
     const { coordinates, radius } = req.body;
 
-    if (coordinates.length === 0 || !radius) {
+    if (coordinates.length !== 2 || !radius) {
         res.status(400).json({ message: "Invalid request: location coordinates (longitude, latitude) and radius information are required." })
     } else {
         const response = await DeviceModel.getDevicesWithinRadius( coordinates, radius );
