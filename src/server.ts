@@ -38,6 +38,8 @@ server.listen(port, async () => {
     // const registration = await AppCache.registerTideCache();
     // if (!registration) {
     //     console.log('There was a problem populating the tide data cache. Check your query limits.');
+    // } else {
+    //     console.log('Populated cache.');
     // }
 
     mongoose.set('strictQuery', false);
