@@ -25,8 +25,9 @@ const authControllerTest = (req: Request, res: Response) => {
 };
 
 const validateAuth = async (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.sessionId) {
-        const sessionCheck = await SessionModel.validateSession(req.body.sessionId);
+    const sessionId = req.cookies.sessionCookie.sessionId;
+    if (sessionId) {
+        const sessionCheck = await SessionModel.validateSession(sessionId);
 
         if (sessionCheck) {
             next();
