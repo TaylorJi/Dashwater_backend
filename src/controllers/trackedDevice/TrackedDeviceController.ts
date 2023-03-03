@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import TrackedDeviceModel from "../../models/device/TrackedDeviceModel";
+import TrackedDeviceModel from "../../models/trackedDevice/TrackedDeviceModel";
 
 const getAllTrackedDevices = async (req: Request, res: Response) => {
     const userId = req.body.userId;

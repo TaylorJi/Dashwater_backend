@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import TrackedDeviceController from "../controllers/device/TrackedDeviceController";
+import TrackedDeviceController from "../controllers/trackedDevice/TrackedDeviceController";
 
 export const router: Router = express.Router();
 
