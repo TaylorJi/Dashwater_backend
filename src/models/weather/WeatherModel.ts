@@ -1,6 +1,5 @@
 import axios from "axios";
 import AppCache from "../cache/AppCache";
-import { timeHelper } from "./weatherHelpers";
 
 const getWeather = async () => {
 
@@ -53,22 +52,39 @@ const getTide = async () => {
     try {
         const data = await AppCache.getTideData();
 
-        if (data) {
+        if (data && data['tideData'] && data['tideExtremes']) {
 
-            const tideData: tideDataType[] = data.map((period) => {
+            const rawTide = data['tideData'];
+            const rawTideExtreme = data['tideExtremes'];
+
+            const tideData: tideDataType[] = rawTide.map((period) => {
                 return {
                     height: period['sg'],
-                    time: timeHelper(period['time'])
+                    time: period['time']
                 }
             });
 
-            const sortedTideData = [...tideData];
-
-            const tideHeightsSorted: tideDataType[] = sortedTideData.sort((a, b) => a['height'] - b['height']);
-
             const tideResponse: tideDataResType = {
-                high: tideHeightsSorted[tideHeightsSorted.length - 1],
-                low: tideHeightsSorted[0],
+                high: rawTideExtreme.filter((measure) => {
+                    if (measure.type == 'high') {
+                        return {
+                            'height': measure.height,
+                            'type': measure.type,
+                            'time': measure.time
+                        };
+                    }
+                    return null;
+                }),
+                low: rawTideExtreme.filter((measure) => {
+                    if (measure.type == 'low') {
+                        return {
+                            'height': measure.height,
+                            'type': measure.type,
+                            'time': measure.time
+                        };
+                    }
+                    return null;
+                }),
                 allData: tideData
             };
 
