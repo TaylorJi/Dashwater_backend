@@ -3,5 +3,7 @@ import TrackedDeviceController from "../controllers/device/TrackedDeviceControll
 
 export const router: Router = express.Router();
 
-router.route('/getAllTrackedDevices').get(TrackedDeviceController.getAllDevices);
+router.route('/getAllTrackedDevices').get(TrackedDeviceController.getAllTrackedDevices);
 router.route('/createTrackedDevice').post(TrackedDeviceController.createTrackedDevice);
+router.route('/deleteTrackedDevice').delete(TrackedDeviceController.deleteTrackedDevice);
+router.route('/deleteAllTrackedDevices').delete(TrackedDeviceController.deleteAllTrackedDevices);
