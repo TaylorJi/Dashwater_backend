@@ -5,6 +5,11 @@ const Schema = mongoose.Schema;
 const DefaultThresholdSchema = new Schema({
     metric: {
         type: String,
+        //
+        enum: ["Dissolved Oxygen", "Electrical Conductivity", "Liquid Level", "PH", "Temperature",
+                "Total Dissolved Solids", "Turbidity", "Water Flow", "Water Pressure", "CO2 Level", "CH4 Level"],
+        unique: true,
+        //
         required: true
     },
 

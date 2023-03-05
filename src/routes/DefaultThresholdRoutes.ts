@@ -1,0 +1,8 @@
+import express, { Router } from "express";
+export const router: Router = express.Router();
+
+import DefaultThresholdController from "../controllers/defaultThreshold/DefaultThresholdController";
+
+
+router.route('/createDefaultThreshold').post(DefaultThresholdController.createDefaultThreshold);
+router.route('/updateDefaultThreshold').put(DefaultThresholdController.updateDefaultThreshold);
