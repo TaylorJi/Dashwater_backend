@@ -40,9 +40,24 @@ const updateDefaultThreshold = async (metric: string, updateData: { [key: string
 }
 
 
+const deleteDefaultThreshold = async (metric: string) => {
+    try {
+        const deletedDefaultThreshold = await DefaultThreshold.findOneAndDelete({ "metric": metric });
+
+        if (deletedDefaultThreshold) {
+            return deletedDefaultThreshold;
+        }
+        return false;
+
+    } catch (err) {
+        return null;
+    }
+}
+
 
 
 export default module.exports = {
     createDefaultThreshold,
-    updateDefaultThreshold
+    updateDefaultThreshold,
+    deleteDefaultThreshold
 }

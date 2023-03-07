@@ -6,3 +6,4 @@ import DefaultThresholdController from "../controllers/defaultThreshold/DefaultT
 
 router.route('/createDefaultThreshold').post(DefaultThresholdController.createDefaultThreshold);
 router.route('/updateDefaultThreshold').put(DefaultThresholdController.updateDefaultThreshold);
+router.route('/deleteDefaultThreshold').delete(DefaultThresholdController.deleteDefaultThreshold);

@@ -16,20 +16,133 @@ const UserThresholdSchema = new Schema({
         ref: 'devices'
     },
 
-    thresholdMetricId: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
-
-    customMin: {
-        type: Number,
-        default: null
-    },
-
-    customMax: {
-        type: Number,
-        default: null
+    metricList: {
+        dissolvedOxygen: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        electricalConductivity: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        liquidLevel: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        ph: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        temperature: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        totalDissolvedSolids: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        turbidity: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        waterFlow: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        waterPressure: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        co2Level: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        },
+        ch4Level: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            }
+        }
     }
+
+    // thresholdMetricId: {
+    //     type: Schema.Types.ObjectId,
+    //     required: true
+    // },
+
+    // customMin: {
+    //     type: Number,
+    //     default: null
+    // },
+
+    // customMax: {
+    //     type: Number,
+    //     default: null
+    // }
 
 })
 

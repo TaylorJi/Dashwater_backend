@@ -74,3 +74,8 @@ server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
 server.use('/api/device', deviceRouter);
 
+
+// Thresholds
+import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
+
+server.use('/api/defaultThreshold', defaultThresholdRouter)
