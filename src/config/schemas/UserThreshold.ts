@@ -13,7 +13,7 @@ const UserThresholdSchema = new Schema({
     deviceId: {
         type: Number,
         required: true,
-        ref: 'devices'
+        ref: 'devices',
     },
 
     metricList: {
@@ -148,5 +148,7 @@ const UserThresholdSchema = new Schema({
 
 
 const UserThreshold =  mongoose.model('UserThreshold', UserThresholdSchema);
+
+UserThreshold.collection.createIndex({ userId: 1, deviceId: 1 }, { unique: true });
 
 export default UserThreshold
