@@ -1,6 +1,7 @@
 type metricList = {
     [key: string]: {
         customMin: number,
-        customMax: number
+        customMax: number,
+        isWarning: boolean
     }
 }

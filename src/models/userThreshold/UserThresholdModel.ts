@@ -18,8 +18,24 @@ const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
 }
 
 
+const updateUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricsToUpdate: metricList) => {
+    try {
+        const updatedUserThreshold = await UserThreshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId }, metricsToUpdate, {new: true});
+
+        if (updatedUserThreshold) {
+            return updatedUserThreshold;
+        }
+        return false;
+
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 
 export default module.exports = {
-    createUserThreshold
+    createUserThreshold,
+    updateUserThreshold
 }
