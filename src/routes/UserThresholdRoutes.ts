@@ -6,3 +6,4 @@ import UserThresholdController from "../controllers/userThreshold/UserThresholdC
 
 router.route('/createUserThreshold').post(UserThresholdController.createUserThreshold);
 router.route('/updateUserThreshold').put(UserThresholdController.updateUserThreshold);
+router.route('/deleteUserThreshold').delete(UserThresholdController.deleteUserThreshold);

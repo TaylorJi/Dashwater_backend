@@ -33,9 +33,25 @@ const updateUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
 }
 
 
+const deleteUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number) => {
+    try {
+        const deletedUserThreshold = await UserThreshold.findOneAndDelete({ "userId": userId, "deviceId": deviceId });
+
+        if (deletedUserThreshold) {
+            return deletedUserThreshold;
+        }
+        return false;
+
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 
 export default module.exports = {
     createUserThreshold,
-    updateUserThreshold
+    updateUserThreshold,
+    deleteUserThreshold
 }
