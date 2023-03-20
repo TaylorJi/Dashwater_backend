@@ -63,11 +63,28 @@ const getUserThresholdList = async (userId: mongoose.Schema.Types.ObjectId, devi
 }
 
 
+const getSingleMetricUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metric: string) => {
+    try {
+        const metricUserThreshold = await UserThreshold.findOne({ "userId": userId, "deviceId": deviceId })
+                                                            .select({ "userId": 1, "deviceId": 1, [`metricList.${metric}`]: 1 });
+
+        if (metricUserThreshold) {
+            return metricUserThreshold;
+        }
+        return false;
+
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 
 export default module.exports = {
     createUserThreshold,
     updateUserThreshold,
     deleteUserThreshold,
-    getUserThresholdList
+    getUserThresholdList,
+    getSingleMetricUserThreshold
 }
