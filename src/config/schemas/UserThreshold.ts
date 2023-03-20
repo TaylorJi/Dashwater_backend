@@ -25,6 +25,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         electricalConductivity: {
@@ -35,6 +39,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         liquidLevel: {
@@ -45,6 +53,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         ph: {
@@ -55,6 +67,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         temperature: {
@@ -65,6 +81,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         totalDissolvedSolids: {
@@ -75,6 +95,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         turbidity: {
@@ -85,6 +109,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         waterFlow: {
@@ -95,6 +123,24 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
+            }
+        },
+        waterLevel: {
+            customMin: {
+                type: Number,
+                default: 0
+            },
+            customMax: {
+                type: Number,
+                default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         waterPressure: {
@@ -105,6 +151,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         co2Level: {
@@ -115,6 +165,10 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         },
         ch4Level: {
@@ -125,8 +179,15 @@ const UserThresholdSchema = new Schema({
             customMax: {
                 type: Number,
                 default: 1000
+            },
+            isWarning: {
+                type: Boolean,
+                default: true
             }
         }
+
+        // Add water level metric
+        // Add boolean to all of them showing if the user wants to get alarmed about that metric or not (isWarning: True/False)
     }
 
     // thresholdMetricId: {

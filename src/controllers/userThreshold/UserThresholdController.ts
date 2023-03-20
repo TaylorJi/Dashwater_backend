@@ -7,6 +7,7 @@ const createUserThreshold = async (req: Request, res: Response) => {
 
     const { userId, deviceId, metricList } = req.body;
 
+    // If metricList greater than the number of metrics we can track send 400 (3rd test case) (metricList.length() > metricCount)
     if (!userId || !deviceId) {
         res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
     } else {
