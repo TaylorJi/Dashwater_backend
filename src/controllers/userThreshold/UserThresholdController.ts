@@ -60,7 +60,24 @@ const deleteUserThreshold = async (req: Request, res: Response) => {
             res.status(500).json({ message: "There was an error with the request." });
         }
     }
+}
 
+
+const getUserThresholdList = async (req: Request, res: Response) => {
+
+    const { userId, deviceId } = req.body;
+
+    if (!userId || !deviceId) {
+        res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
+    } else {
+        const response = await UserThresholdModel.getUserThresholdList( userId, deviceId );
+
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
 }
 
 
@@ -70,5 +87,6 @@ const deleteUserThreshold = async (req: Request, res: Response) => {
 export default module.exports = {
     createUserThreshold,
     updateUserThreshold,
-    deleteUserThreshold
+    deleteUserThreshold,
+    getUserThresholdList
 }
