@@ -185,9 +185,6 @@ const UserThresholdSchema = new Schema({
                 default: true
             }
         }
-
-        // Add water level metric
-        // Add boolean to all of them showing if the user wants to get alarmed about that metric or not (isWarning: True/False)
     }
 
     // thresholdMetricId: {
