@@ -68,6 +68,18 @@ const deleteDefaultThreshold = async (req: Request, res: Response) => {
 }
 
 
+const getAllDefaultThresholds = async (_req: Request, res: Response) => {
+
+    const response = await DefaultThresholdModel.getAllDefaultThresholds();
+
+    if (response) {
+        res.status(200).json({ text: response });
+    } else {
+        res.status(500).json({ message: "There was an error with the request." });
+    }
+}
+
+
 
 
 
@@ -75,5 +87,6 @@ const deleteDefaultThreshold = async (req: Request, res: Response) => {
 export default module.exports = {
     createDefaultThreshold,
     updateDefaultThreshold,
-    deleteDefaultThreshold
+    deleteDefaultThreshold,
+    getAllDefaultThresholds
 }
