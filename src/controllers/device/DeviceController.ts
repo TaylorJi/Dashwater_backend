@@ -46,7 +46,7 @@ const updateDevice = async (req: Request, res: Response) => {
     const { deviceId, coordinates, metricList } = req.body;
 
     if (!deviceId || (!coordinates && !metricList) || (coordinates && coordinates.length !== 2) || (metricList && Object.keys(metricList).length === 0)) {
-        res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
+        res.status(400).json({ message: "Invalid request: id, and device information to be updated (location [longitude, latitude], metric name) is required." });
     } else {
         const updateData: deviceUpdateDataType = {};
 

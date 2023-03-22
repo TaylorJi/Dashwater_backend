@@ -80,7 +80,23 @@ const getAllDefaultThresholds = async (_req: Request, res: Response) => {
 }
 
 
+const getSingleDefaultThreshold = async (req: Request, res: Response) => {
 
+    const metric = req.body.metric;
+
+    if (!metric) {
+        res.status(400).json({ message: "Invalid request: metric is required." });
+    } else {
+        const response = await DefaultThresholdModel.getSingleDefaultThreshold( metric );
+
+        if (response) {
+            res.status(200).json({ text: response });
+        } else {
+            res.status(500).json({ message: "There was an error with the request." });
+        }
+    }
+
+}
 
 
 
@@ -88,5 +104,6 @@ export default module.exports = {
     createDefaultThreshold,
     updateDefaultThreshold,
     deleteDefaultThreshold,
-    getAllDefaultThresholds
+    getAllDefaultThresholds,
+    getSingleDefaultThreshold
 }

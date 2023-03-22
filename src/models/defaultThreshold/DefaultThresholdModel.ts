@@ -70,10 +70,26 @@ const getAllDefaultThresholds = async () => {
 }
 
 
+const getSingleDefaultThreshold = async (metric: string) => {
+    try {
+        const defaultThreshold =  await DefaultThreshold.find({ "metric": metric });
+
+        if (defaultThreshold) {
+            return defaultThreshold;
+        }
+        return false;
+
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 export default module.exports = {
     createDefaultThreshold,
     updateDefaultThreshold,
     deleteDefaultThreshold,
-    getAllDefaultThresholds
+    getAllDefaultThresholds,
+    getSingleDefaultThreshold
 }

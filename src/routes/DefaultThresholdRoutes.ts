@@ -8,3 +8,4 @@ router.route('/createDefaultThreshold').post(DefaultThresholdController.createDe
 router.route('/updateDefaultThreshold').put(DefaultThresholdController.updateDefaultThreshold);
 router.route('/deleteDefaultThreshold').delete(DefaultThresholdController.deleteDefaultThreshold);
 router.route('/getAllDefaultThresholds').get(DefaultThresholdController.getAllDefaultThresholds);
+router.route('/getSingleDefaultThreshold').get(DefaultThresholdController.getSingleDefaultThreshold);
