@@ -5,12 +5,12 @@ import DeviceModel from "../../models/device/DeviceModel";
 
 const createDevice = async (req: Request, res: Response) => {
 
-    const { deviceId, coordinates } = req.body;
+    const { deviceId, coordinates, metricList } = req.body;
 
     if (!deviceId || coordinates.length !== 2 ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
-        const response = await DeviceModel.createDevice( deviceId, coordinates );
+        const response = await DeviceModel.createDevice( deviceId, coordinates, metricList );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -21,15 +21,47 @@ const createDevice = async (req: Request, res: Response) => {
 }
 
 
+// const updateDevice = async (req: Request, res: Response) => {
+
+//     const { deviceId, coordinates } = req.body;
+
+//     if (!deviceId || coordinates.length !== 2 ) {
+//         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
+//     } else {
+//         const response = await DeviceModel.updateDevice( deviceId, coordinates );
+
+
+//         if (response) {
+//             res.status(200).json({ text: response });
+//         } else {
+//             res.status(500).json({ message: "There was an error with the request." });
+//         }
+//     }
+// }
+
+
+// New update controller trial
 const updateDevice = async (req: Request, res: Response) => {
 
-    const { deviceId, coordinates } = req.body;
+    const { deviceId, coordinates, metricList } = req.body;
 
-    if (!deviceId || coordinates.length !== 2 ) {
+    if (!deviceId || (!coordinates && !metricList) || (coordinates && coordinates.length !== 2) || (metricList && Object.keys(metricList).length === 0)) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
-        const response = await DeviceModel.updateDevice( deviceId, coordinates );
+        const updateData: deviceUpdateDataType = {};
 
+        if (coordinates) {
+            updateData.location = {type: "Point", coordinates: coordinates}
+        }
+
+        if (metricList) {
+            for(let i = 0; i < Object.keys(metricList).length; i++) {
+                updateData[`metricList.${Object.keys(metricList)[i]}`] = metricList[Object.keys(metricList)[i]]
+            }
+        }
+
+
+        const response = await DeviceModel.updateDevice( deviceId, updateData );
 
         if (response) {
             res.status(200).json({ text: response });
@@ -38,6 +70,7 @@ const updateDevice = async (req: Request, res: Response) => {
         }
     }
 }
+// /////////////////////////////////////////////////////////////////////////
 
 
 const deleteDevice = async (req: Request, res: Response) => {
