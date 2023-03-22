@@ -26,14 +26,14 @@ const updateUserThreshold = async (req: Request, res: Response) => {
 
     const { userId, deviceId, metricList } = req.body;
 
-    const metricsToUpdate: metricList = {}
-    for(let i = 0; i < Object.keys(metricList).length; i++) {
-        metricsToUpdate[`metricList.${Object.keys(metricList)[i]}`] = metricList[Object.keys(metricList)[i]]
-    }
-
     if (!userId || !deviceId || Object.keys(metricList).length === 0) {
         res.status(400).json({ message: "Invalid request: user ID, device ID and metrics to update are required." })
     } else {
+        const metricsToUpdate: metricList = {}
+        for(let i = 0; i < Object.keys(metricList).length; i++) {
+            metricsToUpdate[`metricList.${Object.keys(metricList)[i]}`] = metricList[Object.keys(metricList)[i]]
+        }
+
         const response = await UserThresholdModel.updateUserThreshold( userId, deviceId, metricsToUpdate );
 
         if (response) {

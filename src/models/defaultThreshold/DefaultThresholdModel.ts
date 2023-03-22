@@ -17,16 +17,6 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
 
 const updateDefaultThreshold = async (metric: string, updateData: { [key: string]: number }) => {
     try {
-        // const updateData: { [key: string]: number } = {};
-
-        // if (defaultMin) {
-        //     updateData["defaultMin"] = defaultMin;
-        // }
-
-        // if (defaultMax) {
-        //     updateData["defaultMax"] = defaultMax;
-        // }
-
         const updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, updateData, {new: true});
 
         if (updatedDefaultThreshold) {
