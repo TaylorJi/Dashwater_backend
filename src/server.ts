@@ -59,11 +59,11 @@ import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 import { router as apiRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
-import { router as deviceRouter } from './routes/TrackedDeviceRoutes';
+import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', apiRouter)
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
-server.use('/api/device', deviceRouter);
+server.use('/api/device', trackedDeviceRouter);
