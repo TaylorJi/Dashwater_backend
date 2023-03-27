@@ -73,4 +73,3 @@ server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
 server.use('/api/device', deviceRouter);
-
