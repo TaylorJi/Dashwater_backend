@@ -6,11 +6,12 @@ class AppCacheManager {
     // private cachedDeviceData: Array<JSON> | null;
     // private timestreamInterval: NodeJS.Timer | null;
 
-    readonly tideRefreshRate = 10800000; // 3 hours
+    readonly tideRefreshRate = 18000000; // 5 hours
     readonly yvrLat = '49.1967';
     readonly yvrLong = '123.1815';
 
     private cachedTideData: rawTideDataType[] | null;
+    private cachedTideExtremeData: rawTideExtremeDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
 
     constructor() {
@@ -18,16 +19,17 @@ class AppCacheManager {
         // this.timestreamInterval = null;
         this.cachedTideData = null;
         this.tideInterval = null;
+        this.cachedTideExtremeData = null;
 
     };
 
     public getTideData = async () => {
 
-        if (!this.cachedTideData) {
+        if (!this.cachedTideData || !this.cachedTideExtremeData) {
             await this.fetchTideData();
         }
 
-        return this.cachedTideData;
+        return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
 
     };
 
@@ -36,7 +38,8 @@ class AppCacheManager {
         const tideData = await this.fetchTideData();
 
         if (tideData) {
-            this.cachedTideData = tideData;
+            this.cachedTideData = tideData['tideData'];
+            this.cachedTideExtremeData = tideData['tideExtremes']
 
         } else {
             return null;
@@ -45,7 +48,12 @@ class AppCacheManager {
         this.tideInterval = setInterval(async () => {
 
             const refreshedTideData = await this.fetchTideData();
-            this.cachedTideData = refreshedTideData;
+
+            if (refreshedTideData) {
+                this.cachedTideData = refreshedTideData['tideData'];
+                this.cachedTideExtremeData = tideData['tideExtremes'];
+            }
+
 
         }, this.tideRefreshRate);
 
@@ -59,15 +67,21 @@ class AppCacheManager {
             const tomorrow =
                 new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
 
-            const response = await axios.get(`https://api.stormglass.io/v2/tide/sea-level/point?lat=${this.yvrLat}&lng=${this.yvrLong}&start=${today}&end=${tomorrow}`,
+
+            const tideLevelsResponse = await axios.get(`https://api.stormglass.io/v2/tide/sea-level/point?lat=${this.yvrLat}&lng=${this.yvrLong}&start=${today}&end=${tomorrow}`,
                 { headers: { Authorization: process.env.TIDE_API_KEY } }
             );
 
-            if (response.status === 200) {
+            const tideExtremesResponse = await axios.get(`https://api.stormglass.io/v2/tide/extremes/point?lat=${this.yvrLat}&lng=${this.yvrLong}&start=${today}&end=${tomorrow}`,
+                { headers: { Authorization: process.env.TIDE_API_KEY } }
+            );
 
-                const data: rawTideDataType[] = response.data.data;
+            if (tideLevelsResponse.status === 200 && tideExtremesResponse.status === 200) {
 
-                return data;
+                const tideData: rawTideDataType[] = tideLevelsResponse.data.data;
+                const tideExtremes: rawTideExtremeDataType[] = tideExtremesResponse.data.data;
+
+                return { 'tideData': tideData, 'tideExtremes': tideExtremes };
             }
             return null;
 

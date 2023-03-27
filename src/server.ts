@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 // Middleware
-// import AuthenticationController from './controllers/authentication/AuthenticationController';
+//import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
 // import AppCache from './models/cache/AppCache';
@@ -64,12 +64,13 @@ import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 import { router as apiRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
+import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
-
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', apiRouter)
 server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
+server.use('/api/device', trackedDeviceRouter);
 server.use('/api/device', deviceRouter);
