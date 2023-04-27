@@ -5,10 +5,9 @@ import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 
 //GET request for device ids
-const getAllBuoyIds = async (req: Request, res: Response) => {
+const getAllBuoyIds = async (req: Request<never, never, never, never>, res: Response) => {
   try {
-    if (!req.body) res.status(400).json({ error: "Cannot process request." });
-    else {
+    if (req)  {
       const response = await TimestreamModel.getAllBuoyIds(
         sqlQueries.DEVICE_IDS
       );
@@ -66,7 +65,7 @@ const getBuoyHistory = async (
         res.status(200).json({ data: queryParser.parseQueryResult(response) });
       else res.status(404).json({ error: "Not found." });
     } else {
-      res.status(400).json({ error: "Bad request" });
+      res.status(400).json({ error: "Invalid query" });
     }
   } catch (err) {
     res.status(500).json({ error: err });
