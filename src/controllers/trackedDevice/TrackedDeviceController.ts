@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import TrackedDeviceModel from "../../models/trackedDevice/TrackedDeviceModel";
-import Device from "../../config/schemas/Device";
-import User from "../../config/schemas/User";
+// import Device from "../../config/schemas/Device";
+// import User from "../../config/schemas/User";
 
 const getAllTrackedDevices = async (req: Request, res: Response) => {
     const userId = req.body.userId;
@@ -25,9 +25,8 @@ const createTrackedDevice = async (req: Request, res: Response) => {
         return res.status(400).json({message: "Invalid request: user ID and device ID are required."});
     }
 
-    const device = await Device.findOne({"deviceId": deviceId})
-    const user = await User.findOne({"_id": userId})
-    if(!user || ! device) {
+    const verifiedCombo = await TrackedDeviceModel.verifyIdCombo(userId, deviceId)
+    if(!verifiedCombo) {
         return res.status(400).json({message: "Invalid request: could not find user and/or device with the given IDs."});
     }
 
