@@ -65,7 +65,7 @@ const getBuoyHistory = async (
         res.status(200).json({ data: queryParser.parseQueryResult(response) });
       else res.status(404).json({ error: "Not found." });
     } else {
-      res.status(400).json({ error: "Invalid query" });
+      res.status(400).json({ error: "Invalid request; query is missing values" });
     }
   } catch (err) {
     res.status(500).json({ error: err });
@@ -117,7 +117,7 @@ const getBuoyThreshold = async (
         res.status(200).json({ data: queryParser.parseQueryResult(response) });
       else res.status(404).json({ error: "Not found." });
     } else {
-      res.status(400).json({ error: "Bad request" });
+      res.status(400).json({ error: "Invalid query; query is missing values" });
     }
   } catch (err) {
     res.status(500).json({ error: err });
