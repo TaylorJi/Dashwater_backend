@@ -5,6 +5,9 @@ import mongoose from 'mongoose'
 
 const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList) => {
     try {
+
+        console.log("========================= MODEL =========================")
+
         const newUserThreshold = await UserThreshold.create({ "userId": userId, "deviceId": deviceId, "metricList": metricList });
 
         if (newUserThreshold) {
@@ -13,6 +16,8 @@ const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
         return false;
 
     } catch (err) {
+        console.log("============== MODEL =================");
+        console.log(err);
         return null;
     }
 }

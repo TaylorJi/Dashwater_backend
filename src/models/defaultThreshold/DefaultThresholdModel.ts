@@ -10,6 +10,7 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
         return false;
 
     } catch (err) {
+        console.log(err);
         return null;
     }
 }
@@ -17,7 +18,22 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
 
 const updateDefaultThreshold = async (metric: string, updateData: { [key: string]: number }) => {
     try {
-        const updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, updateData, {new: true});
+        /////////////////////////////// NEW VERSION /////////////////////////////////////////////////
+        let updatedDefaultThreshold;
+
+        if (Object.keys(updateData).length === 1 && updateData.defaultMin) {
+            updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric, "defaultMax": { $gt: updateData.defaultMin } }, { $set: updateData } , { new: true });
+        } else if (Object.keys(updateData).length === 1 && updateData.defaultMax) {
+            updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric, "defaultMin": { $lt: updateData.defaultMax } }, { $set: updateData } , { new: true });
+        } else {
+            updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, { $set: updateData } , { new: true });
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        // ////////////////////////////// OLD VERSION ///////////////////////////////////////////////////
+        // const updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, { $set: updateData } , { runValidators:true, new: true });
+        // //////////////////////////////////////////////////////////////////////////////////////////////
 
         if (updatedDefaultThreshold) {
             return updatedDefaultThreshold;
@@ -25,6 +41,7 @@ const updateDefaultThreshold = async (metric: string, updateData: { [key: string
         return false;
 
     } catch (err) {
+        console.log(err)
         return null;
     }
 }

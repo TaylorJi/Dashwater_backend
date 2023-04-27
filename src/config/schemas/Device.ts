@@ -1,5 +1,55 @@
 import mongoose from 'mongoose';
 
+/////////////////////////////////
+import { Document } from 'mongoose';
+
+interface deviceInterface extends Document {
+    deviceId: number;
+    location: {
+        type: string;
+        coordinates: [number];
+    };
+    metricList: {
+        dissolvedOxygen: {
+            isAvailable: boolean
+        },
+        electricalConductivity: {
+            isAvailable: boolean
+        },
+        liquidLevel: {
+            isAvailable: boolean
+        },
+        ph: {
+            isAvailable: boolean
+        },
+        temperature: {
+            isAvailable: boolean
+        },
+        totalDissolvedSolids: {
+            isAvailable: boolean
+        },
+        turbidity: {
+            isAvailable: boolean
+        },
+        waterFlow: {
+            isAvailable: boolean
+        },
+        waterLevel: {
+            isAvailable: boolean
+        },
+        waterPressure: {
+            isAvailable: boolean
+        },
+        co2Level: {
+            isAvailable: boolean
+        },
+        ch4Level: {
+            isAvailable: boolean
+        }
+    }
+}
+/////////////////////////////////
+
 const Schema = mongoose.Schema;
 
 const DeviceSchema = new Schema({
@@ -21,8 +71,7 @@ const DeviceSchema = new Schema({
             required: true
         }
     },
-
-    metricList: {           // Modification Starts Here //
+    metricList: {
         dissolvedOxygen: {
             isAvailable: {
                 type: Boolean,
@@ -101,7 +150,8 @@ const DeviceSchema = new Schema({
 DeviceSchema.index({ location: "2dsphere" });
 
 
-const Device = mongoose.model('Device', DeviceSchema);
+// const Device = mongoose.model('Device', DeviceSchema);
+const Device: mongoose.Model<deviceInterface> = mongoose.model<deviceInterface>('Device', DeviceSchema);
 
 Device.collection.createIndex({ location: "2dsphere" });
 

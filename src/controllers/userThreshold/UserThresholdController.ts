@@ -5,6 +5,8 @@ import UserThresholdModel from "../../models/userThreshold/UserThresholdModel";
 
 const createUserThreshold = async (req: Request, res: Response) => {
 
+    console.log("========================= CONTROLLER =========================")
+
     const { userId, deviceId, metricList } = req.body;
 
     // If metricList greater than the number of metrics we can track send 400 (3rd test case) (metricList.length() > metricCount)
