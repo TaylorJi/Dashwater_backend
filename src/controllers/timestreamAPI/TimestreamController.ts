@@ -5,16 +5,13 @@ import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 
 //GET request for device ids
-const getAllBuoyIds = async (req: Request<never, never, never, never>, res: Response) => {
+const getAllBuoyIds = async (_req: Request, res: Response) => {
   try {
-    if (req)  {
-      const response = await TimestreamModel.getAllBuoyIds(
-        sqlQueries.DEVICE_IDS
-      );
-      if (response)
-        res.status(200).json({ data: queryParser.parseQueryResult(response) });
-      else res.status(404).json({ error: "Not found." });
-    }
+    const response = await TimestreamModel.getAllBuoyIds(sqlQueries.DEVICE_IDS);
+    if (response)
+      res.status(200).json({ data: queryParser.parseQueryResult(response) });
+    else res.status(404).json({ error: "Not found." });
+
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -65,14 +62,16 @@ const getBuoyHistory = async (
         res.status(200).json({ data: queryParser.parseQueryResult(response) });
       else res.status(404).json({ error: "Not found." });
     } else {
-      res.status(400).json({ error: "Invalid request; query is missing values" });
+      res
+        .status(400)
+        .json({ error: "Invalid request; query is missing values" });
     }
   } catch (err) {
     res.status(500).json({ error: err });
   }
 };
 
-// GET request for buoy data for each buoy id in the list 
+// GET request for buoy data for each buoy id in the list
 //  based on the threshold which is a comparator and number,
 const getBuoyThreshold = async (
   req: Request<
