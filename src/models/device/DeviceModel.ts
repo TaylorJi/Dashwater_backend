@@ -16,23 +16,6 @@ const createDevice = async (deviceId: Number, coordinates: [Number], metricList:
 }
 
 
-// const updateDevice = async (deviceId: Number, coordinates: [Number]) => {
-//     try {
-
-//         const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, { "location.coordinates": coordinates }, {new: true})
-//             .select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
-
-//         if (updatedDevice) {
-//             return updatedDevice;
-//         }
-//         return false;
-
-//     } catch (err) {
-//         return null;
-//     }
-// }
-
-// New update model trial
 const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) => {
     try {
         const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, updateData, {new: true})
@@ -47,7 +30,6 @@ const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) 
         return null;
     }
 }
-// ///////////////////////
 
 
 const deleteDevice = async (deviceId: Number) => {

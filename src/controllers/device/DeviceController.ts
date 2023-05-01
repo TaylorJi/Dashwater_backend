@@ -21,26 +21,6 @@ const createDevice = async (req: Request, res: Response) => {
 }
 
 
-// const updateDevice = async (req: Request, res: Response) => {
-
-//     const { deviceId, coordinates } = req.body;
-
-//     if (!deviceId || coordinates.length !== 2 ) {
-//         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
-//     } else {
-//         const response = await DeviceModel.updateDevice( deviceId, coordinates );
-
-
-//         if (response) {
-//             res.status(200).json({ text: response });
-//         } else {
-//             res.status(500).json({ message: "There was an error with the request." });
-//         }
-//     }
-// }
-
-
-// New update controller trial
 const updateDevice = async (req: Request, res: Response) => {
 
     const { deviceId, coordinates, metricList } = req.body;
@@ -70,7 +50,6 @@ const updateDevice = async (req: Request, res: Response) => {
         }
     }
 }
-// /////////////////////////////////////////////////////////////////////////
 
 
 const deleteDevice = async (req: Request, res: Response) => {

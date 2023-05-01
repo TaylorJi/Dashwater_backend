@@ -5,20 +5,23 @@ import UserThresholdModel from "../../models/userThreshold/UserThresholdModel";
 
 const createUserThreshold = async (req: Request, res: Response) => {
 
-    console.log("========================= CONTROLLER =========================")
-
     const { userId, deviceId, metricList } = req.body;
 
-    // If metricList greater than the number of metrics we can track send 400 (3rd test case) (metricList.length() > metricCount)
     if (!userId || !deviceId) {
-        res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
+        return res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
     } else {
-        const response = await UserThresholdModel.createUserThreshold( userId, deviceId, metricList );
+
+        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList);
+        if (metricsToStore === null) {
+            return res.status(400).json({ message: "Invalid request: Please check user ID, device ID, and metric values you enter again." })
+        }
+
+        const response = await UserThresholdModel.createUserThreshold( userId, deviceId, metricsToStore );
 
         if (response) {
-            res.status(200).json({ text: response });
+            return res.status(200).json({ text: response });
         } else {
-            res.status(500).json({ message: "There was an error with the request." });
+            return res.status(500).json({ message: "There was an error with the request." });
         }
     }
 }
@@ -28,7 +31,9 @@ const updateUserThreshold = async (req: Request, res: Response) => {
 
     const { userId, deviceId, metricList } = req.body;
 
-    if (!userId || !deviceId || Object.keys(metricList).length === 0) {
+    const invalidMetrics = metricList ? Object.keys(metricList).filter((metric) => metricList[metric].customMin > metricList[metric].customMax) : null
+
+    if (!userId || !deviceId || metricList === undefined || Object.keys(metricList).length === 0 || Object.keys(metricList).length > 12 || (invalidMetrics !== null && invalidMetrics.length > 0)) {
         res.status(400).json({ message: "Invalid request: user ID, device ID and metrics to update are required." })
     } else {
         const metricsToUpdate: metricList = {}
@@ -88,7 +93,7 @@ const getSingleMetricUserThreshold = async (req: Request, res: Response) => {
     const { userId, deviceId, metric } = req.body;
 
     if (!userId || !deviceId || !metric) {
-        res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
+        res.status(400).json({ message: "Invalid request: user ID, device ID and metric are required." });
     } else {
         const response = await UserThresholdModel.getSingleMetricUserThreshold( userId, deviceId, metric );
 

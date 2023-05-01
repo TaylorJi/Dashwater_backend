@@ -1,12 +1,14 @@
 import UserThreshold from "../../config/schemas/UserThreshold";
 
+import User from "../../config/schemas/User";
+import Device from "../../config/schemas/Device";
+import DefaultThreshold from "../../config/schemas/DefaultThreshold";
+
 import mongoose from 'mongoose'
 
 
 const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList) => {
     try {
-
-        console.log("========================= MODEL =========================")
 
         const newUserThreshold = await UserThreshold.create({ "userId": userId, "deviceId": deviceId, "metricList": metricList });
 
@@ -16,8 +18,6 @@ const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
         return false;
 
     } catch (err) {
-        console.log("============== MODEL =================");
-        console.log(err);
         return null;
     }
 }
@@ -84,6 +84,49 @@ const getSingleMetricUserThreshold = async (userId: mongoose.Schema.Types.Object
 }
 
 
+const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList | undefined ) => {
+    try {
+
+        const user = await User.findOne({ "_id": userId });
+        const device: deviceType | null =  await Device.findOne({ "deviceId": deviceId });
+        if(!user || !device) {
+            return null;
+        }
+
+        if (metricList !== undefined && Object.keys(metricList).length > 12) {
+            return null;
+        }
+
+        const invalidMetrics = metricList ? Object.keys(metricList).filter((metric) => metricList[metric].customMin > metricList[metric].customMax) : null
+
+        if (invalidMetrics !== null && invalidMetrics.length > 0) {
+            return null;
+        }
+
+        const defaultThresholdValues = await DefaultThreshold.find({});
+        const defaultThresholdValuesJSON = defaultThresholdValues.reduce((json: {[key: string]: defaultThreshold}, metricObj) => (json[metricObj.metric] = metricObj, json), {})
+
+        const metricsToStore: metricList = {}
+        Object.keys(device.metricList).forEach(metric => {
+            if (device.metricList[metric].isAvailable) {
+                if (metricList !== undefined && metricList[metric]) {
+                    metricsToStore[metric] = metricList[metric]
+                } else if (defaultThresholdValuesJSON[metric]) {
+                    metricsToStore[metric] = { customMin: defaultThresholdValuesJSON[metric].defaultMin,
+                                               customMax: defaultThresholdValuesJSON[metric].defaultMax,
+                                               isWarning: true }
+                }
+            }
+        })
+
+        return metricsToStore;
+
+    } catch (err) {
+        return null;
+    }
+}
+
+
 
 
 export default module.exports = {
@@ -91,5 +134,6 @@ export default module.exports = {
     updateUserThreshold,
     deleteUserThreshold,
     getUserThresholdList,
-    getSingleMetricUserThreshold
+    getSingleMetricUserThreshold,
+    verifyUserThresholdDocument
 }

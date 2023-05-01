@@ -18,7 +18,6 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
 
 const updateDefaultThreshold = async (metric: string, updateData: { [key: string]: number }) => {
     try {
-        /////////////////////////////// NEW VERSION /////////////////////////////////////////////////
         let updatedDefaultThreshold;
 
         if (Object.keys(updateData).length === 1 && updateData.defaultMin) {
@@ -28,12 +27,7 @@ const updateDefaultThreshold = async (metric: string, updateData: { [key: string
         } else {
             updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, { $set: updateData } , { new: true });
         }
-        /////////////////////////////////////////////////////////////////////////////////////////////
 
-
-        // ////////////////////////////// OLD VERSION ///////////////////////////////////////////////////
-        // const updatedDefaultThreshold = await DefaultThreshold.findOneAndUpdate({ "metric": metric }, { $set: updateData } , { runValidators:true, new: true });
-        // //////////////////////////////////////////////////////////////////////////////////////////////
 
         if (updatedDefaultThreshold) {
             return updatedDefaultThreshold;
@@ -79,7 +73,7 @@ const getAllDefaultThresholds = async () => {
 
 const getSingleDefaultThreshold = async (metric: string) => {
     try {
-        const defaultThreshold =  await DefaultThreshold.find({ "metric": metric });
+        const defaultThreshold =  await DefaultThreshold.findOne({ "metric": metric });
 
         if (defaultThreshold) {
             return defaultThreshold;
