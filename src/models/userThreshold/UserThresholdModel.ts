@@ -84,7 +84,7 @@ const getSingleMetricUserThreshold = async (userId: mongoose.Schema.Types.Object
 }
 
 
-const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList | undefined ) => {
+const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList | undefined, isNewDocument: boolean ) => {
     try {
 
         const user = await User.findOne({ "_id": userId });
@@ -103,23 +103,27 @@ const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.Object
             return null;
         }
 
-        const defaultThresholdValues = await DefaultThreshold.find({});
-        const defaultThresholdValuesJSON = defaultThresholdValues.reduce((json: {[key: string]: defaultThreshold}, metricObj) => (json[metricObj.metric] = metricObj, json), {})
+        if (isNewDocument) {
+            const defaultThresholdValues = await DefaultThreshold.find({});
+            const defaultThresholdValuesJSON = defaultThresholdValues.reduce((json: {[key: string]: defaultThreshold}, metricObj) => (json[metricObj.metric] = metricObj, json), {})
 
-        const metricsToStore: metricList = {}
-        Object.keys(device.metricList).forEach(metric => {
-            if (device.metricList[metric].isAvailable) {
-                if (metricList !== undefined && metricList[metric]) {
-                    metricsToStore[metric] = metricList[metric]
-                } else if (defaultThresholdValuesJSON[metric]) {
-                    metricsToStore[metric] = { customMin: defaultThresholdValuesJSON[metric].defaultMin,
-                                               customMax: defaultThresholdValuesJSON[metric].defaultMax,
-                                               isWarning: true }
+            const metricsToStore: metricList = {}
+            Object.keys(device.metricList).forEach(metric => {
+                if (device.metricList[metric].isAvailable) {
+                    if (metricList !== undefined && metricList[metric]) {
+                        metricsToStore[metric] = metricList[metric]
+                    } else if (defaultThresholdValuesJSON[metric]) {
+                        metricsToStore[metric] = { customMin: defaultThresholdValuesJSON[metric].defaultMin,
+                                                   customMax: defaultThresholdValuesJSON[metric].defaultMax,
+                                                   isWarning: true }
+                    }
                 }
-            }
-        })
+            })
 
-        return metricsToStore;
+            return metricsToStore;
+        } else {
+            return metricList;
+        }
 
     } catch (err) {
         return null;

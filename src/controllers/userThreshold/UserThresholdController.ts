@@ -11,8 +11,8 @@ const createUserThreshold = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
     } else {
 
-        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList);
-        if (metricsToStore === null) {
+        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, true);
+        if (metricsToStore === null || metricsToStore === undefined) {
             return res.status(400).json({ message: "Invalid request: Please check user ID, device ID, and metric values you enter again." })
         }
 
@@ -31,22 +31,23 @@ const updateUserThreshold = async (req: Request, res: Response) => {
 
     const { userId, deviceId, metricList } = req.body;
 
-    const invalidMetrics = metricList ? Object.keys(metricList).filter((metric) => metricList[metric].customMin > metricList[metric].customMax) : null
-
-    if (!userId || !deviceId || metricList === undefined || Object.keys(metricList).length === 0 || Object.keys(metricList).length > 12 || (invalidMetrics !== null && invalidMetrics.length > 0)) {
-        res.status(400).json({ message: "Invalid request: user ID, device ID and metrics to update are required." })
+    if (!userId || !deviceId || metricList === undefined || Object.keys(metricList).length === 0) {
+        return res.status(400).json({ message: "Invalid request: user ID, device ID and metrics to update are required." })
     } else {
-        const metricsToUpdate: metricList = {}
-        for(let i = 0; i < Object.keys(metricList).length; i++) {
-            metricsToUpdate[`metricList.${Object.keys(metricList)[i]}`] = metricList[Object.keys(metricList)[i]]
+
+        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, false);
+        if (metricsToStore === null) {
+            return res.status(400).json({ message: "Invalid request: Please check user ID, device ID, and metric values you enter again." })
         }
+
+        const metricsToUpdate = Object.keys(metricList).reduce((json:{[key: string]: metric} , metric) => (json[`metricList.${metric}`] = metricList[metric], json), {})
 
         const response = await UserThresholdModel.updateUserThreshold( userId, deviceId, metricsToUpdate );
 
         if (response) {
-            res.status(200).json({ text: response });
+            return res.status(200).json({ text: response });
         } else {
-            res.status(500).json({ message: "There was an error with the request." });
+            return res.status(500).json({ message: "There was an error with the request." });
         }
     }
 }

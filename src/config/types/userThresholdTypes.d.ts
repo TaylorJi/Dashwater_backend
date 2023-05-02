@@ -4,6 +4,11 @@ type metricList = {
     }
 }
 
+type metric = {
+    customMin: number,
+    customMax: number,
+    isWarning: boolean
+}
 
 /////////////////// NEW TYPE USED IN PREHOOOK (SELF) ///////////////////////////
 type userThresholdDoc = {
