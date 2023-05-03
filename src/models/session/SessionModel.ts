@@ -3,6 +3,7 @@ import User from "../../config/schemas/User";
 
 const createSession = async (sessionId: String, userId: String) => {
     try {
+        await Session.deleteMany({"userId": userId})
         const expirationTime = new Date();
         expirationTime.setHours(expirationTime.getHours() + 2);
 
