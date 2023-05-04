@@ -72,7 +72,6 @@ const getThresholdData = async (buoyIdList: string, measureName: string, start: 
   end: string, measureValueType: string, thresholdAmount: number) => {
 
   try {
-
     const query = queryBuilder.buildThresholdQuery(buoyIdList, measureName, start, end,
       measureValueType, thresholdAmount);
 
@@ -83,6 +82,7 @@ const getThresholdData = async (buoyIdList: string, measureName: string, start: 
     if (data) {
       return data;
     }
+
     return null;
 
   } catch (_err) {

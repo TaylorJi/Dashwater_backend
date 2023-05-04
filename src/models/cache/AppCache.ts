@@ -1,27 +1,38 @@
 import axios from "axios";
+import { metricRef } from "./timestreamConstants";
+import { floorToSecond } from "./timestreamHelpers";
+import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
+import TimestreamModel from "../timestreamAPI/TimestreamModel";
+import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
+// import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
+// import TimestreamModel from "../timestreamAPI/TimestreamModel";
 
 class AppCacheManager {
 
-    // readonly timestreamRefreshRate = 3600000;
-    // private cachedDeviceData: Array<JSON> | null;
-    // private timestreamInterval: NodeJS.Timer | null;
+    private readonly tideRefreshRate = 18000000; // 5 hours
+    private readonly yvrLat = '49.1967';
+    private readonly yvrLong = '123.1815';
 
-    readonly tideRefreshRate = 18000000; // 5 hours
-    readonly yvrLat = '49.1967';
-    readonly yvrLong = '123.1815';
+    // private readonly deviceRefreshRate = 3600000; // 1 hour
+    private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
 
+    // private cachedDeviceMetricData: cachedDeviceMetricType | null;
+    // private cachedDeviceMetricInterval: NodeJS.Timer | null;
+
     constructor() {
-        // this.cachedDeviceData = null;
-        // this.timestreamInterval = null;
         this.cachedTideData = null;
         this.tideInterval = null;
         this.cachedTideExtremeData = null;
 
+        // this.cachedDeviceMetricData = null;
+        // this.cachedDeviceMetricInterval = null;
     };
+
+    /* Tide Data */
 
     public getTideData = async () => {
 
@@ -30,7 +41,6 @@ class AppCacheManager {
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
-
     };
 
     public registerTideCache = async () => {
@@ -53,7 +63,6 @@ class AppCacheManager {
                 this.cachedTideData = refreshedTideData['tideData'];
                 this.cachedTideExtremeData = tideData['tideExtremes'];
             }
-
 
         }, this.tideRefreshRate);
 
@@ -91,38 +100,45 @@ class AppCacheManager {
 
     };
 
+    /* Timestream Data */
 
-    // public registerTS = async () => {
+    private fetchMonthlyDeviceData = async () => {
 
-    //     const deviceData = null;
+        const now = floorToSecond(new Date().toISOString());
+        const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString());
 
-    //     if (deviceData) this.cachedDeviceData = deviceData;
+        const deviceData: any = {};
 
-    //     this.timestreamInterval = setInterval(async () => {
-    //         const newDeviceData = await this.fetchData();
-    //         this.cachedDeviceData = newDeviceData;
-    //     }, this.timestreamRefreshRate);
+        await Promise.all(this.deviceIds.map(async (id) => {
+            const parsedDeviceId = queryBuilder.parseDeviceList(id);
 
-    //     return this.timestreamInterval;
+            deviceData[id] = {}
 
-    // };
+            await Promise.all(
+                Object.keys(metricRef).map(async (metric) => {
 
-    // private fetchTSData = async () => {
-    //     try {
+                    let fetchedData = await TimestreamModel.getHistoricalData(
+                        parsedDeviceId, metric, prevMonth, now);
 
-    //         // TODO: Write fetch query
+                    if (fetchedData) {
 
-    //     } catch (_err) {
-    //         return null;
-    //     }
-    // };
+                        fetchedData = queryParser.parseQueryResult(fetchedData);
 
-    // public getCachedData = async () => {
-    //     if (!this.cachedDeviceData) {
-    //         this.cachedDeviceData = await this.fetchData();
-    //     }
-    //     return this.cachedDeviceData;
-    // };
+                        if (fetchedData.length > 0) {
+                            deviceData[id][metricRef[metric]] = fetchedData;
+                        }
+                    }
+
+                })
+            );
+
+        }));
+
+        return deviceData;
+
+    };
+
+
 }
 
 const AppCache = new AppCacheManager();
