@@ -45,6 +45,8 @@ server.listen(port, async () => {
     //     console.log('Populated cache.');
     // }
 
+    // await AppCache.fetchDeviceCurrentData();
+
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);
     const db = mongoose.connection;
