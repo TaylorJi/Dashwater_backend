@@ -1,11 +1,9 @@
 import axios from "axios";
 import { metricRef } from "./timestreamConstants";
-import { floorToSecond } from "./timestreamHelpers";
+import { floorToSecond, formatTSTime } from "./timestreamHelpers";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
-// import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
-// import TimestreamModel from "../timestreamAPI/TimestreamModel";
 
 class AppCacheManager {
 
@@ -102,7 +100,7 @@ class AppCacheManager {
 
     /* Timestream Data */
 
-    private fetchMonthlyDeviceData = async () => {
+    public fetchMonthlyDeviceData = async () => {
 
         const now = floorToSecond(new Date().toISOString());
         const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString());
@@ -125,7 +123,16 @@ class AppCacheManager {
                         fetchedData = queryParser.parseQueryResult(fetchedData);
 
                         if (fetchedData.length > 0) {
-                            deviceData[id][metricRef[metric]] = fetchedData;
+
+                            deviceData[id][metricRef[metric]] =
+                                fetchedData.map((datum: any) => {
+                                    return (
+                                        {
+                                            'time': formatTSTime(datum['time']),
+                                            'value': parseFloat(datum['measure_value::double'])
+                                        }
+                                    )
+                                });
                         }
                     }
 
@@ -134,9 +141,17 @@ class AppCacheManager {
 
         }));
 
+        if (Object.keys(deviceData).length === 0) {
+            // This means it failed to fetch
+            return null;
+        }
         return deviceData;
 
     };
+
+    // private fetchDeviceCurrentData = async () => {
+
+    // };
 
 
 }
