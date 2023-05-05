@@ -205,9 +205,9 @@ class AppCacheManager {
 
                             const prevCachedMetricData = [...updatedCachedData[metricRef[datum['measure_name']]]];
 
-                            prevCachedMetricData.pop();
+                            prevCachedMetricData.shift();
 
-                            prevCachedMetricData.unshift(
+                            prevCachedMetricData.push(
                                 {
                                     'time': formatTSTime(datum['time']),
                                     'value': parseFloat(datum['measure_value::double'])

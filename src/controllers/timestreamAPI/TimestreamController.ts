@@ -3,6 +3,7 @@ import TimestreamModel from "../../models/timestreamAPI/TimestreamModel";
 import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
+import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
 
 //GET request for all device IDs
 const getAllBuoyIds = async (_req: Request, res: Response) => {
@@ -106,9 +107,23 @@ const getBuoyThreshold = async (
   }
 };
 
+const getCachedDeviceData = async (_req: Request, res: Response) => {
+
+  const response = await TimestreamCacheModel.getCachedDeviceData();
+
+  if (response) {
+    res.status(200).json({ data: response });
+
+  } else {
+    res.status(500).json({ error: "There was an error with the cache." });
+  }
+
+};
+
 export default module.exports = {
   getAllBuoyIds,
   getCurrentBuoyData,
   getBuoyHistory,
   getBuoyThreshold,
+  getCachedDeviceData
 };

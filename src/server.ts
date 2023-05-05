@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser';
 //import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
-// import AppCache from './models/cache/AppCache';
+import AppCache from './models/cache/AppCache';
 
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
@@ -38,14 +38,27 @@ server.use(cookieParser());
 server.listen(port, async () => {
 
     // Register cache
-    // const registration = await AppCache.registerTideCache();
-    // if (!registration) {
+
+    // console.log('Populating cache with tide data...');
+
+    // const tideRegistration = await AppCache.registerTideCache();
+    // if (!tideRegistration) {
     //     console.log('There was a problem populating the tide data cache. Check your query limits.');
     // } else {
-    //     console.log('Populated cache.');
+    //     console.log('Populated tide data cache.');
     // }
 
-    // await AppCache.fetchDeviceCurrentData();
+    console.log('Populating cache with device data...');
+
+    const deviceDataRegistration = await AppCache.registerDeviceCache();
+
+    if (!deviceDataRegistration) {
+        console.log('There was a problem populating the device data cache. Check AWS.');
+
+    } else {
+        console.log('Populated device data cache.');
+    }
+
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);

@@ -7,3 +7,5 @@ router.route("/getAllBuoyIds").get(TimestreamController.getAllBuoyIds);
 router.route("/getCurrentBuoyData").get(TimestreamController.getCurrentBuoyData);
 router.route("/getBuoyHistory").get(TimestreamController.getBuoyHistory);
 router.route("/getBuoyThreshold").get(TimestreamController.getBuoyThreshold);
+
+router.route("/getCachedData").get(TimestreamController.getCachedDeviceData);
