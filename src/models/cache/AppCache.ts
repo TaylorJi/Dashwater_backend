@@ -11,7 +11,7 @@ class AppCacheManager {
     private readonly yvrLat = '49.1967';
     private readonly yvrLong = '123.1815';
 
-    // private readonly deviceRefreshRate = 3900000; // 65min
+    private readonly deviceRefreshRate = 3900000; // 65min
     private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
@@ -35,7 +35,7 @@ class AppCacheManager {
     public getTideData = async () => {
 
         if (!this.cachedTideData || !this.cachedTideExtremeData) {
-            await this.fetchTideData();
+            await this.registerDeviceCache();
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
@@ -105,100 +105,131 @@ class AppCacheManager {
         const deviceData = await this.fetchMonthlyDeviceData();
 
         if (deviceData) {
+            this.cachedDeviceMetricData = deviceData;
 
+        } else {
+            return null;
         }
 
+        this.cachedDeviceMetricInterval = setInterval(async () => {
 
+            const refreshedMetricData = await this.fetchDeviceCurrentData();
+
+            if (refreshedMetricData) {
+                this.cachedDeviceMetricData = refreshedMetricData;
+            }
+
+        }, this.deviceRefreshRate);
+
+        return this.cachedDeviceMetricInterval;
+    };
+
+    public getDeviceData = async () => {
+        if (!this.cachedDeviceMetricData) {
+            await this.registerDeviceCache();
+        }
+
+        return this.cachedDeviceMetricData;
     };
 
     private fetchMonthlyDeviceData = async () => {
 
-        const now = floorToSecond(new Date().toISOString());
-        const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
+        try {
+            const now = floorToSecond(new Date().toISOString());
+            const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
 
-        const deviceData: any = {};
+            const deviceData: any = {};
 
-        await Promise.all(this.deviceIds.map(async (id) => {
-            const parsedDeviceId = queryBuilder.parseDeviceList(id);
+            await Promise.all(this.deviceIds.map(async (id) => {
+                const parsedDeviceId = queryBuilder.parseDeviceList(id);
 
-            deviceData[id] = {}
+                deviceData[id] = {}
 
-            await Promise.all(
-                Object.keys(metricRef).map(async (metric) => {
+                await Promise.all(
+                    Object.keys(metricRef).map(async (metric) => {
 
-                    let fetchedData = await TimestreamModel.getHistoricalData(
-                        parsedDeviceId, metric, prevMonth, now);
+                        let fetchedData = await TimestreamModel.getHistoricalData(
+                            parsedDeviceId, metric, prevMonth, now);
 
-                    if (fetchedData) {
+                        if (fetchedData) {
 
-                        fetchedData = queryParser.parseQueryResult(fetchedData);
+                            fetchedData = queryParser.parseQueryResult(fetchedData);
 
-                        if (fetchedData.length > 0) {
+                            if (fetchedData.length > 0) {
 
-                            deviceData[id][metricRef[metric]] =
-                                fetchedData.map((datum: any) => {
-                                    return (
-                                        {
-                                            'time': formatTSTime(datum['time']),
-                                            'value': parseFloat(datum['measure_value::double'])
-                                        }
-                                    )
-                                });
+                                deviceData[id][metricRef[metric]] =
+                                    fetchedData.map((datum: any) => {
+                                        return (
+                                            {
+                                                'time': formatTSTime(datum['time']),
+                                                'value': parseFloat(datum['measure_value::double'])
+                                            }
+                                        )
+                                    });
+                            }
                         }
-                    }
 
-                })
-            );
+                    })
+                );
 
-        }));
+            }));
 
-        if (Object.keys(deviceData).length === 0) {
-            // This means it failed to fetch
+            if (Object.keys(deviceData).length === 0) {
+                // This means it failed to fetch
+                return null;
+            }
+            return deviceData;
+
+        } catch (_err) {
             return null;
-        }
-        return deviceData;
 
+        }
     };
 
     private fetchDeviceCurrentData = async () => {
 
-        if (this.cachedDeviceMetricData) {
+        try {
+            if (this.cachedDeviceMetricData) {
 
-            const updatedCachedData = { ...this.cachedDeviceMetricData };
+                const updatedCachedData = { ...this.cachedDeviceMetricData };
 
-            await Promise.all(this.deviceIds.map(async (id) => {
+                await Promise.all(this.deviceIds.map(async (id) => {
 
-                let fetchedData = await TimestreamModel.getBuoyData(id);
+                    let fetchedData = await TimestreamModel.getBuoyData(id);
 
-                if (fetchedData) {
-                    fetchedData = queryParser.parseQueryResult(fetchedData)
-                        .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
+                    if (fetchedData) {
+                        fetchedData = queryParser.parseQueryResult(fetchedData)
+                            .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
 
-                    fetchedData.map((datum: any) => {
+                        fetchedData.map((datum: any) => {
 
-                        const prevCachedMetricData = [...updatedCachedData[metricRef[datum['measure_name']]]];
+                            const prevCachedMetricData = [...updatedCachedData[metricRef[datum['measure_name']]]];
 
-                        prevCachedMetricData.pop();
+                            prevCachedMetricData.pop();
 
-                        prevCachedMetricData.unshift(
-                            {
-                                'time': formatTSTime(datum['time']),
-                                'value': parseFloat(datum['measure_value::double'])
-                            }
-                        );
+                            prevCachedMetricData.unshift(
+                                {
+                                    'time': formatTSTime(datum['time']),
+                                    'value': parseFloat(datum['measure_value::double'])
+                                }
+                            );
 
-                        updatedCachedData[metricRef[datum['measure_name']]] = prevCachedMetricData;
+                            updatedCachedData[metricRef[datum['measure_name']]] = prevCachedMetricData;
 
-                    });
+                        });
 
-                }
+                    }
 
-            }));
+                }));
+                return updatedCachedData;
+            }
 
-            return updatedCachedData;
+            return null;
+
+        } catch (_err) {
+            return null;
         }
 
-        return null;
     };
 
 }
