@@ -12,14 +12,14 @@ class AppCacheManager {
     private readonly yvrLong = '123.1815';
 
     // private readonly deviceRefreshRate = 3900000; // 65min
-    private readonly deviceIds = ['0'];
+    private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
 
     private cachedDeviceMetricData: cachedDeviceMetricType | null;
-    // private cachedDeviceMetricInterval: NodeJS.Timer | null;
+    private cachedDeviceMetricInterval: NodeJS.Timer | null;
 
     constructor() {
         this.cachedTideData = null;
@@ -27,7 +27,7 @@ class AppCacheManager {
         this.cachedTideExtremeData = null;
 
         this.cachedDeviceMetricData = null;
-        // this.cachedDeviceMetricInterval = null;
+        this.cachedDeviceMetricInterval = null;
     };
 
     /* Tide Data */
@@ -100,7 +100,18 @@ class AppCacheManager {
 
     /* Timestream Data */
 
-    public fetchMonthlyDeviceData = async () => {
+    public registerDeviceCache = async () => {
+
+        const deviceData = await this.fetchMonthlyDeviceData();
+
+        if (deviceData) {
+
+        }
+
+
+    };
+
+    private fetchMonthlyDeviceData = async () => {
 
         const now = floorToSecond(new Date().toISOString());
         const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
@@ -149,11 +160,11 @@ class AppCacheManager {
 
     };
 
-    public fetchDeviceCurrentData = async () => {
+    private fetchDeviceCurrentData = async () => {
 
         if (this.cachedDeviceMetricData) {
 
-            const oldCachedData = { ...this.cachedDeviceMetricData };
+            const updatedCachedData = { ...this.cachedDeviceMetricData };
 
             await Promise.all(this.deviceIds.map(async (id) => {
 
@@ -165,7 +176,7 @@ class AppCacheManager {
 
                     fetchedData.map((datum: any) => {
 
-                        const prevCachedMetricData = [...oldCachedData[metricRef[datum['measure_name']]]];
+                        const prevCachedMetricData = [...updatedCachedData[metricRef[datum['measure_name']]]];
 
                         prevCachedMetricData.pop();
 
@@ -176,7 +187,7 @@ class AppCacheManager {
                             }
                         );
 
-                        oldCachedData[metricRef[datum['measure_name']]] = prevCachedMetricData;
+                        updatedCachedData[metricRef[datum['measure_name']]] = prevCachedMetricData;
 
                     });
 
@@ -184,7 +195,7 @@ class AppCacheManager {
 
             }));
 
-            return oldCachedData;
+            return updatedCachedData;
         }
 
         return null;
