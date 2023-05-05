@@ -11,7 +11,7 @@ class AppCacheManager {
     private readonly yvrLat = '49.1967';
     private readonly yvrLong = '123.1815';
 
-    private readonly deviceRefreshRate = 3900000; // 65min
+    private readonly deviceRefreshRate = 3600000; // 1 hour
     private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
@@ -47,7 +47,7 @@ class AppCacheManager {
 
         if (tideData) {
             this.cachedTideData = tideData['tideData'];
-            this.cachedTideExtremeData = tideData['tideExtremes']
+            this.cachedTideExtremeData = tideData['tideExtremes'];
 
         } else {
             return null;
@@ -191,30 +191,34 @@ class AppCacheManager {
         try {
             if (this.cachedDeviceMetricData) {
 
-                const updatedCachedData = { ...this.cachedDeviceMetricData };
+                const updatedCachedData: any = { ...this.cachedDeviceMetricData };
 
                 await Promise.all(this.deviceIds.map(async (id) => {
 
                     let fetchedData = await TimestreamModel.getBuoyData(id);
 
                     if (fetchedData) {
+
                         fetchedData = queryParser.parseQueryResult(fetchedData)
                             .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
 
                         fetchedData.map((datum: any) => {
 
-                            const prevCachedMetricData = [...updatedCachedData[metricRef[datum['measure_name']]]];
+                            let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
 
-                            prevCachedMetricData.shift();
+                            if (prevCachedMetricData) {
 
-                            prevCachedMetricData.push(
-                                {
-                                    'time': formatTSTime(datum['time']),
-                                    'value': parseFloat(datum['measure_value::double'])
-                                }
-                            );
+                                prevCachedMetricData.shift();
 
-                            updatedCachedData[metricRef[datum['measure_name']]] = prevCachedMetricData;
+                                prevCachedMetricData.push(
+                                    {
+                                        'time': formatTSTime(datum['time']),
+                                        'value': parseFloat(datum['measure_value::double'])
+                                    }
+                                );
+
+                                updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
+                            }
 
                         });
 

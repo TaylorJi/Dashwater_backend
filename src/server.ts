@@ -39,14 +39,15 @@ server.listen(port, async () => {
 
     // Register cache
 
-    // console.log('Populating cache with tide data...');
+    console.log('Populating cache with tide data...');
 
-    // const tideRegistration = await AppCache.registerTideCache();
-    // if (!tideRegistration) {
-    //     console.log('There was a problem populating the tide data cache. Check your query limits.');
-    // } else {
-    //     console.log('Populated tide data cache.');
-    // }
+    const tideRegistration = await AppCache.registerTideCache();
+
+    if (!tideRegistration) {
+        console.log('There was a problem populating the tide data cache. Check your query limits.');
+    } else {
+        console.log('Populated tide data cache.');
+    }
 
     console.log('Populating cache with device data...');
 
@@ -54,7 +55,6 @@ server.listen(port, async () => {
 
     if (!deviceDataRegistration) {
         console.log('There was a problem populating the device data cache. Check AWS.');
-
     } else {
         console.log('Populated device data cache.');
     }
