@@ -11,14 +11,3 @@ type deviceMetricUnitsType = {
         [key: string]: string;
     }
 };
-
-type deviceDataType = {
-    [key: string]: measureType[]
-}
-
-type measureType = {
-    measureName: string;
-    xAxisName: string;
-    yAxisName: string;
-    data: deviceMetricType[]
-}
