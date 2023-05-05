@@ -7,7 +7,7 @@ const createDevice = async (req: Request, res: Response) => {
 
     const { deviceId, coordinates } = req.body;
 
-    if (!deviceId || coordinates.length !== 2 ) {
+    if (deviceId == null || coordinates.length !== 2 ) {
         res.status(400).json({ message: "Invalid request: id, and location (longitude, latitude) information of the device is required." });
     } else {
         const response = await DeviceModel.createDevice( deviceId, coordinates );
