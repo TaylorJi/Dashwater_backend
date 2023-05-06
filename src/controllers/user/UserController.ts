@@ -43,7 +43,21 @@ const validateUser = async (req: Request, res: Response) => {
 }
 
 // CRUD test function with MongoDB
+const getUser = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        const user = await UserModel.getUser(userId);
 
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: "User not found"});
+        }
+    } catch (error) {
+        console.error("Error retrieving user:", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+};
 
 export default module.exports = {
     createUser,

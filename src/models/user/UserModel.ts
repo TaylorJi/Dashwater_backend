@@ -32,7 +32,19 @@ const validateUser = async (email: String, password: String) => {
 };
 
 
+const getUser = async (userId: string) => {
+    try {
+        const user = await User.findById(userId);
+        return user;
+    } catch (error) {
+        console.error("Error retrieving user: ", error)
+        return null;
+    }
+};
+
+
 export default module.exports = {
     createUser,
-    validateUser
+    validateUser,
+    getUser
 };
