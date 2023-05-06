@@ -31,16 +31,30 @@ const validateUser = async (email: String, password: String) => {
     }
 };
 
-
-const getUser = async (userId: string) => {
+//20230505 EJ
+const getUser = async () => {
     try {
-        const user = await User.findById(userId);
-        return user;
-    } catch (error) {
-        console.error("Error retrieving user: ", error)
+        const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
+
+        if (users.length !== 0) {
+            return users;
+        }
+        return false;
+    } catch (err) {
         return null;
     }
 };
+
+
+// const getUser = async (userId: string) => {
+//     try {
+//         const user = await User.findById(userId);
+//         return user;
+//     } catch (error) {
+//         console.error("Error retrieving user: ", error)
+//         return null;
+//     }
+// };
 
 
 export default module.exports = {

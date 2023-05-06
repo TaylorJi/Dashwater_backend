@@ -40,7 +40,18 @@ const validateUser = async (req: Request, res: Response) => {
         }
 
     }
-}
+};
+
+//20230505 EJ
+const getUser = async (_req: Request, res: Response) => {
+    const response = await UserModel.getUser();
+
+    if (response) {
+        res.status(200).json({ data: response });
+    } else {
+        res.status(500).json({ message: "There was an error with the request." });
+    }
+};
 
 // CRUD test function with MongoDB
 const getUser = async (req: Request, res: Response) => {
@@ -61,5 +72,6 @@ const getUser = async (req: Request, res: Response) => {
 
 export default module.exports = {
     createUser,
-    validateUser
+    validateUser,
+    getUser //20230505 EJ
 };
