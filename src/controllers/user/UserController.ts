@@ -54,10 +54,10 @@ const getUser = async (_req: Request, res: Response) => {
 };
 
 // CRUD test function with MongoDB
-const getUser = async (req: Request, res: Response) => {
+const getSingleUser = async (req: Request, res: Response) => {
     try {
         const userId = req.params.userId;
-        const user = await UserModel.getUser(userId);
+        const user = await UserModel.getSingleUser(userId);
 
         if (user) {
             res.status(200).json(user);
@@ -73,5 +73,6 @@ const getUser = async (req: Request, res: Response) => {
 export default module.exports = {
     createUser,
     validateUser,
-    getUser //20230505 EJ
+    getUser, //20230505 EJ
+    getSingleUser
 };

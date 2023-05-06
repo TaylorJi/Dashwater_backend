@@ -46,19 +46,20 @@ const getUser = async () => {
 };
 
 
-// const getUser = async (userId: string) => {
-//     try {
-//         const user = await User.findById(userId);
-//         return user;
-//     } catch (error) {
-//         console.error("Error retrieving user: ", error)
-//         return null;
-//     }
-// };
+const getSingleUser = async (userId: string) => {
+    try {
+        const user = await User.findById(userId);
+        return user;
+    } catch (error) {
+        console.error("Error retrieving user: ", error)
+        return null;
+    }
+};
 
 
 export default module.exports = {
     createUser,
     validateUser,
-    getUser
+    getUser,
+    getSingleUser
 };
