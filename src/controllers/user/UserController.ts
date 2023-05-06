@@ -42,6 +42,8 @@ const validateUser = async (req: Request, res: Response) => {
     }
 }
 
+// CRUD test function with MongoDB
+
 
 export default module.exports = {
     createUser,
