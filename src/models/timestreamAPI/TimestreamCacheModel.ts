@@ -12,21 +12,15 @@ const getCachedDeviceData = async () => {
 
             Object.keys(cachedData).map((device) => {
 
-                mappedData[device] = [];
-
-                Object.keys(cachedData[device]).map((metric: any) => {
-
-                    const newMeasure = {
+                mappedData[device] = Object.keys(cachedData[device]).map((metric: any) => {
+                    return {
                         measureName: metric,
                         xAxisName: metricUnitRef[metric]['xAxisName'],
                         yAxisName: metricUnitRef[metric]['yAxisName'],
                         data: cachedData[device][metric]
                     };
 
-                    mappedData[device].push(newMeasure);
-
                 });
-
             });
 
             return mappedData;
@@ -34,8 +28,7 @@ const getCachedDeviceData = async () => {
 
         return null;
 
-    } catch (err) {
-        console.log(err);
+    } catch (_err) {
         return null;
     }
 
