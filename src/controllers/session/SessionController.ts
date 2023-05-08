@@ -7,14 +7,14 @@ const createSession = async (req: Request, res: Response) => {
     const sessionId = uuid();
 
     if (!userId) {
-        res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
+        return res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
     }
 
     const response = await SessionModel.createSession(sessionId, userId);
     if (response) {
-        res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ text: response })
+        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ text: response })
     } else {
-        res.status(500).json({ message: "There was an error with the request." });
+        return res.status(500).json({ message: "There was an error with the request." });
     }
 };
 

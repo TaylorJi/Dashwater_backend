@@ -29,7 +29,9 @@ const deleteSession = async (sessionId: string) => {
             try {
                 const deletedSession = await Session.deleteOne({"sessionId": sessionId});
 
-                if (deletedSession.deletedCount) return true;
+                if (deletedSession.deletedCount){
+                    return true;
+                }
                 return false;
             } catch (err) {
                 return false;
@@ -48,7 +50,11 @@ const validateSession = async (sessionId: string) => {
     try {
         const session = await Session.findOne({"sessionId": sessionId});
 
-        if (session && new Date(session.sessionExpiry) > currentTime) {
+        if (session) {
+            if(new Date(session.sessionExpiry) < currentTime) {
+                return false;
+            }
+
             const fetchedUser = await User.findOne({"_id": session.userId});
 
             if (fetchedUser) {
@@ -61,9 +67,9 @@ const validateSession = async (sessionId: string) => {
                 return user;
             }
             
-            return false;
+            return null;
         } else {
-            return false;
+            return null;
         }
     } catch (err) {
         return null;
