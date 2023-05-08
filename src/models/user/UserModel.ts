@@ -46,15 +46,71 @@ const getUser = async () => {
 };
 
 
+// const getSingleUser = async (userId: string) => {
+//     try {
+//         const user = await User.findById(userId);
+//         return user;
+//     } catch (error) {
+//         console.error("Error retrieving user: ", error)
+//         return null;
+//     }
+// };
+
+
+// const getSingleUser = async (idValue: string) => {
+//     console.log("id value:", idValue[0]);
+//     try {
+//         const users = await User.findById(
+//             // { _id: { $in: '644c373c859da9d501599bb2' } },
+//             { _id: { $in: idValue } },
+//             { email: 1, password: 1, role: 1 }
+//         );
+
+//         if (users.length !== 0) {
+//             const userRecords = users.map(user => ({
+//                 email: user.email,
+//                 password: user.password,
+//                 role: user.role
+//             }));
+//             return userRecords;
+//         }
+
+//         return null;
+//     } catch (err) {
+//         console.error("Error retrieving user.");
+//         return null;
+//     }
+// };
+
+
 const getSingleUser = async (userId: string) => {
     try {
-        const user = await User.findById(userId);
-        return user;
-    } catch (error) {
-        console.error("Error retrieving user: ", error)
+        const users = await User.findById(
+            { _id: userId },
+        );
+        return users // returns users as a document, but I want to update password and role 
+
+    } catch (err) {
+        console.error("Error retrieving user.");
         return null;
     }
 };
+
+
+const updateUser = async (userId: string, userPassword: string) => {
+    try {
+        const users = await User.findByIdAndUpdate(
+            { _id: userId },{"password": userPassword}
+        );
+        return users // returns users as a document, but I want to update password and role 
+
+    } catch (err) {
+        console.error("Error retrieving user.");
+        return null;
+    }
+};
+
+
 
 // const ObjectId = require('mongoose').Types.ObjectId;
 //TJ
@@ -81,5 +137,6 @@ export default module.exports = {
     validateUser,
     getUser,
     getSingleUser,
+    updateUser,
     deleteUser
 };
