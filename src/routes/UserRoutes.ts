@@ -11,4 +11,4 @@ router.route('/validateUser').post(UserController.validateUser);
 router.route('/getUser').get(UserController.getUser);
 router.route('/getSingleUser').get(UserController.getSingleUser);
 
-router.route('/deleteUser').delete(UserController.deleteUser);
+router.route('/deleteUser/:id').delete(UserController.deleteUser);
