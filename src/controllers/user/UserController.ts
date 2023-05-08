@@ -73,7 +73,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 //delete TJ
 const deleteUser = async (req: Request, res: Response) => {
-    const userId = req.body;
+    const userId = req.body.userId;
     const response = await UserModel.deleteUser(userId);
 
     if (response) {

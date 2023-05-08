@@ -56,11 +56,12 @@ const getSingleUser = async (userId: string) => {
     }
 };
 
-const ObjectId = require('mongoose').Types.ObjectId;
+// const ObjectId = require('mongoose').Types.ObjectId;
 //TJ
 const deleteUser = async (userId: string) => {
     try {
-      const deletedUser = await User.findOneAndDelete({"_id": ObjectId(userId)});
+        console.log(userId)
+      const deletedUser = await User.findOneAndDelete({"_id": userId});
       if (deletedUser) {
         console.log(`Deleted user with ID ${userId}`);
         return deletedUser;
