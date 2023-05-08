@@ -107,9 +107,11 @@ const getBuoyThreshold = async (
   }
 };
 
-const getCachedDeviceData = async (_req: Request, res: Response) => {
+const getCachedDeviceData = async (req: Request, res: Response) => {
 
-  const response = await TimestreamCacheModel.getCachedDeviceData();
+  const { end } = req.body;
+
+  const response = await TimestreamCacheModel.getCachedDeviceData(end);
 
   if (response) {
     res.status(200).json({ data: response });
@@ -117,6 +119,7 @@ const getCachedDeviceData = async (_req: Request, res: Response) => {
   } else {
     res.status(500).json({ error: "There was an error with the cache." });
   }
+
 
 };
 
