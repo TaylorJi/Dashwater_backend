@@ -56,10 +56,29 @@ const getSingleUser = async (userId: string) => {
     }
 };
 
+const ObjectId = require('mongoose').Types.ObjectId;
+//TJ
+const deleteUser = async (userId: string) => {
+    try {
+      const deletedUser = await User.findOneAndDelete({"_id": ObjectId(userId)});
+      if (deletedUser) {
+        console.log(`Deleted user with ID ${userId}`);
+        return deletedUser;
+      } else {
+        console.log(`User with ID ${userId} not found`);
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
 
 export default module.exports = {
     createUser,
     validateUser,
     getUser,
-    getSingleUser
+    getSingleUser,
+    deleteUser
 };

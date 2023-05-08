@@ -10,3 +10,5 @@ router.route('/validateUser').post(UserController.validateUser);
 //20230505 EJ
 router.route('/getUser').get(UserController.getUser);
 router.route('/getSingleUser').get(UserController.getSingleUser);
+
+router.route('/deleteUser').delete(UserController.deleteUser);

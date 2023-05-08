@@ -70,9 +70,23 @@ const getSingleUser = async (req: Request, res: Response) => {
     }
 };
 
+
+//delete TJ
+const deleteUser = async (req: Request, res: Response) => {
+    const userId = req.body;
+    const response = await UserModel.deleteUser(userId);
+
+    if (response) {
+        res.status(200).json({ data: response });
+    } else {
+        res.status(500).json({ message: "There was an error with the request." });
+    }
+};
+
 export default module.exports = {
     createUser,
     validateUser,
     getUser, //20230505 EJ
-    getSingleUser
+    getSingleUser,
+    deleteUser
 };
