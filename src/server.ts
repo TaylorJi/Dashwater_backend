@@ -66,6 +66,7 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import { router as circleGraphRouter } from './routes/CircleGraphRoutes';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', timestreamRouter)
@@ -74,3 +75,4 @@ server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
 server.use('/api/trackedDevice', trackedDeviceRouter);
 server.use('/api/device', deviceRouter);
+server.use('/api/circleGraph', circleGraphRouter);
