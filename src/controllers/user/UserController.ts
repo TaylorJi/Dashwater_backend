@@ -74,9 +74,10 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
+        const userEmail = req.body.email
         const userPassword = req.body.password
         const userRole = req.body.role
-        const user = await UserModel.updateUser(userId, userPassword, userRole);
+        const user = await UserModel.updateUser(userId, userEmail ,userPassword, userRole);
 
         if (user) {
             res.status(200).json(user);

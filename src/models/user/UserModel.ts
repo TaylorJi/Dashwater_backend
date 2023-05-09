@@ -97,10 +97,10 @@ const getSingleUser = async (userId: string) => {
 };
 
 
-const updateUser = async (userId: string, userPassword: string, userRole: string) => {
+const updateUser = async (userId: string, userEmail: string, userPassword: string, userRole: string) => {
     try {
         const users = await User.findByIdAndUpdate(
-            { _id: userId },{"password": userPassword, "role": userRole}
+            { _id: userId },{"email": userEmail, "password": userPassword, "role": userRole}
         );
         return users // returns users as a document, but I want to update password and role 
 
