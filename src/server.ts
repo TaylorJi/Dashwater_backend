@@ -8,6 +8,8 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+// import userModel from './models/user/UserModel'
+// import userThresholdModel from './models/userThreshold/UserThresholdModel'
 
 // Middleware
 //import AuthenticationController from './controllers/authentication/AuthenticationController';
@@ -52,6 +54,25 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
+    //     userModel.createUser("testOne@gmail.com", "Turkey2021!").then((result) => {
+    //         if (result != null) {
+    //             UserThresholdModel.createUserThreshold(result, 123).then((finish) =>{
+    //                 if (finish != null) {
+    //                     UserThresholdModel.updateUserThreshold(result, 123, -5, 20)
+    //                 }
+                    
+    //             })
+                
+    //         } else {
+    //             console.log("failed")
+    //         }
+            
+    // })
+    UserThresholdModel.updateUserThreshold("645997521a95e72b5724748b", 123, -5, 20)
+        
+        
+        
+        console.log('hello')
     });
 
     console.log(`Server started on port ${port}!`);
@@ -66,6 +87,7 @@ import { router as apiRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import UserThresholdModel from './models/userThreshold/UserThresholdModel';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', apiRouter)

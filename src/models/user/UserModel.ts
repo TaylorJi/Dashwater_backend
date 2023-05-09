@@ -6,11 +6,13 @@ const createUser = async (email: String, password: String) => {
         const newUser = await User.create({ "email": email, "password": password, "role": "User" });
 
         if (newUser) {
-            return newUser;
+            console.log(newUser._id.toString())
+            return newUser._id.toString();
         }
         return null;
 
     } catch (err) {
+        console.log(err)
         return null;
     }
 };
