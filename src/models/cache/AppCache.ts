@@ -1,36 +1,44 @@
 import axios from "axios";
+import { metricRef } from "./timestreamConstants";
+import { floorToSecond, formatTSTime } from "./timestreamHelpers";
+import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
+import TimestreamModel from "../timestreamAPI/TimestreamModel";
+import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 
 class AppCacheManager {
 
-    // readonly timestreamRefreshRate = 3600000;
-    // private cachedDeviceData: Array<JSON> | null;
-    // private timestreamInterval: NodeJS.Timer | null;
+    private readonly tideRefreshRate = 18000000; // 5 hours
+    private readonly yvrLat = '49.1967';
+    private readonly yvrLong = '123.1815';
 
-    readonly tideRefreshRate = 18000000; // 5 hours
-    readonly yvrLat = '49.1967';
-    readonly yvrLong = '123.1815';
+    private readonly deviceRefreshRate = 3600000; // 1 hour
+    private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
     private tideInterval: NodeJS.Timer | null;
 
+    private cachedDeviceMetricData: cachedDeviceMetricType | null;
+    private cachedDeviceMetricInterval: NodeJS.Timer | null;
+
     constructor() {
-        // this.cachedDeviceData = null;
-        // this.timestreamInterval = null;
         this.cachedTideData = null;
         this.tideInterval = null;
         this.cachedTideExtremeData = null;
 
+        this.cachedDeviceMetricData = null;
+        this.cachedDeviceMetricInterval = null;
     };
+
+    /* Tide Data */
 
     public getTideData = async () => {
 
         if (!this.cachedTideData || !this.cachedTideExtremeData) {
-            await this.fetchTideData();
+            await this.registerDeviceCache();
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
-
     };
 
     public registerTideCache = async () => {
@@ -39,7 +47,7 @@ class AppCacheManager {
 
         if (tideData) {
             this.cachedTideData = tideData['tideData'];
-            this.cachedTideExtremeData = tideData['tideExtremes']
+            this.cachedTideExtremeData = tideData['tideExtremes'];
 
         } else {
             return null;
@@ -53,7 +61,6 @@ class AppCacheManager {
                 this.cachedTideData = refreshedTideData['tideData'];
                 this.cachedTideExtremeData = tideData['tideExtremes'];
             }
-
 
         }, this.tideRefreshRate);
 
@@ -91,38 +98,144 @@ class AppCacheManager {
 
     };
 
+    /* Timestream Data */
 
-    // public registerTS = async () => {
+    public registerDeviceCache = async () => {
 
-    //     const deviceData = null;
+        const deviceData = await this.fetchMonthlyDeviceData();
 
-    //     if (deviceData) this.cachedDeviceData = deviceData;
+        if (deviceData) {
+            this.cachedDeviceMetricData = deviceData;
 
-    //     this.timestreamInterval = setInterval(async () => {
-    //         const newDeviceData = await this.fetchData();
-    //         this.cachedDeviceData = newDeviceData;
-    //     }, this.timestreamRefreshRate);
+        } else {
+            return null;
+        }
 
-    //     return this.timestreamInterval;
+        this.cachedDeviceMetricInterval = setInterval(async () => {
 
-    // };
+            const refreshedMetricData = await this.fetchDeviceCurrentData();
 
-    // private fetchTSData = async () => {
-    //     try {
+            if (refreshedMetricData) {
+                this.cachedDeviceMetricData = refreshedMetricData;
+            }
 
-    //         // TODO: Write fetch query
+        }, this.deviceRefreshRate);
 
-    //     } catch (_err) {
-    //         return null;
-    //     }
-    // };
+        return this.cachedDeviceMetricInterval;
+    };
 
-    // public getCachedData = async () => {
-    //     if (!this.cachedDeviceData) {
-    //         this.cachedDeviceData = await this.fetchData();
-    //     }
-    //     return this.cachedDeviceData;
-    // };
+    public getDeviceData = async () => {
+        if (!this.cachedDeviceMetricData) {
+            await this.registerDeviceCache();
+        }
+
+        return this.cachedDeviceMetricData;
+    };
+
+    private fetchMonthlyDeviceData = async () => {
+
+        try {
+            const now = floorToSecond(new Date().toISOString());
+            const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
+
+            const deviceData: any = {};
+
+            await Promise.all(this.deviceIds.map(async (id) => {
+                const parsedDeviceId = queryBuilder.parseDeviceList(id);
+
+                deviceData[id] = {}
+
+                await Promise.all(
+                    Object.keys(metricRef).map(async (metric) => {
+
+                        let fetchedData = await TimestreamModel.getHistoricalData(
+                            parsedDeviceId, metric, prevMonth, now);
+
+                        if (fetchedData) {
+
+                            fetchedData = queryParser.parseQueryResult(fetchedData);
+
+                            if (fetchedData.length > 0) {
+
+                                deviceData[id][metricRef[metric]] =
+                                    fetchedData.map((datum: any) => {
+                                        return (
+                                            {
+                                                'time': formatTSTime(datum['time']),
+                                                'value': parseFloat(datum['measure_value::double'])
+                                            }
+                                        )
+                                    });
+                            }
+                        }
+
+                    })
+                );
+
+            }));
+
+            if (Object.keys(deviceData).length === 0) {
+                // This means it failed to fetch
+                return null;
+            }
+            return deviceData;
+
+        } catch (_err) {
+            return null;
+
+        }
+    };
+
+    private fetchDeviceCurrentData = async () => {
+
+        try {
+            if (this.cachedDeviceMetricData) {
+
+                const updatedCachedData: any = { ...this.cachedDeviceMetricData };
+
+                await Promise.all(this.deviceIds.map(async (id) => {
+
+                    let fetchedData = await TimestreamModel.getBuoyData(id);
+
+                    if (fetchedData) {
+
+                        fetchedData = queryParser.parseQueryResult(fetchedData)
+                            .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
+
+                        fetchedData.map((datum: any) => {
+
+                            let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
+
+                            if (prevCachedMetricData) {
+
+                                prevCachedMetricData.shift();
+
+                                prevCachedMetricData.push(
+                                    {
+                                        'time': formatTSTime(datum['time']),
+                                        'value': parseFloat(datum['measure_value::double'])
+                                    }
+                                );
+
+                                updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
+                            }
+
+                        });
+
+                    }
+
+                }));
+                return updatedCachedData;
+            }
+
+            return null;
+
+        } catch (_err) {
+            return null;
+        }
+
+    };
+
 }
 
 const AppCache = new AppCacheManager();
