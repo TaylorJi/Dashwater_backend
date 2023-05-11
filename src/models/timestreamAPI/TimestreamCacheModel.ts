@@ -77,7 +77,7 @@ const remapLogDataFromCache = (cachedData: any, end?: string) => {
                     // it doesn't exist and must be created
 
                     deviceData.push({
-                        'id': device,
+                        'id': Number(device),
                         'time': measurement['time'],
                         [logDataRef[metric]]: measurement['value']
                     });
@@ -102,6 +102,18 @@ const remapLogDataFromCache = (cachedData: any, end?: string) => {
         mappedData = mappedData.filter((metric: any) =>
             new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime());
     }
+
+    Object.keys(logDataRef).map((metric) => {
+
+        mappedData.map((measurement) => {
+
+            if (!(logDataRef[metric] in measurement)) {
+                measurement[logDataRef[metric]] = -9999;
+            }
+
+        });
+
+    });
 
     return mappedData;
 
