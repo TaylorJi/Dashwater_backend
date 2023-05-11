@@ -8,9 +8,60 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import queryParser from './helpers/timestreamAPI/functions/queryParser';
+
+
 
 // Middleware
 //import AuthenticationController from './controllers/authentication/AuthenticationController';
+// import TimestreamController from './controllers/timestreamAPI/TimestreamController';
+import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
+// import { Request } from 'express';
+
+
+// const retrieveTimestreamData = () => {
+//     console.log('Retrieving timestream data...');
+//     return fetch('http://localhost:8085/api/ts/getAllBuoyIds', {
+
+// 	})
+//     .then(response => console.log(response.json()))
+//     // const response = await TimestreamController.getAllBuoyIds();
+//     // console.log(response);
+
+// }
+
+// const req: Request = new Request();
+
+
+// const _res = {
+//     status: (code) => {
+//         console.log('Status code:', code);
+//         return _res;
+//     },
+//     json: (data) => {
+//         console.log('Response data:', data);
+//         return _res;
+//     }
+// }
+
+const retrieveTimestreamData = async () => {
+    console.log('Retrieving timestream data...');
+    try {
+        const buoyIdList = '1';
+      const response = await TimestreamModel.getBuoyData(buoyIdList);//fetch('http://localhost:8085/api/ts/getAllBuoyIds');
+    //   const data = await response.json();
+      let data = queryParser.parseQueryResult(response)
+    //   console.log(data);
+      data.forEach((element) => {
+        console.log(element.measure_name);
+        });
+      return response;
+
+    } catch (error) {
+      console.error('Error retrieving timestream data:', error);
+      throw error;
+    }
+  }
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -67,6 +118,7 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
+        retrieveTimestreamData();
     });
 
     console.log(`Server started on port ${port}!`);
@@ -81,6 +133,7 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+// import TimestreamController from './controllers/timestreamAPI/TimestreamController';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', timestreamRouter)
