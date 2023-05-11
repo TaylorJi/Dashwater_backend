@@ -8,8 +8,9 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import userModel from './models/user/UserModel'
+// import userThresholdModel from './models/userThreshold/UserThresholdModel'
 import queryParser from './helpers/timestreamAPI/functions/queryParser';
-
 
 
 // Middleware
@@ -142,6 +143,40 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
+        userModel.createUser("testUserOne@gmail.com", "Turkey2021!").then((result) => {
+            if (result != null) {
+                UserThresholdModel.createUserThreshold(result, 1, 'do').then((finish) =>{
+                    if (finish != null) {
+                        UserThresholdModel.updateUserThreshold(result, 1, 'do', -5, 79)
+                    }
+                    
+                })
+
+                UserThresholdModel.createUserThreshold(result, 1, 'ec').then((finish) =>{
+                    if (finish != null) {
+                        UserThresholdModel.updateUserThreshold(result, 1, 'ec', 260, 450)
+                    }
+                    
+                })
+
+                UserThresholdModel.createUserThreshold(result, 1, 'ph').then((finish) =>{
+                    if (finish != null) {
+                        UserThresholdModel.updateUserThreshold(result, 1, 'ph', 0, 6)
+                    }
+                    
+                })
+                
+            } else {
+                console.log("failed")
+            }
+            
+    })
+    // UserThresholdModel.updateUserThreshold("645997521a95e72b5724748b", 123, -5, 20)
+        // UserThresholdModel.getAllThreshold();
+        
+        
+        
+        console.log('hello')
         retrieveTimestreamData();
     });
 
@@ -157,6 +192,7 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import UserThresholdModel from './models/userThreshold/UserThresholdModel';
 // import TimestreamController from './controllers/timestreamAPI/TimestreamController';
 
 server.use('/api/auth', authRouter);
