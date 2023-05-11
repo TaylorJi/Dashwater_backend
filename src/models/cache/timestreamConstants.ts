@@ -43,3 +43,14 @@ export const metricUnitRef: deviceMetricUnitsType = {
         'yAxisName': 'kPa'
     }
 };
+
+export const logDataRef: deviceMetricType = {
+    'Dissolved Oxygen': 'dissolvedOxygen',
+    'Temperature': 'temperature',
+    'Electrical Conductivity': 'electricalConductivity',
+    'pH': 'pH',
+    'Turbidity': 'turbidity',
+    'Total Dissolved Solids': 'totalDissolvedSolids',
+    'Water Flow': 'waterFlow',
+    'Water Pressure': 'waterPressure'
+};

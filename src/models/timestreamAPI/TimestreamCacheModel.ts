@@ -1,14 +1,13 @@
 import AppCache from "../cache/AppCache";
-import { metricUnitRef } from "../cache/timestreamConstants";
+import { logDataRef, metricUnitRef } from "../cache/timestreamConstants";
 import { formatTSTime } from "../cache/timestreamHelpers";
 
 const getCachedDeviceData = async (end: string) => {
 
     try {
-        const cachedData = await AppCache.getDeviceData();
+        const cachedData: any = await AppCache.getDeviceData();
 
         if (cachedData) {
-
             return remapDeviceDataFromCache(cachedData, end);
         }
 
@@ -44,7 +43,72 @@ const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
 
 };
 
+const getCachedLogData = async (end: string) => {
+
+    try {
+        const cachedData: any = await AppCache.getDeviceData();
+
+        if (cachedData) {
+            return remapLogDataFromCache(cachedData, end);
+        }
+
+        return null;
+
+    } catch (_err) {
+        return null;
+    }
+
+};
+
+const remapLogDataFromCache = (cachedData: any, end?: string) => {
+
+    let mappedData: any[] = [];
+
+    Object.keys(cachedData).map((device) => {
+
+        // have to start a new array to keep track of all devices
+        const deviceData: any[] = [];
+
+        Object.keys(cachedData[device]).map((metric: string) => {
+
+            cachedData[device][metric].map((measurement: any, index: number) => {
+
+                if (deviceData.length === index) {
+                    // it doesn't exist and must be created
+
+                    deviceData.push({
+                        'id': device,
+                        'time': measurement['time'],
+                        [logDataRef[metric]]: measurement['value']
+                    });
+
+                } else {
+
+                    deviceData[index] = {
+                        ...deviceData[index],
+                        [logDataRef[metric]]: measurement['value']
+                    };
+                }
+
+            });
+
+        });
+
+        mappedData = [...mappedData, ...deviceData];
+
+    });
+
+    if (end) {
+        mappedData = mappedData.filter((metric: any) =>
+            new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime());
+    }
+
+    return mappedData;
+
+};
+
 
 export default module.exports = {
-    getCachedDeviceData
+    getCachedDeviceData,
+    getCachedLogData
 };
