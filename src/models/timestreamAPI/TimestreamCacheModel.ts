@@ -5,7 +5,7 @@ import { formatTSTime } from "../cache/timestreamHelpers";
 const getCachedDeviceData = async (end: string) => {
 
     try {
-        const cachedData: any = await AppCache.getDeviceData();
+        const cachedData = await AppCache.getDeviceData();
 
         if (cachedData) {
             return remapDeviceDataFromCache(cachedData, end);
@@ -46,7 +46,7 @@ const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
 const getCachedLogData = async (end: string) => {
 
     try {
-        const cachedData: any = await AppCache.getDeviceData();
+        const cachedData = await AppCache.getDeviceData();
 
         if (cachedData) {
             return remapLogDataFromCache(cachedData, end);
