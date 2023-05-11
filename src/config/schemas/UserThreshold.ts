@@ -16,10 +16,10 @@ const UserThresholdSchema = new Schema({
         ref: 'devices'
     },
 
-    // thresholdMetricId: {
-    //     type: Schema.Types.ObjectId,
-    //     required: true
-    // },
+    metricId: {
+        type: String,
+        required: true
+    },
 
     customMin: {
         type: Number,
