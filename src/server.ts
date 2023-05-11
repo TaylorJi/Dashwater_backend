@@ -43,6 +43,17 @@ import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
 //         return _res;
 //     }
 // }
+const compareThresholds = async () => {
+    console.log('Comparing thresholds...');
+    try {
+        const sensorData = await retrieveTimestreamData();
+        const thresholdData = await retrieveThresholdData();
+        await checkThresholdExceeded(sensorData, thresholdData);
+    } catch (error) {
+        console.error('Error comparing thresholds:', error);
+        throw error;
+    }
+}
 
 const retrieveTimestreamData = async () => {
     console.log('Retrieving timestream data...');
@@ -53,15 +64,28 @@ const retrieveTimestreamData = async () => {
       let data = queryParser.parseQueryResult(response)
     //   console.log(data);
       data.forEach((element) => {
-        console.log(element.measure_name);
+        console.log(element);
         });
-      return response;
+      return data;
 
     } catch (error) {
       console.error('Error retrieving timestream data:', error);
       throw error;
     }
   }
+
+const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[]) => {
+   thresholdData.forEach((threshold) => {
+        console.log('Threshold:', threshold);
+        sensorData.forEach((sensorReading) => {
+            console.log('Sensor:', sensorReading);
+            if (sensorReading.measure_name === threshold.metricId && sensorReading.buoy_id === threshold.deviceId && parseFloat(sensorReading.measure_value__double) < threshold.customMin || parseFloat(sensorReading.measure_value__double) > threshold.customMax ) {
+                console.log('Threshold exceeded!');
+            }
+        })
+    })
+
+}
 
 // Cache
 import AppCache from './models/cache/AppCache';
