@@ -8,62 +8,12 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import queryParser from './helpers/timestreamAPI/functions/queryParser';
+import AlertModel from './models/alerts/AlertModel';
 
 
 // Middleware
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
-// import TimestreamController from './controllers/timestreamAPI/TimestreamController';
-import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
-// import { Request } from 'express';
+// import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
 
-
-const compareThresholds = async () => {
-    console.log('Comparing thresholds...');
-    try {
-        const sensorData = await retrieveTimestreamData();
-        const thresholdData = await UserThresholdModel.getAllThreshold() //retrieveThresholdData();
-
-        console.log('Sensor data:', sensorData);
-        console.log('Threshold data:', thresholdData);
-        await checkThresholdExceeded(sensorData, thresholdData);
-    } catch (error) {
-        console.error('Error comparing thresholds:', error);
-        throw error;
-    }
-}
-
-const retrieveTimestreamData = async () => {
-    console.log('Retrieving timestream data...');
-    try {
-        const buoyIdList = '1';
-      const response = await TimestreamModel.getBuoyData(buoyIdList);//fetch('http://localhost:8085/api/ts/getAllBuoyIds');
-    //   const data = await response.json();
-      let data = queryParser.parseQueryResult(response)
-    //   console.log(data);
-      data.forEach((element) => {
-        console.log(element);
-        });
-      return data;
-
-    } catch (error) {
-      console.error('Error retrieving timestream data:', error);
-      throw error;
-    }
-  }
-
-const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[] | null) => {
-   thresholdData?.forEach((threshold) => {
-        // console.log('Threshold:', threshold);
-        sensorData.forEach((sensorReading) => {
-            // console.log('Sensor:', sensorReading);
-            if (sensorReading.measure_name === threshold.metricId && sensorReading.buoy_id === threshold.deviceId && parseFloat(sensorReading.measure_value__double) < threshold.customMin || parseFloat(sensorReading.measure_value__double) > threshold.customMax ) {
-                console.log('Threshold exceeded!');
-            }
-        })
-    })
-
-}
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -120,42 +70,8 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
-        // userModel.createUser("testUserOne@gmail.com", "Turkey2021!").then((result) => {
-        //     if (result != null) {
-        //         UserThresholdModel.createUserThreshold(result, 1, 'do').then((finish) =>{
-        //             if (finish != null) {
-        //                 UserThresholdModel.updateUserThreshold(result, 1, 'do', -5, 79)
-        //             }
-                    
-        //         })
-
-        //         UserThresholdModel.createUserThreshold(result, 1, 'ec').then((finish) =>{
-        //             if (finish != null) {
-        //                 UserThresholdModel.updateUserThreshold(result, 1, 'ec', 260, 450)
-        //             }
-                    
-        //         })
-
-        //         UserThresholdModel.createUserThreshold(result, 1, 'ph').then((finish) =>{
-        //             if (finish != null) {
-        //                 UserThresholdModel.updateUserThreshold(result, 1, 'ph', 0, 6)
-        //             }
-                    
-        //         })
-                
-        //     } else {
-        //         console.log("failed")
-        //     }
-            
-        // })
-    // UserThresholdModel.updateUserThreshold("645997521a95e72b5724748b", 123, -5, 20)
-        // UserThresholdModel.getAllThreshold();
-        
-        
-        
         console.log('hello')
-        // retrieveTimestreamData();
-        compareThresholds();
+        AlertModel.compareThresholds();
     });
 
     console.log(`Server started on port ${port}!`);
@@ -170,8 +86,6 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
-import UserThresholdModel from './models/userThreshold/UserThresholdModel';
-// import TimestreamController from './controllers/timestreamAPI/TimestreamController';
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', timestreamRouter)
