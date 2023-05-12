@@ -8,13 +8,13 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import userModel from './models/user/UserModel'
+// import userModel from './models/user/UserModel'
 // import userThresholdModel from './models/userThreshold/UserThresholdModel'
 import queryParser from './helpers/timestreamAPI/functions/queryParser';
 
 
 // Middleware
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
+// import AuthenticationController from './controllers/authentication/AuthenticationController';
 // import TimestreamController from './controllers/timestreamAPI/TimestreamController';
 import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
 // import { Request } from 'express';
@@ -44,17 +44,18 @@ import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
 //         return _res;
 //     }
 // }
-const compareThresholds = async () => {
-    console.log('Comparing thresholds...');
-    try {
-        const sensorData = await retrieveTimestreamData();
-        const thresholdData = await retrieveThresholdData();
-        await checkThresholdExceeded(sensorData, thresholdData);
-    } catch (error) {
-        console.error('Error comparing thresholds:', error);
-        throw error;
-    }
-}
+// const compareThresholds = async () => {
+//     console.log('Comparing thresholds...');
+//     try {
+//         const sensorData = await retrieveTimestreamData();
+//         const thresholdData = await retrieveThresholdData();
+//         await checkThresholdExceeded(sensorData, thresholdData);
+//     } catch (error) {
+//         console.error('Error comparing thresholds:', error);
+//         throw error;
+//     }
+// }
+
 
 const retrieveTimestreamData = async () => {
     console.log('Retrieving timestream data...');
@@ -75,18 +76,18 @@ const retrieveTimestreamData = async () => {
     }
   }
 
-const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[]) => {
-   thresholdData.forEach((threshold) => {
-        console.log('Threshold:', threshold);
-        sensorData.forEach((sensorReading) => {
-            console.log('Sensor:', sensorReading);
-            if (sensorReading.measure_name === threshold.metricId && sensorReading.buoy_id === threshold.deviceId && parseFloat(sensorReading.measure_value__double) < threshold.customMin || parseFloat(sensorReading.measure_value__double) > threshold.customMax ) {
-                console.log('Threshold exceeded!');
-            }
-        })
-    })
+// const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[]) => {
+//    thresholdData.forEach((threshold) => {
+//         console.log('Threshold:', threshold);
+//         sensorData.forEach((sensorReading) => {
+//             console.log('Sensor:', sensorReading);
+//             if (sensorReading.measure_name === threshold.metricId && sensorReading.buoy_id === threshold.deviceId && parseFloat(sensorReading.measure_value__double) < threshold.customMin || parseFloat(sensorReading.measure_value__double) > threshold.customMax ) {
+//                 console.log('Threshold exceeded!');
+//             }
+//         })
+//     })
 
-}
+// }
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -143,34 +144,34 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
-        userModel.createUser("testUserOne@gmail.com", "Turkey2021!").then((result) => {
-            if (result != null) {
-                UserThresholdModel.createUserThreshold(result, 1, 'do').then((finish) =>{
-                    if (finish != null) {
-                        UserThresholdModel.updateUserThreshold(result, 1, 'do', -5, 79)
-                    }
+        // userModel.createUser("testUserOne@gmail.com", "Turkey2021!").then((result) => {
+        //     if (result != null) {
+        //         UserThresholdModel.createUserThreshold(result, 1, 'do').then((finish) =>{
+        //             if (finish != null) {
+        //                 UserThresholdModel.updateUserThreshold(result, 1, 'do', -5, 79)
+        //             }
                     
-                })
+        //         })
 
-                UserThresholdModel.createUserThreshold(result, 1, 'ec').then((finish) =>{
-                    if (finish != null) {
-                        UserThresholdModel.updateUserThreshold(result, 1, 'ec', 260, 450)
-                    }
+        //         UserThresholdModel.createUserThreshold(result, 1, 'ec').then((finish) =>{
+        //             if (finish != null) {
+        //                 UserThresholdModel.updateUserThreshold(result, 1, 'ec', 260, 450)
+        //             }
                     
-                })
+        //         })
 
-                UserThresholdModel.createUserThreshold(result, 1, 'ph').then((finish) =>{
-                    if (finish != null) {
-                        UserThresholdModel.updateUserThreshold(result, 1, 'ph', 0, 6)
-                    }
+        //         UserThresholdModel.createUserThreshold(result, 1, 'ph').then((finish) =>{
+        //             if (finish != null) {
+        //                 UserThresholdModel.updateUserThreshold(result, 1, 'ph', 0, 6)
+        //             }
                     
-                })
+        //         })
                 
-            } else {
-                console.log("failed")
-            }
+        //     } else {
+        //         console.log("failed")
+        //     }
             
-    })
+    // })
     // UserThresholdModel.updateUserThreshold("645997521a95e72b5724748b", 123, -5, 20)
         // UserThresholdModel.getAllThreshold();
         
@@ -192,7 +193,7 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
-import UserThresholdModel from './models/userThreshold/UserThresholdModel';
+// import UserThresholdModel from './models/userThreshold/UserThresholdModel';
 // import TimestreamController from './controllers/timestreamAPI/TimestreamController';
 
 server.use('/api/auth', authRouter);

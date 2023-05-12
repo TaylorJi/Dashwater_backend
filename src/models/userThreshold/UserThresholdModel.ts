@@ -34,22 +34,48 @@ const updateUserThreshold = async (userId: String, deviceId: Number, metricId: S
 }
 
 
+// const getAllThreshold = async () => {
+//     try {
+//         const thresholds = await UserTheshold.find({});
+
+//         if (thresholds.length !== 0) {
+//             console.log("successful thresholds list retrieval")
+//             console.log("list has " + thresholds.length + "elements")
+//             console.log(thresholds);
+//             // for (let index = 0; index < thresholds.length; index++) {
+//             //     const element = thresholds[index];
+//             //     console.log(element["userId"])
+                
+//             // }
+//             return thresholds;
+//         }
+//         return false;
+//     } catch (err) {
+//         return null;
+//     }
+// }
+
 const getAllThreshold = async () => {
     try {
         const thresholds = await UserTheshold.find({});
+        var thresholdList:any[] = [];
 
         if (thresholds.length !== 0) {
             console.log("successful thresholds list retrieval")
             console.log("list has " + thresholds.length + "elements")
-            console.log(thresholds);
+            // console.log(thresholds);
             // for (let index = 0; index < thresholds.length; index++) {
             //     const element = thresholds[index];
             //     console.log(element["userId"])
                 
             // }
-            return thresholds;
+            thresholds.forEach((element) => {
+                // console.log(element);
+                thresholdList.push(element.toJSON());
+            });
+            return thresholdList;
         }
-        return false;
+        return null;
     } catch (err) {
         return null;
     }
