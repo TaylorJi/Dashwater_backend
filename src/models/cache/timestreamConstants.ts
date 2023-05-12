@@ -4,7 +4,7 @@ export const metricRef: deviceMetricType = {
     'ph': 'pH',
     'tds': 'Total Dissolved Solids',
     'temp': 'Temperature',
-    'turb': 'Turbidity',
+    'tbd': 'Turbidity',
     'wf': 'Water Flow',
     'wp': 'Water Pressure'
 };
@@ -42,4 +42,15 @@ export const metricUnitRef: deviceMetricUnitsType = {
         'xAxisName': 'Time',
         'yAxisName': 'kPa'
     }
+};
+
+export const logDataRef: deviceMetricType = {
+    'Dissolved Oxygen': 'dissolvedOxygen',
+    'Temperature': 'temperature',
+    'Electrical Conductivity': 'electricalConductivity',
+    'pH': 'pH',
+    'Turbidity': 'turbidity',
+    'Total Dissolved Solids': 'totalDissolvedSolids',
+    'Water Flow': 'waterFlow',
+    'Water Pressure': 'waterPressure'
 };
