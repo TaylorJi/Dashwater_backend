@@ -1,5 +1,5 @@
 import AppCache from "../cache/AppCache";
-import { metricUnitRef } from "../cache/timestreamConstants";
+import { VALUE_NOT_FOUND, metricUnitRef } from "../cache/timestreamConstants";
 import { formatTSTime } from "../cache/timestreamHelpers";
 
 const getCachedDeviceData = async (end: string) => {
@@ -8,7 +8,6 @@ const getCachedDeviceData = async (end: string) => {
         const cachedData = await AppCache.getDeviceData();
 
         if (cachedData) {
-
             return remapDeviceDataFromCache(cachedData, end);
         }
 
@@ -20,9 +19,43 @@ const getCachedDeviceData = async (end: string) => {
 
 };
 
+const getCachedHistoricalHighLow = async () => {
+    try {
+        const cachedData = await AppCache.getHistoricalHighLow();
+        if (cachedData) {
+            return remapHistoricalHighLow(cachedData);
+        }
+        return null;
+    } catch (err) {
+        console.log(err)
+        return null;
+    }
+
+};
+
+const remapHistoricalHighLow = (cachedData: any) => {
+    const mappedData: any = {};
+
+    Object.keys(cachedData).map((device) => {
+
+        mappedData[device] = [];
+
+        Object.keys(cachedData[device]).map((metric: any) => {
+            mappedData[device].push({
+                metric: metric,
+                unit: metricUnitRef[metric]['yAxisName'],
+                low: cachedData[device][metric]['low'],
+                high: cachedData[device][metric]['high'],
+                current: AppCache.getCurrentMeasurement(metric, device) ? AppCache.getCurrentMeasurement(metric, device) : VALUE_NOT_FOUND
+            })
+        });
+    });
+
+    return mappedData;
+};
+
 
 const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
-
     const mappedData: any = {};
 
     Object.keys(cachedData).map((device) => {
@@ -46,5 +79,7 @@ const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
 
 
 export default module.exports = {
-    getCachedDeviceData
+    getCachedDeviceData,
+    getCachedHistoricalHighLow,
+    remapHistoricalHighLow
 };

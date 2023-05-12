@@ -59,6 +59,13 @@ server.listen(port, async () => {
         console.log('Populated device data cache.');
     }
 
+    const historicalDataRegistration = await AppCache.registerHistoricalHighLow();
+    if (!historicalDataRegistration) {
+        console.log('There was a problem populating the historical data cache. Check AWS.');
+    } else {
+        console.log('Populated historical data cache.');
+    }
+
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);

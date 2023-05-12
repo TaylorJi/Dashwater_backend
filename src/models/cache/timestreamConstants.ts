@@ -4,7 +4,7 @@ export const metricRef: deviceMetricType = {
     'ph': 'pH',
     'tds': 'Total Dissolved Solids',
     'temp': 'Temperature',
-    'turb': 'Turbidity',
+    'tbd': 'Turbidity',
     'wf': 'Water Flow',
     'wp': 'Water Pressure'
 };
@@ -43,3 +43,5 @@ export const metricUnitRef: deviceMetricUnitsType = {
         'yAxisName': 'kPa'
     }
 };
+
+export const VALUE_NOT_FOUND = -9999;
