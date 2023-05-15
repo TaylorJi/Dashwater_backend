@@ -1,5 +1,5 @@
 import axios from "axios";
-import { metricRef } from "./timestreamConstants";
+import { DEVICE_IDS, metricRef } from "./timestreamConstants";
 import { floorToSecond, formatTSTime } from "./timestreamHelpers";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
@@ -12,7 +12,6 @@ class AppCacheManager {
     private readonly yvrLong = '123.1815';
 
     private readonly deviceRefreshRate = 3600000; // 1 hour
-    private readonly deviceIds = ['0', '1'];
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
@@ -140,7 +139,7 @@ class AppCacheManager {
 
             const deviceData: any = {};
 
-            await Promise.all(this.deviceIds.map(async (id) => {
+            await Promise.all(DEVICE_IDS.map(async (id) => {
                 const parsedDeviceId = queryBuilder.parseDeviceList(id);
 
                 deviceData[id] = {}
@@ -193,7 +192,7 @@ class AppCacheManager {
 
                 const updatedCachedData: any = { ...this.cachedDeviceMetricData };
 
-                await Promise.all(this.deviceIds.map(async (id) => {
+                await Promise.all(DEVICE_IDS.map(async (id) => {
 
                     let fetchedData = await TimestreamModel.getBuoyData(id);
 

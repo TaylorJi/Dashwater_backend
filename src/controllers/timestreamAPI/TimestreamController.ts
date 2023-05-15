@@ -138,11 +138,32 @@ const getCachedLogData = async (req: Request, res: Response) => {
 };
 
 
+const getCustomRangeData = async (req: Request, res: Response) => {
+
+  const { start, end } = req.body;
+
+  if (!start || !end) {
+    res.status(400).json({ error: "Invalid request; query is missing values" });
+
+  } else {
+    const response = await TimestreamCacheModel.getCustomRangeData(start, end);
+
+    if (response) {
+      res.status(200).json({ data: response });
+
+    } else {
+      res.status(500).json({ error: "There was an error with the cache." });
+    }
+  }
+
+};
+
 export default module.exports = {
   getAllBuoyIds,
   getCurrentBuoyData,
   getBuoyHistory,
   getBuoyThreshold,
   getCachedDeviceData,
-  getCachedLogData
+  getCachedLogData,
+  getCustomRangeData
 };

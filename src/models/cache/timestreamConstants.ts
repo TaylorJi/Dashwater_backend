@@ -54,3 +54,5 @@ export const logDataRef: deviceMetricType = {
     'Water Flow': 'waterFlow',
     'Water Pressure': 'waterPressure'
 };
+
+export const DEVICE_IDS = ['0', '1'];
