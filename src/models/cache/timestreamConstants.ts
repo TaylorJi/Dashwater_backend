@@ -44,6 +44,8 @@ export const metricUnitRef: deviceMetricUnitsType = {
     }
 };
 
+export const VALUE_NOT_FOUND = -9999;
+
 export const logDataRef: deviceMetricType = {
     'Dissolved Oxygen': 'dissolvedOxygen',
     'Temperature': 'temperature',

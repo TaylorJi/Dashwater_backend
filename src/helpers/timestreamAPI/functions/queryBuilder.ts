@@ -76,6 +76,26 @@ const buildHistoricalQuery = (
   );
 };
 
+// Build minimum query for circle graph data
+const buildMinQuery = (
+  buoyId: string,
+  measureName: string
+) => {
+  return (
+    `SELECT min(measure_value::double) AS minimum FROM YVR_water_sensor.EMA_C22_main_data_v00 WHERE buoy_id IN (${buoyId}) AND measure_name = '${measureName}'`
+  );
+};
+
+// Build maximum query for circle graph data
+const buildMaxQuery = (
+  buoyId: string,
+  measureName: string
+) => {
+  return (
+    `SELECT max(measure_value::double) AS maximum FROM YVR_water_sensor.EMA_C22_main_data_v00 WHERE buoy_id IN (${buoyId}) AND measure_name = '${measureName}'`
+  );
+};
+
 // Build query for each device's historical data
 const buildThresholdQuery = (
   buoyIdList: string,
@@ -108,5 +128,7 @@ export default module.exports = {
   buildCurrentQuery,
   buildHistoricalQuery,
   parseDeviceList,
-  buildThresholdQuery
+  buildThresholdQuery,
+  buildMinQuery,
+  buildMaxQuery
 };
