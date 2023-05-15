@@ -26,8 +26,14 @@ type rawTideDataType = {
     time: string;
 }
 
+type rawTideExtremeDataType = {
+    height: number;
+    time: string;
+    type: string;
+}
+
 type tideDataResType = {
-    high: tideDataType;
-    low: tideDataType;
+    high: rawTideExtremeDataType[];
+    low: rawTideExtremeDataType[];
     allData: tideDataType[];
 };
