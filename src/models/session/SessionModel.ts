@@ -52,32 +52,40 @@ const deleteSession = async (sessionId: string) => {
   }
 };
 
-const validateSession = async (sessionId: string) => {
-  const currentTime = new Date();
 
-  try {
-    const session = await Session.findOne({ sessionId: sessionId });
+const validateSession = async (sessionId: string, isAdminRoute: boolean = false) => {
+    const currentTime = new Date();
 
-    if (session) {
-      if (new Date(session.sessionExpiry) < currentTime) {
-        return false;
-      }
+    try {
+        const session = await Session.findOne({"sessionId": sessionId});
 
-      const fetchedUser = await User.findOne({ _id: session.userId });
+        if (session) {
+            if(new Date(session.sessionExpiry) < currentTime) {
+                return false;
+            }
 
-      if (fetchedUser) {
-        const user: userDataType = {
-          email: fetchedUser["email"],
-          userId: fetchedUser["_id"],
-          role: fetchedUser["role"],
-        };
+            const fetchedUser = await User.findOne({"_id": session.userId});
 
-        return user;
-      }
+            if (isAdminRoute && fetchedUser && fetchedUser.role !== "Admin") {
+                return false;
+            }
+            
+            if (fetchedUser) {
+                const user: userDataType = {
+                    email: fetchedUser['email'], 
+                    userId: fetchedUser['_id'], 
+                    role: fetchedUser['role']
+                };
 
-      return null;
-    } else {
-      return null;
+                return user;
+            }
+            
+            return null;
+        } else {
+            return null;
+        }
+    } catch (err) {
+        return null;
     }
   } catch (err) {
     return null;

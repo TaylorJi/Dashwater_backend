@@ -90,9 +90,47 @@ const getThresholdData = async (buoyIdList: string, measureName: string, start: 
   }
 };
 
+const getHistoricalLow = async (buoyId: string, measureName: string) => {
+  try {
+    const query = queryBuilder.buildMinQuery(buoyId, measureName);
+
+    const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
+
+    const data = await timestreamQuery.query(queryParams).promise();
+
+    if (data) {
+      return data;
+    }
+
+    return null;
+  } catch (_err) {
+    return null;
+  }
+}
+
+const getHistoricalHigh = async (buoyId: string, measureName: string) => {
+  try {
+    const query = queryBuilder.buildMaxQuery(buoyId, measureName);
+
+    const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
+
+    const data = await timestreamQuery.query(queryParams).promise();
+
+    if (data) {
+      return data;
+    }
+
+    return null;
+  } catch (_err) {
+    return null;
+  }
+}
+
 export default module.exports = {
   getAllBuoyIds,
   getBuoyData,
   getHistoricalData,
-  getThresholdData
+  getThresholdData,
+  getHistoricalLow,
+  getHistoricalHigh
 };

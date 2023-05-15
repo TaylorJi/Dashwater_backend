@@ -9,4 +9,5 @@ router.route("/getBuoyHistory").get(TimestreamController.getBuoyHistory);
 router.route("/getBuoyThreshold").get(TimestreamController.getBuoyThreshold);
 
 router.route("/getCachedData").post(TimestreamController.getCachedDeviceData);
+router.route("/getCachedHistorical").get(TimestreamController.getCachedHistoricalHighLow);
 router.route("/getCachedLogData").post(TimestreamController.getCachedLogData);
