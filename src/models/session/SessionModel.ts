@@ -44,7 +44,7 @@ const deleteSession = async (sessionId: string) => {
     }
 }
 
-const validateSession = async (sessionId: string) => {
+const validateSession = async (sessionId: string, isAdminRoute: boolean = false) => {
     const currentTime = new Date();
 
     try {
@@ -57,6 +57,10 @@ const validateSession = async (sessionId: string) => {
 
             const fetchedUser = await User.findOne({"_id": session.userId});
 
+            if (isAdminRoute && fetchedUser && fetchedUser.role !== "Admin") {
+                return false;
+            }
+            
             if (fetchedUser) {
                 const user: userDataType = {
                     email: fetchedUser['email'], 
