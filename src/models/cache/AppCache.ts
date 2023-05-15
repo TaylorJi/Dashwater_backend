@@ -207,7 +207,7 @@ class AppCacheManager {
                             .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
 
                         fetchedData.map((datum: any) => {
-                            this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], "-5")
+                            this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], datum['measure_value::double'])
 
                             let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
 
@@ -281,8 +281,6 @@ class AppCacheManager {
         }
     };
 
-    // function to call when device data is updated
-    // check if high and low need to be updated. If so, overwirte it
     private updateHistoricalHighLow = async (buoyId: string, metric: string, value: string) => {
         if (this.cachedHighLow && this.cachedHighLow[buoyId][metricRef[metric]]) {
             if (this.cachedHighLow[buoyId][metricRef[metric]]['low'] > parseFloat(value)) {
