@@ -23,12 +23,12 @@ const UserThresholdSchema = new Schema({
 
     customMin: {
         type: Number,
-        default: null
+        required: true
     },
 
     customMax: {
         type: Number,
-        default: null
+        required: true
     },
 
     trigger: {

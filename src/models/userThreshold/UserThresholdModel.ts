@@ -1,9 +1,9 @@
 import UserTheshold from "../../config/schemas/UserThreshold";
 
-const createUserThreshold = async (userId: String, deviceId: Number, metricId: String) => {
+const createUserThreshold = async (userId: String, deviceId: Number, metricId: String, min: Number, max: Number) => {
     try {
 
-        const newUserThreshold = await UserTheshold.create({ "userId": userId, "deviceId": deviceId, "metricId": metricId });
+        const newUserThreshold = await UserTheshold.create({ "userId": userId, "deviceId": deviceId, "metricId": metricId, "customMin": min, "customMax": max });
 
         if (newUserThreshold) {
             return newUserThreshold._id.toString();
