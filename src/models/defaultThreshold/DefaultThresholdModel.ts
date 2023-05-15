@@ -16,7 +16,7 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
 }
 
 
-const updateDefaultThreshold = async (metric: string, updateData: { [key: string]: number }) => {
+const updateDefaultThreshold = async (metric: string, updateData: defThresholdUpdateData) => {
     try {
         let updatedDefaultThreshold;
 

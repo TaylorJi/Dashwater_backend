@@ -35,9 +35,9 @@ const updateDevice = async (req: Request, res: Response) => {
         }
 
         if (metricList) {
-            for(let i = 0; i < Object.keys(metricList).length; i++) {
-                updateData[`metricList.${Object.keys(metricList)[i]}`] = metricList[Object.keys(metricList)[i]]
-            }
+            Object.keys(metricList).forEach(metric => {
+                updateData[`metricList.${metric}`] = metricList[metric]
+            })
         }
 
 

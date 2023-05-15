@@ -12,8 +12,8 @@ const createUserThreshold = async (req: Request, res: Response) => {
     } else {
 
         const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, true);
-        if (metricsToStore === null || metricsToStore === undefined) {
-            return res.status(400).json({ message: "Invalid request: Please check user ID, device ID, and metric values you enter again." })
+        if (!metricsToStore) {
+            return res.status(400).json({ message: "Invalid request: Please make sure that you entered correct user ID, device ID, and check that you did not enter more than 12 metric values (minimum value < maximum value)." })
         }
 
         const response = await UserThresholdModel.createUserThreshold( userId, deviceId, metricsToStore );
@@ -37,7 +37,7 @@ const updateUserThreshold = async (req: Request, res: Response) => {
 
         const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, false);
         if (metricsToStore === null) {
-            return res.status(400).json({ message: "Invalid request: Please check user ID, device ID, and metric values you enter again." })
+            return res.status(400).json({ message: "Invalid request: Please make sure that you entered correct user ID, device ID, and check that you did not enter more than 12 metric values (minimum value < maximum value)." })
         }
 
         const metricsToUpdate = Object.keys(metricList).reduce((json:{[key: string]: metric} , metric) => (json[`metricList.${metric}`] = metricList[metric], json), {})

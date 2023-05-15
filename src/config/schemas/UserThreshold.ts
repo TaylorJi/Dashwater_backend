@@ -20,12 +20,10 @@ const UserThresholdSchema = new Schema({
         dissolvedOxygen: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -36,12 +34,10 @@ const UserThresholdSchema = new Schema({
         electricalConductivity: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -52,12 +48,10 @@ const UserThresholdSchema = new Schema({
         liquidLevel: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -68,12 +62,10 @@ const UserThresholdSchema = new Schema({
         ph: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -84,12 +76,10 @@ const UserThresholdSchema = new Schema({
         temperature: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -100,12 +90,10 @@ const UserThresholdSchema = new Schema({
         totalDissolvedSolids: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -116,12 +104,10 @@ const UserThresholdSchema = new Schema({
         turbidity: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -132,12 +118,10 @@ const UserThresholdSchema = new Schema({
         waterFlow: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -148,12 +132,10 @@ const UserThresholdSchema = new Schema({
         waterLevel: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -164,12 +146,10 @@ const UserThresholdSchema = new Schema({
         waterPressure: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -180,12 +160,10 @@ const UserThresholdSchema = new Schema({
         co2Level: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {
@@ -196,12 +174,10 @@ const UserThresholdSchema = new Schema({
         ch4Level: {
             customMin: {
                 type: Number,
-                required: false,
                 default: null
             },
             customMax: {
                 type: Number,
-                required: false,
                 default: null
             },
             isWarning: {

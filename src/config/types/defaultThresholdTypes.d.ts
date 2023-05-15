@@ -3,3 +3,8 @@ type defaultThreshold = {
     defaultMin: number,
     defaultMax: number
 }
+
+
+type defThresholdUpdateData = {
+    [key: string]: number
+}

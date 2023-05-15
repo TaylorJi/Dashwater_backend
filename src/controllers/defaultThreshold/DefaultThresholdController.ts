@@ -8,7 +8,7 @@ const createDefaultThreshold = async (req: Request, res: Response) => {
     const { metric, defaultMin, defaultMax } = req.body;
 
     if (!metric || !defaultMin || !defaultMax || defaultMin > defaultMax) {
-        res.status(400).json({ message: "Invalid request: metric, default minimum and default maximum values are required." });
+        res.status(400).json({ message: "Invalid request: metric, default minimum and default maximum (default minimum <= default maximum) values are required." });
     } else {
         const response = await DefaultThresholdModel.createDefaultThreshold( metric, defaultMin, defaultMax );
 
@@ -28,7 +28,7 @@ const updateDefaultThreshold = async (req: Request, res: Response) => {
     if (!metric || (!defaultMin && !defaultMax) || (defaultMin && defaultMax && (defaultMin > defaultMax))) {
         res.status(400).json({ message: "Invalid request: metric value and at least one of default minimum, default maximum values (defaultMax > defaultMin) are required." });
     } else {
-        const updateData: { [key: string]: number } = {};
+        const updateData: defThresholdUpdateData = {};
 
         if (defaultMin) {
             updateData["defaultMin"] = defaultMin;

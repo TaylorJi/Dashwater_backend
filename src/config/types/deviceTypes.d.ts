@@ -6,7 +6,6 @@ type metricListBoolean = {
 
 
 type deviceUpdateDataType = {
-    deviceId?: number,
     location?: {
         type: "Point",
         coordinates: [number]
@@ -16,3 +15,17 @@ type deviceUpdateDataType = {
     }
 }
 
+
+type deviceType = {
+    // _id?: Schema.Types.ObjectId,
+    deviceId: number,
+    location: {
+        type: "Point",
+        coordinates: [number]
+    },
+    metricList: {
+        [key: string]: {
+            isAvailable: boolean
+        }
+    }
+}
