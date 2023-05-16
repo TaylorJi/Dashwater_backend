@@ -1,8 +1,8 @@
 import Device from "../../config/schemas/Device";
 
-const createDevice = async (deviceId: Number, coordinates: [Number]) => {
+const createDevice = async (deviceId: Number, coordinates: [Number], metricList: metricListBoolean) => {
     try {
-        const newDevice = await Device.create({ "deviceId": deviceId, "location.coordinates": coordinates });
+        const newDevice = await Device.create({ "deviceId": deviceId, "location.coordinates": coordinates, "metricList": metricList });
 
         if (newDevice) {
             return newDevice;
@@ -15,11 +15,10 @@ const createDevice = async (deviceId: Number, coordinates: [Number]) => {
 }
 
 
-const updateDevice = async (deviceId: Number, coordinates: [Number]) => {
+const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) => {
     try {
-
-        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, { "location.coordinates": coordinates }, {new: true})
-            .select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
+        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, updateData, {new: true})
+                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (updatedDevice) {
             return updatedDevice;
@@ -34,7 +33,8 @@ const updateDevice = async (deviceId: Number, coordinates: [Number]) => {
 
 const deleteDevice = async (deviceId: Number) => {
     try {
-        const deletedDevice = await Device.findOneAndDelete({ "deviceId": deviceId }).select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
+        const deletedDevice = await Device.findOneAndDelete({ "deviceId": deviceId })
+                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (deletedDevice) {
             return deletedDevice;
@@ -49,7 +49,7 @@ const deleteDevice = async (deviceId: Number) => {
 
 const getAllDevices = async () => {
     try {
-        const devices = await Device.find({}).select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
+        const devices = await Device.find({}).select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (devices.length !== 0) {
             return devices;
@@ -63,7 +63,8 @@ const getAllDevices = async () => {
 
 const getSingleDevice = async (deviceId: Number) => {
     try {
-        const device = await Device.findOne({ "deviceId": deviceId }).select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
+        const device = await Device.findOne({ "deviceId": deviceId })
+                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (device) {
             return device;
@@ -89,7 +90,7 @@ const getDevicesWithinRadius = async (coordinates: [Number], radius: Number) => 
                     $maxDistance: radius // Radius should be meter
                 }
             }
-        }).select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
+        }).select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (devices.length !== 0) {
             return devices;

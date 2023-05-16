@@ -29,7 +29,7 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*',
+        origin: '*'
     })
 );
 
@@ -88,6 +88,8 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
+import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', timestreamRouter)
@@ -96,3 +98,6 @@ server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
 server.use('/api/trackedDevice', trackedDeviceRouter);
 server.use('/api/device', deviceRouter);
+server.use('/api/defaultThreshold', defaultThresholdRouter)
+server.use('/api/userThreshold', userThresholdRouter)
+
