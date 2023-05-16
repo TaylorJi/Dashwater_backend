@@ -20,6 +20,80 @@ const DeviceSchema = new Schema({
             type: [Number],  // [ longitude, latitude ]
             required: true
         }
+    },
+    metricList: {
+        dissolvedOxygen: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        electricalConductivity: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        liquidLevel: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        ph: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        temperature: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        totalDissolvedSolids: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        turbidity: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        waterFlow: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        waterLevel: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        waterPressure: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        co2Level: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        },
+        ch4Level: {
+            isAvailable: {
+                type: Boolean,
+                required: true
+            }
+        }
     }
 });
 
