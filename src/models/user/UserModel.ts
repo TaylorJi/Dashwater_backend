@@ -1,9 +1,9 @@
 import User from "../../config/schemas/User";
 
-const createUser = async (email: String, password: String) => {
+const createUser = async (email: String, password: String, role: String) => {
     try {
 
-        const newUser = await User.create({ "email": email, "password": password, "role": "User" });
+        const newUser = await User.create({ "email": email, "password": password, "role": role });
 
         if (newUser) {
             return newUser;
@@ -76,7 +76,6 @@ const updateUser = async (userId: string, userEmail: string, userPassword: strin
 
 const deleteUser = async (userId: string) => {
     try {
-        console.log(userId)
         const deletedUser = await User.findOneAndDelete({ "_id": userId });
         if (deletedUser) {
             console.log(`Deleted user with ID ${userId}`);

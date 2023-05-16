@@ -2,12 +2,12 @@ import { Request, Response} from "express";
 import UserModel from "../../models/user/UserModel";
 
 const createUser = async (req: Request, res: Response) => {
-    const { email, password } =  req.body;
+    const { email, password, role } =  req.body;
 
     if (!email || !password) {
         res.status(400).json({ message: "Invalid request: email and password are required." });
     } else {
-        const response = await UserModel.createUser( email, password );
+        const response = await UserModel.createUser( email, password, role );
 
         if (response) {
             res.status(200).json({ text: response });
