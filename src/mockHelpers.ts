@@ -8,21 +8,21 @@ import UserModel from './models/user/UserModel';
 const createTestUser = (userEmail: String) => {
     UserModel.createUser(userEmail, "Turkey2021!").then((result) => {
             if (result != null) {
-                UserThresholdModel.createUserThreshold(result, 1, 'do').then((finish) =>{
+                UserThresholdModel.createUserThreshold(result, 1, 'do', -5, 79).then((finish) =>{
                     if (finish != null) {
                         UserThresholdModel.updateUserThreshold(result, 1, 'do', -5, 79)
                     }
                     
                 })
 
-                UserThresholdModel.createUserThreshold(result, 1, 'ec').then((finish) =>{
+                UserThresholdModel.createUserThreshold(result, 1, 'ec', -5, 79).then((finish) =>{
                     if (finish != null) {
                         UserThresholdModel.updateUserThreshold(result, 1, 'ec', 260, 450)
                     }
                     
                 })
 
-                UserThresholdModel.createUserThreshold(result, 1, 'ph').then((finish) =>{
+                UserThresholdModel.createUserThreshold(result, 1, 'ph', -5, 79).then((finish) =>{
                     if (finish != null) {
                         UserThresholdModel.updateUserThreshold(result, 1, 'ph', 0, 6)
                     }
