@@ -18,7 +18,7 @@ const createUser = async (email: String, password: String) => {
 
 const validateUser = async (email: String, password: String) => {
     try {
-        const user = await User.findOne({ "email": email, "password": password});
+        const user = await User.findOne({ "email": email, "password": password });
 
         if (user) {
             return user;
@@ -63,7 +63,7 @@ const getSingleUser = async (userId: string) => {
 const updateUser = async (userId: string, userEmail: string, userPassword: string, userRole: string) => {
     try {
         const users = await User.findByIdAndUpdate(
-            { _id: userId },{"email": userEmail, "password": userPassword, "role": userRole}
+            { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
         );
         return users;
 
@@ -77,19 +77,19 @@ const updateUser = async (userId: string, userEmail: string, userPassword: strin
 const deleteUser = async (userId: string) => {
     try {
         console.log(userId)
-      const deletedUser = await User.findOneAndDelete({"_id": userId});
-      if (deletedUser) {
-        console.log(`Deleted user with ID ${userId}`);
-        return deletedUser;
-      } else {
-        console.log(`User with ID ${userId} not found`);
-        return false;
-      }
+        const deletedUser = await User.findOneAndDelete({ "_id": userId });
+        if (deletedUser) {
+            console.log(`Deleted user with ID ${userId}`);
+            return deletedUser;
+        } else {
+            console.log(`User with ID ${userId} not found`);
+            return false;
+        }
     } catch (err) {
-      console.error(err);
-      return null;
+        console.error(err);
+        return null;
     }
-  };
+};
 
 
 export default module.exports = {
