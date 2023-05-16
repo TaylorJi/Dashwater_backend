@@ -9,7 +9,7 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
-// Middleware
+// Middleware...
 //import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
