@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 // Middleware
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
+// import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -29,7 +29,8 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*',
+        origin: 'http://localhost:3000',
+        credentials: true
     })
 );
 
