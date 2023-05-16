@@ -10,7 +10,6 @@ const createDefaultThreshold = async (metric: string, defaultMin: number, defaul
         return false;
 
     } catch (err) {
-        console.log(err);
         return null;
     }
 }
@@ -35,7 +34,6 @@ const updateDefaultThreshold = async (metric: string, updateData: defThresholdUp
         return false;
 
     } catch (err) {
-        console.log(err)
         return null;
     }
 }

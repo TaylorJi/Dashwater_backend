@@ -10,7 +10,6 @@ const createDevice = async (deviceId: Number, coordinates: [Number], metricList:
         return false;
 
     } catch (err) {
-        console.log(err);
         return null;
     }
 }
