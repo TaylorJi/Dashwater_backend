@@ -31,7 +31,7 @@ const validateUser = async (email: String, password: String) => {
     }
 };
 
-//20230505 EJ
+
 const getUser = async () => {
     try {
         const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
@@ -46,49 +46,12 @@ const getUser = async () => {
 };
 
 
-// const getSingleUser = async (userId: string) => {
-//     try {
-//         const user = await User.findById(userId);
-//         return user;
-//     } catch (error) {
-//         console.error("Error retrieving user: ", error)
-//         return null;
-//     }
-// };
-
-
-// const getSingleUser = async (idValue: string) => {
-//     console.log("id value:", idValue[0]);
-//     try {
-//         const users = await User.findById(
-//             // { _id: { $in: '644c373c859da9d501599bb2' } },
-//             { _id: { $in: idValue } },
-//             { email: 1, password: 1, role: 1 }
-//         );
-
-//         if (users.length !== 0) {
-//             const userRecords = users.map(user => ({
-//                 email: user.email,
-//                 password: user.password,
-//                 role: user.role
-//             }));
-//             return userRecords;
-//         }
-
-//         return null;
-//     } catch (err) {
-//         console.error("Error retrieving user.");
-//         return null;
-//     }
-// };
-
-
 const getSingleUser = async (userId: string) => {
     try {
-        const users = await User.findById(
+        const user = await User.findById(
             { _id: userId },
         );
-        return users // returns users as a document, but I want to update password and role 
+        return user;
 
     } catch (err) {
         console.error("Error retrieving user.");
@@ -102,7 +65,7 @@ const updateUser = async (userId: string, userEmail: string, userPassword: strin
         const users = await User.findByIdAndUpdate(
             { _id: userId },{"email": userEmail, "password": userPassword, "role": userRole}
         );
-        return users // returns users as a document, but I want to update password and role 
+        return users;
 
     } catch (err) {
         console.error("Error retrieving user.");
@@ -111,9 +74,6 @@ const updateUser = async (userId: string, userEmail: string, userPassword: strin
 };
 
 
-
-// const ObjectId = require('mongoose').Types.ObjectId;
-//TJ
 const deleteUser = async (userId: string) => {
     try {
         console.log(userId)
