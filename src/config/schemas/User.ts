@@ -23,7 +23,13 @@ const UserSchema = new Schema({
         type: String,
         enum: ['Admin', 'User'],
         required: true
-    }
+    }, 
+    // tokens: [{
+    //     token: {
+    //         type: String,
+    //         required: true
+    //     }
+    // }]
 
 });
 
