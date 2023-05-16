@@ -13,7 +13,7 @@ const createDevice = async (req: Request, res: Response) => {
         const response = await DeviceModel.createDevice( deviceId, coordinates, metricList );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -44,7 +44,7 @@ const updateDevice = async (req: Request, res: Response) => {
         const response = await DeviceModel.updateDevice( deviceId, updateData );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -62,7 +62,7 @@ const deleteDevice = async (req: Request, res: Response) => {
         const response = await DeviceModel.deleteDevice( deviceId );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -75,7 +75,7 @@ const getAllDevices = async (_req: Request, res: Response) => {
     const response = await DeviceModel.getAllDevices();
 
     if (response) {
-        res.status(200).json({ text: response });
+        res.status(200).json({ data: response });
     } else {
         res.status(500).json({ message: "There was an error with the request." });
     }
@@ -92,7 +92,7 @@ const getSingleDevice = async (req: Request, res: Response) => {
         const response = await DeviceModel.getSingleDevice( deviceId );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -110,7 +110,7 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
         const response = await DeviceModel.getDevicesWithinRadius( coordinates, radius );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ meesage: "There was an error with the request." });
         }

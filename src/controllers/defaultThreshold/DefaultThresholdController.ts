@@ -13,7 +13,7 @@ const createDefaultThreshold = async (req: Request, res: Response) => {
         const response = await DefaultThresholdModel.createDefaultThreshold( metric, defaultMin, defaultMax );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -41,7 +41,7 @@ const updateDefaultThreshold = async (req: Request, res: Response) => {
         const response = await DefaultThresholdModel.updateDefaultThreshold( metric, updateData );
 
         if (response) {
-            res.status(200).json({ text: response })
+            res.status(200).json({ data: response })
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -60,7 +60,7 @@ const deleteDefaultThreshold = async (req: Request, res: Response) => {
         const response = await DefaultThresholdModel.deleteDefaultThreshold( metric );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -73,7 +73,7 @@ const getAllDefaultThresholds = async (_req: Request, res: Response) => {
     const response = await DefaultThresholdModel.getAllDefaultThresholds();
 
     if (response) {
-        res.status(200).json({ text: response });
+        res.status(200).json({ data: response });
     } else {
         res.status(500).json({ message: "There was an error with the request." });
     }
@@ -90,7 +90,7 @@ const getSingleDefaultThreshold = async (req: Request, res: Response) => {
         const response = await DefaultThresholdModel.getSingleDefaultThreshold( metric );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }

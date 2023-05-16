@@ -17,7 +17,6 @@ type deviceUpdateDataType = {
 
 
 type deviceType = {
-    // _id?: Schema.Types.ObjectId,
     deviceId: number,
     location: {
         type: "Point",

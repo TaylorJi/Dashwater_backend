@@ -19,7 +19,7 @@ const createUserThreshold = async (req: Request, res: Response) => {
         const response = await UserThresholdModel.createUserThreshold( userId, deviceId, metricsToStore );
 
         if (response) {
-            return res.status(200).json({ text: response });
+            return res.status(200).json({ data: response });
         } else {
             return res.status(500).json({ message: "There was an error with the request." });
         }
@@ -45,7 +45,7 @@ const updateUserThreshold = async (req: Request, res: Response) => {
         const response = await UserThresholdModel.updateUserThreshold( userId, deviceId, metricsToUpdate );
 
         if (response) {
-            return res.status(200).json({ text: response });
+            return res.status(200).json({ data: response });
         } else {
             return res.status(500).json({ message: "There was an error with the request." });
         }
@@ -63,7 +63,7 @@ const deleteUserThreshold = async (req: Request, res: Response) => {
         const response = await UserThresholdModel.deleteUserThreshold( userId, deviceId );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -81,7 +81,7 @@ const getUserThresholdList = async (req: Request, res: Response) => {
         const response = await UserThresholdModel.getUserThresholdList( userId, deviceId );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
@@ -99,7 +99,7 @@ const getSingleMetricUserThreshold = async (req: Request, res: Response) => {
         const response = await UserThresholdModel.getSingleMetricUserThreshold( userId, deviceId, metric );
 
         if (response) {
-            res.status(200).json({ text: response });
+            res.status(200).json({ data: response });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
