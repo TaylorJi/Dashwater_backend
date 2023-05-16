@@ -29,8 +29,7 @@ const getCachedHistoricalHighLow = async () => {
             return remapHistoricalHighLow(cachedData);
         }
         return null;
-    } catch (err) {
-        console.log(err)
+    } catch (_err) {
         return null;
     }
 
@@ -156,7 +155,7 @@ const remapLogDataFromCache = (cachedData: any, end?: string) => {
 
 };
 
-const getCustomRangeData = async (start: string, end: string) => {
+const getTimeStreamDataForRange = async (start: string, end: string) => {
 
     try {
         const startDate = floorToSecond(start);
@@ -201,12 +200,36 @@ const getCustomRangeData = async (start: string, end: string) => {
         if (Object.keys(deviceData).length === 0) {
             return null;
         }
-        return remapDeviceDataFromCache(deviceData);
+        return deviceData;
 
     } catch (_err) {
         return null;
 
     }
+
+};
+
+const getCustomRangeData = async (start: string, end: string) => {
+
+    const timestreamData = await getTimeStreamDataForRange(start, end);
+
+    if (timestreamData) {
+        return remapDeviceDataFromCache(timestreamData);
+    }
+
+    return null;
+
+};
+
+const getCustomRangeLogData = async (start: string, end: string) => {
+
+    const timestreamData = await getTimeStreamDataForRange(start, end);
+
+    if (timestreamData) {
+        return remapLogDataFromCache(timestreamData);
+    }
+
+    return null;
 
 };
 
@@ -216,5 +239,6 @@ export default module.exports = {
     getCachedHistoricalHighLow,
     remapHistoricalHighLow,
     getCachedLogData,
-    getCustomRangeData
+    getCustomRangeData,
+    getCustomRangeLogData
 };
