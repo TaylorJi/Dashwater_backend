@@ -1,6 +1,6 @@
 // types for AWS API Gateway
 
-type deviceType = {
+type deviceSettingType = {
     id: number,
     name: string,
     description: string,
@@ -48,19 +48,6 @@ type deviceUpdateDataType = {
     }
 }
 
-
-type deviceType = {
-    deviceId: number,
-    location: {
-        type: "Point",
-        coordinates: [number]
-    },
-    metricList: {
-        [key: string]: {
-            isAvailable: boolean
-        }
-    }
-}
 
 type deviceType = {
     deviceId: number,

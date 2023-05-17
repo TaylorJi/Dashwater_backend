@@ -5,7 +5,6 @@ import CalibrationModel from "../../models/calibration/CalibrationModel";
 const getSensorCalibrationPoints = async (req: Request, res: Response) => {
 
     const { sensorId } = req.body;
-    console.log(sensorId);
 
     const response = await CalibrationModel.getSensorCalibrationPoints(sensorId);
 

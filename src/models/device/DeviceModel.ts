@@ -116,9 +116,9 @@ const getAllDevicesSettings: any = async () => {
         if (devicesResponse.status === 200) {
             let devicesResData = devicesResponse['data']['Devices'];
 
-            const devicesData: deviceType[] = devicesResData.map((device: any) => {
+            const devicesData: deviceSettingType[] = devicesResData.map((device: any) => {
 
-                const newDeviceItem: deviceType = {
+                const newDeviceItem: deviceSettingType = {
                     id: device['device_id'],
                     name: device['device_name'],
                     description: device['device_description'],
