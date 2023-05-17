@@ -22,7 +22,7 @@ type sensorType = {
 };
 
 type calibrationPointType = {
-    id: string,
+    id: number,
     digitalValue: number,
     physicalValue: number,
     sensorId: string
