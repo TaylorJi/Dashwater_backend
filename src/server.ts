@@ -4,13 +4,13 @@ import cors from 'cors';
 
 //Server
 import express from 'express';
-import Environment from './config/Environments';
+import Environment, { CORS_URL } from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
-// Middleware...
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
+// Middleware
+import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -29,7 +29,8 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*'
+        origin: CORS_URL,
+        credentials: true
     })
 );
 
@@ -81,7 +82,6 @@ server.listen(port, async () => {
 
 
 //Routing
-import { router as authRouter } from './routes/AuthenticationRoutes';
 import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 import { router as timestreamRouter } from './routes/TimestreamRoutes';
@@ -92,14 +92,13 @@ import { router as calibrationRouter } from './routes/CalibrationRoutes';
 import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
 import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
-server.use('/api/auth', authRouter);
-server.use('/api/ts', timestreamRouter)
-server.use('/api/weather', weatherRouter);
+server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
+server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
-server.use('/api/trackedDevice', trackedDeviceRouter);
-server.use('/api/device', deviceRouter);
-server.use('/api/calibration', calibrationRouter);
-server.use('/api/defaultThreshold', defaultThresholdRouter)
-server.use('/api/userThreshold', userThresholdRouter)
+server.use('/api/trackedDevice', AuthenticationController.userAuth, trackedDeviceRouter);
+server.use('/api/device', AuthenticationController.userAuth, deviceRouter);
+server.use('/api/calibration', AuthenticationController.userAuth, calibrationRouter);
+server.use('/api/defaultThreshold',  AuthenticationController.userAuth,defaultThresholdRouter)
+server.use('/api/userThreshold', AuthenticationController.userAuth, userThresholdRouter)
 

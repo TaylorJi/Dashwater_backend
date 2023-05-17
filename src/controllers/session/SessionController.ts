@@ -12,7 +12,7 @@ const createSession = async (req: Request, res: Response) => {
 
     const response = await SessionModel.createSession(sessionId, userId);
     if (response) {
-        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ text: response })
+        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ user: response })
     } else {
         return res.status(500).json({ message: "There was an error with the request." });
     }
@@ -35,16 +35,16 @@ const validateSession = async (req: Request, res: Response) => {
     const response = await SessionModel.validateSession(sessionId);
 
     if(response !== null) {
-        if (response !== false) {
+        if (response) {
             const updatedSession = await SessionModel.updateSessionExpiry(sessionId)
 
             if (updatedSession) {
-                return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ message: 'Session is not expired', data: response });
+                return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ message: 'Session is not expired', user: response });
             } else {
                 return res.status(500).json({ text: 'Could not update session expiration time.' });
             }
         } else {
-            return res.status(200).json({ message: 'Session is expired' });
+            return res.status(403).json({ message: 'Session is expired' });
         }
     } else {
         return res.status(500).json({ message: 'There was an error validating the session.'}); 

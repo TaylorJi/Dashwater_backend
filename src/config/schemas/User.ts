@@ -15,8 +15,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         min: 8,
-        max: 20,
-        match: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/
+        max: 50
     },
 
     role: {
