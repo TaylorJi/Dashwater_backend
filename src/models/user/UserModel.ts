@@ -1,9 +1,14 @@
 import User from "../../config/schemas/User";
+import bcrypt from "bcrypt";
+import { SALT_ROUNDS } from "../../helpers/authentication/constants";
 
-const createUser = async (email: String, password: String) => {
+const createUser = async (email: string, password: string) => {
     try {
 
-        const newUser = await User.create({ "email": email, "password": password, "role": "User" });
+        const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+        const hash = bcrypt.hashSync(password, salt);
+
+        const newUser = await User.create({ "email": email, "password": hash, "role": "User" });
 
         if (newUser) {
             return newUser;
@@ -11,17 +16,23 @@ const createUser = async (email: String, password: String) => {
         return null;
 
     } catch (err) {
+        console.log(err)
         return null;
     }
 };
 
 
-const validateUser = async (email: String, password: String) => {
+const validateUser = async (email: string, password: string) => {
     try {
-        const user = await User.findOne({ "email": email, "password": password});
+
+        const user = await User.findOne({ "email": email });
 
         if (user) {
-            return user;
+            const isValid = await bcrypt.compare(password, user.password);
+            if (isValid) {
+                return user;
+            }
+            return false;
         } else {
             return false;
         }

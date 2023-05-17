@@ -1,7 +1,7 @@
 import Session from "../../config/schemas/Session";
 import User from "../../config/schemas/User";
 
-const createSession = async (sessionId: String, userId: String) => {
+const createSession = async (sessionId: string, userId: string) => {
     try {
         await Session.deleteMany({"userId": userId})
         const expirationTime = new Date();

@@ -34,7 +34,7 @@ const validateUser = async (req: Request, res: Response) => {
         if (response) {
             res.status(200).json({ user: response });
         } else if ( response === false ) {
-            res.status(400).json({ message: "User with this email and password combination does not exist." });
+            res.status(500).json({ message: "User with this email and password combination does not exist." });
         } else {
             res.status(500).json({ message: "There was an error with the request." });
         }
