@@ -88,10 +88,17 @@ import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import { router as calibrationRouter } from './routes/CalibrationRoutes';
+import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
+import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
 server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
 server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
-server.use('/api/trackedDevice', AuthenticationController.userAuth, trackedDeviceRouter);
-server.use('/api/device', AuthenticationController.userAuth, deviceRouter);
+server.use('/api/trackedDevice', trackedDeviceRouter);
+server.use('/api/device', deviceRouter);
+server.use('/api/calibration', calibrationRouter);
+server.use('/api/defaultThreshold', defaultThresholdRouter)
+server.use('/api/userThreshold', userThresholdRouter)
+
