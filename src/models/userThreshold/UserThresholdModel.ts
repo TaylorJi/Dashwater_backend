@@ -4,10 +4,7 @@ import User from "../../config/schemas/User";
 import Device from "../../config/schemas/Device";
 import DefaultThreshold from "../../config/schemas/DefaultThreshold";
 
-import mongoose from 'mongoose'
-
-
-const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList) => {
+const createUserThreshold = async (userId: string, deviceId: number, metricList: metricList) => {
     try {
 
         const newUserThreshold = await UserThreshold.create({ "userId": userId, "deviceId": deviceId, "metricList": metricList });
@@ -23,7 +20,7 @@ const createUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
 }
 
 
-const updateUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricsToUpdate: metricList) => {
+const updateUserThreshold = async (userId: string, deviceId: number, metricsToUpdate: metricList) => {
     try {
         const updatedUserThreshold = await UserThreshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId }, metricsToUpdate, {new: true});
 
@@ -38,7 +35,7 @@ const updateUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
 }
 
 
-const deleteUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number) => {
+const deleteUserThreshold = async (userId: string, deviceId: number) => {
     try {
         const deletedUserThreshold = await UserThreshold.findOneAndDelete({ "userId": userId, "deviceId": deviceId });
 
@@ -53,7 +50,7 @@ const deleteUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, devic
 }
 
 
-const getUserThresholdList = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number) => {
+const getUserThresholdList = async (userId: string, deviceId: number) => {
     try {
         const userThresholdList = await UserThreshold.findOne({ "userId": userId, "deviceId": deviceId });
 
@@ -68,7 +65,7 @@ const getUserThresholdList = async (userId: mongoose.Schema.Types.ObjectId, devi
 }
 
 
-const getSingleMetricUserThreshold = async (userId: mongoose.Schema.Types.ObjectId, deviceId: number, metric: string) => {
+const getSingleMetricUserThreshold = async (userId: string, deviceId: number, metric: string) => {
     try {
         const metricUserThreshold = await UserThreshold.findOne({ "userId": userId, "deviceId": deviceId })
                                                             .select({ "userId": 1, "deviceId": 1, [`metricList.${metric}`]: 1 });
@@ -84,7 +81,7 @@ const getSingleMetricUserThreshold = async (userId: mongoose.Schema.Types.Object
 }
 
 
-const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.ObjectId, deviceId: number, metricList: metricList | undefined, isNewDocument: boolean ) => {
+const verifyUserThresholdDocument = async ( userId: string, deviceId: number, metricList: metricList | undefined, isNewDocument: boolean ) => {
     try {
 
         const user = await User.findOne({ "_id": userId });
@@ -107,7 +104,8 @@ const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.Object
             const defaultThresholdValues = await DefaultThreshold.find({});
             const defaultThresholdValuesJSON = defaultThresholdValues.reduce((json: {[key: string]: defaultThreshold}, metricObj) => (json[metricObj.metric] = metricObj, json), {})
 
-            const metricsToStore: metricList = {}
+            const metricsToStore: metricList = {};
+
             Object.keys(device.metricList).forEach(metric => {
                 if (device.metricList[metric].isAvailable) {
                     if (metricList !== undefined && metricList[metric]) {
@@ -115,10 +113,10 @@ const verifyUserThresholdDocument = async ( userId: mongoose.Schema.Types.Object
                     } else if (defaultThresholdValuesJSON[metric]) {
                         metricsToStore[metric] = { customMin: defaultThresholdValuesJSON[metric].defaultMin,
                                                    customMax: defaultThresholdValuesJSON[metric].defaultMax,
-                                                   isWarning: true }
+                                                   isWarning: true };
                     }
                 }
-            })
+            });
 
             return metricsToStore;
         } else {
