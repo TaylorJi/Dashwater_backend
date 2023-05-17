@@ -19,12 +19,11 @@ type sensorType = {
     enabled: boolean,
     min_val: number,
     max_val: number,
-    calibration_pts: calibrationPointType[],
-}
+};
 
 type calibrationPointType = {
     id: string,
     digitalValue: number,
     physicalValue: number,
     sensorId: string
-}
+};
