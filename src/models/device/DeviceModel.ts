@@ -1,4 +1,5 @@
 import Device from "../../config/schemas/Device";
+import axios from "axios";
 
 const createDevice = async (deviceId: Number, coordinates: [Number]) => {
     try {
@@ -18,7 +19,7 @@ const createDevice = async (deviceId: Number, coordinates: [Number]) => {
 const updateDevice = async (deviceId: Number, coordinates: [Number]) => {
     try {
 
-        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, { "location.coordinates": coordinates }, {new: true})
+        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, { "location.coordinates": coordinates }, { new: true })
             .select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
 
         if (updatedDevice) {
@@ -101,11 +102,87 @@ const getDevicesWithinRadius = async (coordinates: [Number], radius: Number) => 
     }
 }
 
+const getAllDevicesSettings: any = async () => {
+    try {
+        const apiGateway = process.env.AWS_DEVICES_API_GATEWAY;
+        const devicesResponse: any = await axios.get(`${apiGateway}/devices`, {
+            headers: {
+                'x-api-key': process.env.AWS_DEVICES_API_KEY,
+                'authorizationToken': process.env.AWS_DEVICES_API_AUTH_TOKEN
+            }
+        });
+
+        if (devicesResponse.status === 200) {
+            let devicesResData = devicesResponse['data']['Devices'];
+
+            const devicesData: deviceType[] = devicesResData.map((device: any) => {
+
+                const newDeviceItem: deviceType = {
+                    id: device['device_id'],
+                    name: device['device_name'],
+                    description: device['device_description'],
+                    locationX: device['location_x'],
+                    locationY: device['location_y'],
+                    active: device['active'],
+                    sensors: []
+                }
+
+                return newDeviceItem;
+            });
+
+            const sensorsResponse: any = await axios.get(`${apiGateway}/sensors`, {
+                headers: {
+                    'x-api-key': process.env.AWS_DEVICES_API_KEY,
+                    'authorizationToken': process.env.AWS_DEVICES_API_AUTH_TOKEN
+                }
+            });
+
+            if (sensorsResponse.status === 200) {
+                let sensorsResData = sensorsResponse['data']['sensors'];
+
+                const sensorsData: sensorType[] = sensorsResData.map((sensor: any) => {
+
+                    const newSensorItem: sensorType = {
+                        id: sensor['sensor_id'],
+                        deviceId: sensor['device_id'],
+                        lastCalibrationDate: sensor['last_calibration_date'],
+                        minCalibrationPts: sensor['minimum_required_calibration_points'],
+                        metric: sensor['metric_type'],
+                        default_metric: sensor['default_metric_unit'],
+                        calibrated: sensor['calibrated'],
+                        enabled: sensor['enabled'],
+                        min_val: sensor['min_val'],
+                        max_val: sensor['max_val'],
+                        calibration_pts: [],
+                    }
+
+                    return newSensorItem;
+                });
+
+                devicesData.forEach((device: any) => {
+                    sensorsData.forEach((sensor: any) => {
+                        if (sensor.deviceId === device.id) {
+                            device.sensors.push(sensor);
+                        }
+                    });
+                });
+
+                return devicesData;
+            }
+        }
+        return null;
+
+    } catch (_err) {
+        return null;
+    }
+}
+
 export default module.exports = {
     createDevice,
     updateDevice,
     deleteDevice,
     getAllDevices,
     getSingleDevice,
-    getDevicesWithinRadius
+    getDevicesWithinRadius,
+    getAllDevicesSettings
 }

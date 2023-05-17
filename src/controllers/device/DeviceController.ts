@@ -106,6 +106,18 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
 }
 
+const getAllDevicesSettings = async (_req: Request, res: Response) => {
+
+    const response = await DeviceModel.getAllDevicesSettings();
+    console.log(response)
+
+    if (response) {
+        res.status(200).json({ data: response });
+    } else {
+        res.status(500).json({ message: "There was an error with the request." });
+    }
+}
+
 
 export default module.exports = {
     createDevice,
@@ -113,5 +125,6 @@ export default module.exports = {
     deleteDevice,
     getAllDevices,
     getSingleDevice,
-    getDevicesWithinRadius
+    getDevicesWithinRadius,
+    getAllDevicesSettings
 }
