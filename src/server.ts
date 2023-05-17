@@ -9,7 +9,7 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
-// Middleware
+// Middleware...
 //import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
@@ -29,7 +29,7 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*',
+        origin: '*'
     })
 );
 
@@ -59,6 +59,13 @@ server.listen(port, async () => {
         console.log('Populated device data cache.');
     }
 
+    const historicalDataRegistration = await AppCache.registerHistoricalHighLow();
+    if (!historicalDataRegistration) {
+        console.log('There was a problem populating the historical data cache. Check AWS.');
+    } else {
+        console.log('Populated historical data cache.');
+    }
+
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);
@@ -82,6 +89,8 @@ import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
 import { router as calibrationRouter } from './routes/CalibrationRoutes';
+import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
+import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
 server.use('/api/auth', authRouter);
 server.use('/api/ts', timestreamRouter)
@@ -91,3 +100,6 @@ server.use('/api/user', userRouter);
 server.use('/api/trackedDevice', trackedDeviceRouter);
 server.use('/api/device', deviceRouter);
 server.use('/api/calibration', calibrationRouter);
+server.use('/api/defaultThreshold', defaultThresholdRouter)
+server.use('/api/userThreshold', userThresholdRouter)
+
