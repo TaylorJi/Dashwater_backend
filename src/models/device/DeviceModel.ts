@@ -18,14 +18,8 @@ const createDevice = async (deviceId: Number, coordinates: [Number], metricList:
 
 const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) => {
     try {
-<<<<<<< HEAD
-
-        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, { "location.coordinates": coordinates }, { new: true })
-            .select({ "deviceId": 1, "location.coordinates": 1, "_id": 0 });
-=======
         const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, updateData, {new: true})
                 .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
->>>>>>> 7641814f8b5095deaf01c0dd52d85692a9eb1f3a
 
         if (updatedDevice) {
             return updatedDevice;
