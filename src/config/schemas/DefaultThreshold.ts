@@ -6,8 +6,7 @@ const DefaultThresholdSchema = new Schema({
     metric: {
         type: String,
         unique: true,
-        enum: ["dissolvedOxygen", "electricalConductivity", "liquidLevel", "ph", "temperature", "totalDissolvedSolids",
-                "turbidity", "waterFlow", "waterLevel", "waterPressure", "co2Level", "ch4Level"],
+        enum: ["do", "ec", "liqlev", "ph", "temp", "tbd", "tds", "wf", "wp"],
         required: true
     },
 

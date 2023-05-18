@@ -5,18 +5,18 @@ import UserThresholdModel from "../../models/userThreshold/UserThresholdModel";
 
 const createUserThreshold = async (req: Request, res: Response) => {
 
-    const { userId, deviceId, metricList } = req.body;
+    const { userId, sensorId } = req.body;
 
-    if (!userId || !deviceId) {
-        return res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
+    if (!userId || !sensorId) {
+        return res.status(400).json({ message: "Invalid request: user ID, and sensor ID are required." });
     } else {
 
-        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, true);
-        if (!metricsToStore) {
-            return res.status(400).json({ message: "Invalid request: Please make sure that you entered correct user ID, device ID, and check that you did not enter more than 12 metric values (minimum value < maximum value)." })
+        const newEntry = await UserThresholdModel.verifyUserThresholdDocument(userId, sensorId);
+        if (!newEntry) {
+            return res.status(400).json({ message: "Invalid request: This user already has a document created with this sensor, update the document instead." })
         }
 
-        const response = await UserThresholdModel.createUserThreshold( userId, deviceId, metricsToStore );
+        const response = await UserThresholdModel.createUserThreshold(req.body);
 
         if (response) {
             return res.status(200).json({ data: response });
@@ -29,20 +29,13 @@ const createUserThreshold = async (req: Request, res: Response) => {
 
 const updateUserThreshold = async (req: Request, res: Response) => {
 
-    const { userId, deviceId, metricList } = req.body;
+    const { userId, sensorId, deviceId } = req.body;
 
-    if (!userId || !deviceId || metricList === undefined || Object.keys(metricList).length === 0) {
-        return res.status(400).json({ message: "Invalid request: user ID, device ID and metrics to update are required." })
+    if (!userId || !sensorId || !deviceId) {
+        return res.status(400).json({ message: "Invalid request: user ID, sensor ID, and deviceId are required." })
     } else {
 
-        const metricsToStore = await UserThresholdModel.verifyUserThresholdDocument(userId, deviceId, metricList, false);
-        if (metricsToStore === null) {
-            return res.status(400).json({ message: "Invalid request: Please make sure that you entered correct user ID, device ID, and check that you did not enter more than 12 metric values (minimum value < maximum value)." })
-        }
-
-        const metricsToUpdate = Object.keys(metricList).reduce((json:{[key: string]: metric} , metric) => (json[`metricList.${metric}`] = metricList[metric], json), {})
-
-        const response = await UserThresholdModel.updateUserThreshold( userId, deviceId, metricsToUpdate );
+        const response = await UserThresholdModel.updateUserThreshold(req.body);
 
         if (response) {
             return res.status(200).json({ data: response });
@@ -52,40 +45,18 @@ const updateUserThreshold = async (req: Request, res: Response) => {
     }
 }
 
-
-const deleteUserThreshold = async (req: Request, res: Response) => {
-
-    const { userId, deviceId } = req.body;
-
-    if (!userId || !deviceId) {
-        res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
-    } else {
-        const response = await UserThresholdModel.deleteUserThreshold( userId, deviceId );
-
-        if (response) {
-            res.status(200).json({ data: response });
-        } else {
-            res.status(500).json({ message: "There was an error with the request." });
-        }
-    }
-}
-
-
 const getUserThresholdList = async (req: Request, res: Response) => {
 
-    const { userId, deviceId } = req.body;
+    const { userId } = req.body;
 
-    if (!userId || !deviceId) {
-        res.status(400).json({ message: "Invalid request: user ID, and device ID are required." });
+    const response = await UserThresholdModel.getUserThresholdList(userId);
+
+    if (response) {
+        return res.status(200).json({ data: response });
     } else {
-        const response = await UserThresholdModel.getUserThresholdList( userId, deviceId );
-
-        if (response) {
-            res.status(200).json({ data: response });
-        } else {
-            res.status(500).json({ message: "There was an error with the request." });
-        }
+        return res.status(500).json({ message: "There was an error with the request." });
     }
+
 }
 
 
@@ -94,26 +65,40 @@ const getSingleMetricUserThreshold = async (req: Request, res: Response) => {
     const { userId, deviceId, metric } = req.body;
 
     if (!userId || !deviceId || !metric) {
-        res.status(400).json({ message: "Invalid request: user ID, device ID and metric are required." });
+        return res.status(400).json({ message: "Invalid request: user ID, device ID and metric are required." });
     } else {
-        const response = await UserThresholdModel.getSingleMetricUserThreshold( userId, deviceId, metric );
+        const response = await UserThresholdModel.getSingleMetricUserThreshold(userId, deviceId, metric);
 
         if (response) {
-            res.status(200).json({ data: response });
+            return res.status(200).json({ data: response });
         } else {
-            res.status(500).json({ message: "There was an error with the request." });
+            return res.status(500).json({ message: "There was an error with the request." });
         }
     }
 }
 
+const getUserThresholdsByDevice = async (req: Request, res: Response) => {
 
+    const { userId, deviceId } = req.params;
 
+    if (!userId || !deviceId) {
+        return res.status(400).json({ message: "Invalid request: userID and deviceID are required." })
+    }
 
+    const response = await UserThresholdModel.getUserThresholdsByDevice(userId, +deviceId);
+
+    if (response) {
+        return res.status(200).json({ data: response });
+    } else {
+        return res.status(500).json({ message: "There was an error with the request." })
+    }
+
+}
 
 export default module.exports = {
     createUserThreshold,
     updateUserThreshold,
-    deleteUserThreshold,
     getUserThresholdList,
-    getSingleMetricUserThreshold
+    getSingleMetricUserThreshold,
+    getUserThresholdsByDevice
 }

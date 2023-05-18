@@ -1,13 +1,10 @@
 import UserThreshold from "../../config/schemas/UserThreshold";
-
 import User from "../../config/schemas/User";
-import Device from "../../config/schemas/Device";
-import DefaultThreshold from "../../config/schemas/DefaultThreshold";
 
-const createUserThreshold = async (userId: string, deviceId: number, metricList: metricList) => {
+const createUserThreshold = async (threshold: userThresholdType) => {
     try {
 
-        const newUserThreshold = await UserThreshold.create({ "userId": userId, "deviceId": deviceId, "metricList": metricList });
+        const newUserThreshold = await UserThreshold.create(threshold);
 
         if (newUserThreshold) {
             return newUserThreshold;
@@ -20,9 +17,12 @@ const createUserThreshold = async (userId: string, deviceId: number, metricList:
 }
 
 
-const updateUserThreshold = async (userId: string, deviceId: number, metricsToUpdate: metricList) => {
+const updateUserThreshold = async (newThresholdValues: userThresholdType) => {
     try {
-        const updatedUserThreshold = await UserThreshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId }, metricsToUpdate, {new: true});
+        const updatedUserThreshold = await UserThreshold.findOneAndUpdate(
+            { "userId": newThresholdValues.userId, "sensorId": newThresholdValues.sensorId }, 
+            newThresholdValues, 
+            {new: true, upsert: true});
 
         if (updatedUserThreshold) {
             return updatedUserThreshold;
@@ -35,9 +35,9 @@ const updateUserThreshold = async (userId: string, deviceId: number, metricsToUp
 }
 
 
-const deleteUserThreshold = async (userId: string, deviceId: number) => {
+const deleteUserThreshold = async (userId: string, sensorId: number) => {
     try {
-        const deletedUserThreshold = await UserThreshold.findOneAndDelete({ "userId": userId, "deviceId": deviceId });
+        const deletedUserThreshold = await UserThreshold.findOneAndDelete({ "userId": userId, "sensorId": sensorId });
 
         if (deletedUserThreshold) {
             return deletedUserThreshold;
@@ -50,9 +50,9 @@ const deleteUserThreshold = async (userId: string, deviceId: number) => {
 }
 
 
-const getUserThresholdList = async (userId: string, deviceId: number) => {
+const getUserThresholdList = async (userId: string) => {
     try {
-        const userThresholdList = await UserThreshold.findOne({ "userId": userId, "deviceId": deviceId });
+        const userThresholdList = await UserThreshold.find({ "userId": userId });
 
         if (userThresholdList) {
             return userThresholdList;
@@ -81,54 +81,35 @@ const getSingleMetricUserThreshold = async (userId: string, deviceId: number, me
 }
 
 
-const verifyUserThresholdDocument = async ( userId: string, deviceId: number, metricList: metricList | undefined, isNewDocument: boolean ) => {
+const verifyUserThresholdDocument = async ( userId: string, sensorId: number) => {
     try {
 
         const user = await User.findOne({ "_id": userId });
-        const device: deviceType | null =  await Device.findOne({ "deviceId": deviceId });
-        if(!user || !device) {
-            return null;
+        const userSensorExists = await UserThreshold.findOne({ "userId": userId,  "sensorId": sensorId });
+
+        if(!user || userSensorExists) {
+            return false;
         }
 
-        if (metricList !== undefined && Object.keys(metricList).length > 12) {
-            return null;
-        }
-
-        const invalidMetrics = metricList ? Object.keys(metricList).filter((metric) => metricList[metric].customMin > metricList[metric].customMax) : null
-
-        if (invalidMetrics !== null && invalidMetrics.length > 0) {
-            return null;
-        }
-
-        if (isNewDocument) {
-            const defaultThresholdValues = await DefaultThreshold.find({});
-            const defaultThresholdValuesJSON = defaultThresholdValues.reduce((json: {[key: string]: defaultThreshold}, metricObj) => (json[metricObj.metric] = metricObj, json), {})
-
-            const metricsToStore: metricList = {};
-
-            Object.keys(device.metricList).forEach(metric => {
-                if (device.metricList[metric].isAvailable) {
-                    if (metricList !== undefined && metricList[metric]) {
-                        metricsToStore[metric] = metricList[metric]
-                    } else if (defaultThresholdValuesJSON[metric]) {
-                        metricsToStore[metric] = { customMin: defaultThresholdValuesJSON[metric].defaultMin,
-                                                   customMax: defaultThresholdValuesJSON[metric].defaultMax,
-                                                   isWarning: true };
-                    }
-                }
-            });
-
-            return metricsToStore;
-        } else {
-            return metricList;
-        }
+        return true;
 
     } catch (err) {
-        return null;
+        return false;
     }
 }
 
 
+const getUserThresholdsByDevice = async (userId: string, deviceId: number) => {
+    try {
+        const deviceThresholdsList = await UserThreshold.find({ "userId": userId, "deviceId": deviceId });
+        if (deviceThresholdsList) {
+            return deviceThresholdsList
+        }
+        return null;
+    } catch (_err) {
+        return null;
+    }
+}
 
 
 export default module.exports = {
@@ -137,5 +118,6 @@ export default module.exports = {
     deleteUserThreshold,
     getUserThresholdList,
     getSingleMetricUserThreshold,
-    verifyUserThresholdDocument
+    verifyUserThresholdDocument,
+    getUserThresholdsByDevice
 }
