@@ -134,9 +134,9 @@ const updateDeviceSettings = async(req: Request, res: Response) => {
     const response = await DeviceModel.updateDeviceSettings(req.body);
 
     if (response) {
-        res.status(200).json({ message: response });
+        res.status(200).json({ message: `Device update successful!` });
     } else {
-        res.status(500).json({ message: "There was an error with the request." })
+        res.status(500).json({ message: "There was an error with the" })
     }
 }
 

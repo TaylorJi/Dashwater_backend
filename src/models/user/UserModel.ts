@@ -16,7 +16,6 @@ const createUser = async (email: string, password: string) => {
         return null;
 
     } catch (err) {
-        console.log(err)
         return null;
     }
 };

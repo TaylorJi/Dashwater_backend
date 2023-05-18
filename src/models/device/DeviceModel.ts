@@ -190,8 +190,6 @@ const updateDeviceSettings: any = async (device: deviceSettingType) => {
         'active': device['active']
     }
 
-    console.log(newSettings);
-
     try {
         const devicesResponse: any = await axios.put(`${process.env.AWS_DEVICES_API_GATEWAY}/devices/${device.id}`,
             newSettings,
@@ -203,13 +201,12 @@ const updateDeviceSettings: any = async (device: deviceSettingType) => {
             });
 
         if (devicesResponse.status === 200) {
-            return `Update of device: ${device.id} successful!`
+            return true
         }
     } catch (_err) {
-        console.log(_err);
-        return null;
+        return false;
     }
-    return null;
+    return false;
 }
 
 export default module.exports = {
