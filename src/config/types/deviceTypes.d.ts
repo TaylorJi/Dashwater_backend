@@ -16,7 +16,7 @@ type sensorType = {
     lastCalibrationDate: string,
     minCalibrationPts: number,
     metric: string,
-    defaultMetric: string,
+    defaultUnit: string,
     calibrated: boolean,
     enabled: boolean,
     minVal: number,
