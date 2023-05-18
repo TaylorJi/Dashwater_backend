@@ -129,6 +129,17 @@ const getAllDevicesSettings = async (_req: Request, res: Response) => {
     }
 }
 
+const updateDeviceSettings = async(req: Request, res: Response) => {
+
+    const response = await DeviceModel.updateDeviceSettings(req.body);
+
+    if (response) {
+        res.status(200).json({ message: response });
+    } else {
+        res.status(500).json({ message: "There was an error with the request." })
+    }
+}
+
 
 export default module.exports = {
     createDevice,
@@ -137,5 +148,6 @@ export default module.exports = {
     getAllDevices,
     getSingleDevice,
     getDevicesWithinRadius,
-    getAllDevicesSettings
+    getAllDevicesSettings,
+    updateDeviceSettings
 }
