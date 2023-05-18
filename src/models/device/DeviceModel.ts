@@ -149,11 +149,11 @@ const getAllDevicesSettings: any = async () => {
                         lastCalibrationDate: sensor['last_calibration_date'],
                         minCalibrationPts: sensor['minimum_required_calibration_points'],
                         metric: sensor['metric_type'],
-                        default_metric: sensor['default_metric_unit'],
+                        defaultMetric: sensor['default_metric_unit'],
                         calibrated: sensor['calibrated'],
                         enabled: sensor['enabled'],
-                        min_val: sensor['min_val'],
-                        max_val: sensor['max_val'],
+                        minVal: sensor['min_val'],
+                        maxVal: sensor['max_val'],
                     }
 
                     return newSensorItem;
