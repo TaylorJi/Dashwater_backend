@@ -21,7 +21,7 @@ const getAllTrackedDevices = async (req: Request, res: Response) => {
 const createTrackedDevice = async (req: Request, res: Response) => {
     const { userId, deviceId } = req.body;
 
-    if (!userId || !deviceId) {
+    if (!userId || deviceId == null) {
         return res.status(400).json({message: "Invalid request: user ID and device ID are required."});
     }
 
@@ -41,7 +41,7 @@ const createTrackedDevice = async (req: Request, res: Response) => {
 const deleteTrackedDevice = async (req: Request, res: Response) => {
     const { userId, deviceId } = req.body;
 
-    if (!userId || !deviceId) {
+    if (!userId || deviceId == null) {
         return res.status(400).json({message: "Invalid request: user ID and device ID are required."});
     }
 
