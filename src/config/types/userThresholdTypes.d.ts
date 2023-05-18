@@ -4,9 +4,12 @@ type metricList = {
     }
 }
 
-type metric = {
-    customMin: number,
-    customMax: number,
-    isWarning: boolean
+type userThresholdType = {
+    userId: string,
+    sensorId: number,
+    deviceId: number,
+    minVal: number
+    maxVal: number,
+    alert: boolean
 }
 

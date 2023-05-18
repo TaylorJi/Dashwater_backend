@@ -6,6 +6,6 @@ import UserThresholdController from "../controllers/userThreshold/UserThresholdC
 
 router.route('/createUserThreshold').post(UserThresholdController.createUserThreshold);
 router.route('/updateUserThreshold').put(UserThresholdController.updateUserThreshold);
-router.route('/deleteUserThreshold').delete(UserThresholdController.deleteUserThreshold);
 router.route('/getUserThresholdList').get(UserThresholdController.getUserThresholdList);
 router.route('/getSingleMetricUserThreshold').get(UserThresholdController.getSingleMetricUserThreshold);
+router.route('/getUserThresholdsByDevice/:userId/:deviceId').get(UserThresholdController.getUserThresholdsByDevice);
