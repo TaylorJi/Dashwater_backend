@@ -7,6 +7,7 @@ type deviceSettingType = {
     locationX: number,
     locationY: number,
     active: boolean,
+    timeInterval: int,
     sensors: sensorType[]
 };
 
@@ -16,11 +17,11 @@ type sensorType = {
     lastCalibrationDate: string,
     minCalibrationPts: number,
     metric: string,
-    default_metric: string,
+    defaultUnit: string,
     calibrated: boolean,
     enabled: boolean,
-    min_val: number,
-    max_val: number,
+    minVal: number,
+    maxVal: number,
 };
 
 type calibrationPointType = {
