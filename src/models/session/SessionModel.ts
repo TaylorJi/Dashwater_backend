@@ -3,11 +3,11 @@ import User from "../../config/schemas/User";
 import { getTokenKey } from "./sessionHelpers";
 import jwt from "jsonwebtoken";
 
-const createSession = async (sessionId: String, userId: String) => {
-  try {
-    await Session.deleteMany({ userId: userId });
-    const expirationTime = new Date();
-    expirationTime.setHours(expirationTime.getHours() + 2);
+const createSession = async (sessionId: string, userId: string) => {
+    try {
+        await Session.deleteMany({"userId": userId})
+        const expirationTime = new Date();
+        expirationTime.setHours(expirationTime.getHours() + 2);
 
     const newSession = await Session.create({
       userId: userId,

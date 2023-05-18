@@ -1,6 +1,9 @@
+import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
+import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import AppCache from "../cache/AppCache";
-import { VALUE_NOT_FOUND, logDataRef, metricUnitRef } from "../cache/timestreamConstants";
-import { formatTSTime } from "../cache/timestreamHelpers";
+import { DEVICE_IDS, VALUE_NOT_FOUND, logDataRef, metricRef, metricUnitRef } from "../cache/timestreamConstants";
+import { floorToSecond, formatTSTime } from "../cache/timestreamHelpers";
+import TimestreamModel from "./TimestreamModel";
 
 const getCachedDeviceData = async (end: string) => {
 
@@ -26,8 +29,7 @@ const getCachedHistoricalHighLow = async () => {
             return remapHistoricalHighLow(cachedData);
         }
         return null;
-    } catch (err) {
-        console.log(err)
+    } catch (_err) {
         return null;
     }
 
@@ -153,10 +155,90 @@ const remapLogDataFromCache = (cachedData: any, end?: string) => {
 
 };
 
+const getTimeStreamDataForRange = async (start: string, end: string) => {
+
+    try {
+        const startDate = floorToSecond(start);
+        const endDate = floorToSecond(end);
+
+        const deviceData: any = {};
+
+        await Promise.all(DEVICE_IDS.map(async (id) => {
+            const parsedDeviceId = queryBuilder.parseDeviceList(id);
+
+            deviceData[id] = {}
+
+            await Promise.all(
+                Object.keys(metricRef).map(async (metric) => {
+
+                    let fetchedData = await TimestreamModel.getHistoricalData(
+                        parsedDeviceId, metric, startDate, endDate);
+
+                    if (fetchedData) {
+
+                        fetchedData = queryParser.parseQueryResult(fetchedData);
+
+                        if (fetchedData.length > 0) {
+
+                            deviceData[id][metricRef[metric]] =
+                                fetchedData.map((datum: any) => {
+                                    return (
+                                        {
+                                            'time': formatTSTime(datum['time']),
+                                            'value': parseFloat(datum['measure_value::double'])
+                                        }
+                                    )
+                                });
+                        }
+                    }
+
+                })
+            );
+
+        }));
+
+        if (Object.keys(deviceData).length === 0) {
+            return null;
+        }
+        return deviceData;
+
+    } catch (_err) {
+        return null;
+
+    }
+
+};
+
+const getCustomRangeData = async (start: string, end: string) => {
+
+    const timestreamData = await getTimeStreamDataForRange(start, end);
+
+    if (timestreamData) {
+        return remapDeviceDataFromCache(timestreamData);
+    }
+
+    return null;
+
+};
+
+const getCustomRangeLogData = async (start: string, end: string) => {
+
+    const timestreamData = await getTimeStreamDataForRange(start, end);
+
+    if (timestreamData) {
+        return remapLogDataFromCache(timestreamData);
+    }
+
+    return null;
+
+};
+
 
 export default module.exports = {
     getCachedDeviceData,
     getCachedHistoricalHighLow,
     remapHistoricalHighLow,
-    getCachedLogData
+    getCachedLogData,
+    getCustomRangeData,
+    getCustomRangeLogData
 };
