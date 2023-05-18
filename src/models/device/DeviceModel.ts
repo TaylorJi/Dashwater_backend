@@ -18,8 +18,8 @@ const createDevice = async (deviceId: Number, coordinates: [Number], metricList:
 
 const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) => {
     try {
-        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, updateData, {new: true})
-                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
+        const updatedDevice = await Device.findOneAndUpdate({ "deviceId": deviceId }, updateData, { new: true })
+            .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (updatedDevice) {
             return updatedDevice;
@@ -35,7 +35,7 @@ const updateDevice = async (deviceId: Number, updateData: deviceUpdateDataType) 
 const deleteDevice = async (deviceId: Number) => {
     try {
         const deletedDevice = await Device.findOneAndDelete({ "deviceId": deviceId })
-                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
+            .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (deletedDevice) {
             return deletedDevice;
@@ -65,7 +65,7 @@ const getAllDevices = async () => {
 const getSingleDevice = async (deviceId: Number) => {
     try {
         const device = await Device.findOne({ "deviceId": deviceId })
-                .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
+            .select({ "deviceId": 1, "location.coordinates": 1, "metricList": 1, "_id": 0 });
 
         if (device) {
             return device;
@@ -125,6 +125,7 @@ const getAllDevicesSettings: any = async () => {
                     locationX: device['location_x'],
                     locationY: device['location_y'],
                     active: device['active'],
+                    timeInterval: device['time_interval'],
                     sensors: []
                 }
 
@@ -177,6 +178,37 @@ const getAllDevicesSettings: any = async () => {
     }
 }
 
+const updateDeviceSettings: any = async (device: deviceSettingType) => {
+
+    const newSettings = {
+        'device_id': device['id'],
+        'device_name': device['name'],
+        'device_description': device['description'],
+        'location_x': device['locationX'],
+        'location_y': device['locationY'],
+        'time_interval': null,      // unsure about time interval use right now, default to null
+        'active': device['active']
+    }
+
+    try {
+        const devicesResponse: any = await axios.put(`${process.env.AWS_DEVICES_API_GATEWAY}/devices/${device.id}`,
+            newSettings,
+            {
+                headers: {
+                    'x-api-key': process.env.AWS_DEVICES_API_KEY,
+                    'authorizationToken': process.env.AWS_DEVICES_API_AUTH_TOKEN
+                }
+            });
+
+        if (devicesResponse.status === 200) {
+            return true
+        }
+    } catch (_err) {
+        return false;
+    }
+    return false;
+}
+
 export default module.exports = {
     createDevice,
     updateDevice,
@@ -184,5 +216,6 @@ export default module.exports = {
     getAllDevices,
     getSingleDevice,
     getDevicesWithinRadius,
-    getAllDevicesSettings
+    getAllDevicesSettings,
+    updateDeviceSettings
 }

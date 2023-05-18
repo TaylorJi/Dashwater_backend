@@ -7,6 +7,7 @@ type deviceSettingType = {
     locationX: number,
     locationY: number,
     active: boolean,
+    timeInterval: int,
     sensors: sensorType[]
 };
 
