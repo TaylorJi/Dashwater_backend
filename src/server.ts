@@ -72,6 +72,7 @@ server.listen(port, async () => {
         console.log('Connected to MongoDB');
         console.log('hello')
         AlertModel.compareThresholds();
+        
     });
 
     console.log(`Server started on port ${port}!`);

@@ -26,7 +26,7 @@ const sendEmail = async (email: string, subject: string, text: string) => {
             console.log(error);
             return false;
         } else {
-            console.log("Email sent: " + info.response);
+            console.log("Email sent to: " + email + " Status: " + info.response);
             return true;
         }
     });
