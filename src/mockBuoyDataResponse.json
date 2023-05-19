@@ -1,0 +1,12 @@
+{
+    "data": [
+        {
+             "buoy_id": 1,
+             "measure_name": "do",
+             "time": "2023-02-18 01:38:08.480000000",
+             "measure_value::double": "80.3",
+             "measure_value::boolean": null,
+             "measure_value::varchar": null
+        }
+    ]
+}

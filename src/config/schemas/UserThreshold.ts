@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const UserThresholdSchema = new Schema({
     
     userId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: 'users'
     },
@@ -16,20 +16,32 @@ const UserThresholdSchema = new Schema({
         ref: 'devices'
     },
 
-    thresholdMetricId: {
-        type: Schema.Types.ObjectId,
+    metricId: {
+        type: String,
         required: true
     },
 
     customMin: {
         type: Number,
-        default: null
+        required: true
     },
 
     customMax: {
         type: Number,
-        default: null
+        required: true
+    },
+
+    trigger: {
+        type: Boolean,
+        default: false
+    },
+
+    emailSent: {
+        type: Boolean,
+        default: false
     }
+
+
 
 })
 

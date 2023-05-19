@@ -8,9 +8,12 @@ import Environment from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import AlertModel from './models/alerts/AlertModel';
+
 
 // Middleware
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
+// import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
+
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -67,6 +70,9 @@ server.listen(port, async () => {
     db.on('error', console.error.bind(console, 'Could not connect to Mongo - restart the server.'));
     db.once('open', () => {
         console.log('Connected to MongoDB');
+        console.log('hello')
+        AlertModel.compareThresholds();
+        
     });
 
     console.log(`Server started on port ${port}!`);
