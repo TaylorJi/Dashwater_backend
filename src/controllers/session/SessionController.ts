@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import SessionModel from "../../models/session/SessionModel";
 import { v4 as uuid } from 'uuid'
+import { DOMAIN } from "../../helpers/authentication/constants";
 
 const createSession = async (req: Request, res: Response) => {
     const { userId } = req.body;
@@ -12,7 +13,7 @@ const createSession = async (req: Request, res: Response) => {
 
     const response = await SessionModel.createSession(sessionId, userId);
     if (response) {
-        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ user: response })
+        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, DOMAIN: 'localhost:8085'}).status(200).json({ user: response })
     } else {
         return res.status(500).json({ message: "There was an error with the request." });
     }
@@ -39,7 +40,7 @@ const validateSession = async (req: Request, res: Response) => {
             const updatedSession = await SessionModel.updateSessionExpiry(sessionId)
 
             if (updatedSession) {
-                return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': 'iot-dashboard-backend-server.onrender.com'}, {'sameSite': 'none', 'secure': true, httpOnly: true}).status(200).json({ message: 'Session is not expired', user: response });
+                return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': updatedSession.sessionExpiry, 'domain': DOMAIN}, {'sameSite': 'none', 'secure': true, httpOnly: true}).status(200).json({ message: 'Session is not expired', user: response });
             } else {
                 return res.status(500).json({ text: 'Could not update session expiration time.' });
             }
