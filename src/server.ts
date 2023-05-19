@@ -4,7 +4,7 @@ import cors from 'cors';
 
 //Server
 import express from 'express';
-import Environment from './config/Environments';
+import Environment, { CORS_URL } from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
@@ -29,7 +29,7 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*',
+        origin: CORS_URL,
         credentials: true
     })
 );
@@ -40,15 +40,15 @@ server.listen(port, async () => {
 
     // Register cache
 
-    console.log('Populating cache with tide data...');
+    // console.log('Populating cache with tide data...');
 
-    const tideRegistration = await AppCache.registerTideCache();
+    // const tideRegistration = await AppCache.registerTideCache();
 
-    if (!tideRegistration) {
-        console.log('There was a problem populating the tide data cache. Check your query limits.');
-    } else {
-        console.log('Populated tide data cache.');
-    }
+    // if (!tideRegistration) {
+    //     console.log('There was a problem populating the tide data cache. Check your query limits.');
+    // } else {
+    //     console.log('Populated tide data cache.');
+    // }
 
     console.log('Populating cache with device data...');
 
