@@ -6,6 +6,7 @@ import mailSender from "./mailSender";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import UserThresholdModel from "../userThreshold/UserThresholdModel";
+import { CronJob } from "cron";
 
 const compareThresholds = async () => {
     console.log('Comparing thresholds...');
@@ -21,6 +22,16 @@ const compareThresholds = async () => {
         throw error;
     }
 }
+const cronJob = new CronJob('*/2 * * * *', async () => {
+    try {
+      await compareThresholds();
+    } catch (error) {
+      console.error('Error comparing thresholds:', error);
+      throw error;
+    }
+  });
+  
+  cronJob.start();
 
 const retrieveTimestreamData = async () => {
     console.log('Retrieving timestream data...');
