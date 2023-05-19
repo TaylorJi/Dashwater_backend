@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.7",
-    "@aws-sdk/client-timestream-query": "^3.332.0",
+    "aws-sdk": "^2.1310.0",
     "axios": "^1.2.6",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
