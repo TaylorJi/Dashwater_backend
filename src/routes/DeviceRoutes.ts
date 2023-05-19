@@ -9,4 +9,6 @@ router.route('/updateDevice').put(DeviceController.updateDevice);
 router.route('/deleteDevice').delete(DeviceController.deleteDevice);
 router.route('/getAllDevices').get(DeviceController.getAllDevices);
 router.route('/getSingleDevice').get(DeviceController.getSingleDevice);
-router.route("/getDevicesWithinRadius").get(DeviceController.getDevicesWithinRadius)
+router.route('/getDevicesWithinRadius').get(DeviceController.getDevicesWithinRadius);
+router.route('/getAllDevicesSettings').get(DeviceController.getAllDevicesSettings);
+router.route('/updateDeviceSettings').put(DeviceController.updateDeviceSettings);

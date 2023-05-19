@@ -4,16 +4,16 @@ import cors from 'cors';
 
 //Server
 import express from 'express';
-import Environment from './config/Environments';
+import Environment, { CORS_URL } from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 // Middleware
-//import AuthenticationController from './controllers/authentication/AuthenticationController';
+import AuthenticationController from './controllers/authentication/AuthenticationController';
 
 // Cache
-// import AppCache from './models/cache/AppCache';
+import AppCache from './models/cache/AppCache';
 
 //Load .env (must be loaded ASAP)
 import * as dotenv from 'dotenv';
@@ -29,7 +29,8 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: '*',
+        origin: CORS_URL,
+        credentials: true
     })
 );
 
@@ -38,12 +39,34 @@ server.use(cookieParser());
 server.listen(port, async () => {
 
     // Register cache
-    // const registration = await AppCache.registerTideCache();
-    // if (!registration) {
+
+    // console.log('Populating cache with tide data...');
+
+    // const tideRegistration = await AppCache.registerTideCache();
+
+    // if (!tideRegistration) {
     //     console.log('There was a problem populating the tide data cache. Check your query limits.');
     // } else {
-    //     console.log('Populated cache.');
+    //     console.log('Populated tide data cache.');
     // }
+
+    console.log('Populating cache with device data...');
+
+    const deviceDataRegistration = await AppCache.registerDeviceCache();
+
+    if (!deviceDataRegistration) {
+        console.log('There was a problem populating the device data cache. Check AWS.');
+    } else {
+        console.log('Populated device data cache.');
+    }
+
+    const historicalDataRegistration = await AppCache.registerHistoricalHighLow();
+    if (!historicalDataRegistration) {
+        console.log('There was a problem populating the historical data cache. Check AWS.');
+    } else {
+        console.log('Populated historical data cache.');
+    }
+
 
     mongoose.set('strictQuery', false);
     mongoose.connect(`${process.env.MONGO_URL}`);
@@ -59,18 +82,23 @@ server.listen(port, async () => {
 
 
 //Routing
-import { router as authRouter } from './routes/AuthenticationRoutes';
 import { router as weatherRouter } from './routes/WeatherRoutes';
 import { router as sessionRouter } from './routes/SessionRoutes'
 import { router as timestreamRouter } from './routes/TimestreamRoutes';
 import { router as userRouter } from './routes/UserRoutes';
 import { router as trackedDeviceRouter } from './routes/TrackedDeviceRoutes';
 import { router as deviceRouter } from './routes/DeviceRoutes';
+import { router as calibrationRouter } from './routes/CalibrationRoutes';
+import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
+import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
-server.use('/api/auth', authRouter);
-server.use('/api/ts', timestreamRouter)
-server.use('/api/weather', weatherRouter);
+server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
+server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
-server.use('/api/device', trackedDeviceRouter);
-server.use('/api/device', deviceRouter);
+server.use('/api/trackedDevice', AuthenticationController.userAuth, trackedDeviceRouter);
+server.use('/api/device', AuthenticationController.userAuth, deviceRouter);
+server.use('/api/calibration', AuthenticationController.userAuth, calibrationRouter);
+server.use('/api/defaultThreshold',  AuthenticationController.userAuth,defaultThresholdRouter)
+server.use('/api/userThreshold', AuthenticationController.userAuth, userThresholdRouter)
+

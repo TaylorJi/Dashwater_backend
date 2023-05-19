@@ -5,35 +5,40 @@ const Schema = mongoose.Schema;
 const UserThresholdSchema = new Schema({
     
     userId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: 'users'
+    },
+
+    sensorId: {
+        type: Number,
+        required: true,
     },
 
     deviceId: {
         type: Number,
         required: true,
-        ref: 'devices'
     },
 
-    thresholdMetricId: {
-        type: Schema.Types.ObjectId,
+    alert: {
+        type: Boolean,
+        required: true,
+    },
+
+    minVal: {
+        type: Number,
+        requied: true
+    },
+    
+    maxVal: {
+        type: Number,
         required: true
-    },
-
-    customMin: {
-        type: Number,
-        default: null
-    },
-
-    customMax: {
-        type: Number,
-        default: null
     }
-
-})
+});
 
 
 const UserThreshold =  mongoose.model('UserThreshold', UserThresholdSchema);
+
+UserThreshold.collection.createIndex({ userId: 1, sensorId: 1 }, { unique: true });
 
 export default UserThreshold
