@@ -13,7 +13,7 @@ const createSession = async (req: Request, res: Response) => {
 
     const response = await SessionModel.createSession(sessionId, userId);
     if (response) {
-        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, DOMAIN: 'localhost:8085'}).status(200).json({ user: response })
+        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, DOMAIN: DOMAIN}).status(200).json({ user: response })
     } else {
         return res.status(500).json({ message: "There was an error with the request." });
     }
