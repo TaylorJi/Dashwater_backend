@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const createUser = async (email: String, password: String, role: String) => {
     try {
         const newUser = await User.create({ "email": email, "password": password, "role": role });
+        // commit
 
         if (newUser) { 
             
