@@ -5,8 +5,14 @@ import { DOMAIN } from "../../helpers/authentication/constants";
 
 const createSession = async (req: Request, res: Response) => {
     const { userId } = req.body;
-    const sessionId = uuid();
+    let sessionId = null;
 
+    if (req.cookies.sessionCookie) {
+        sessionId = req.cookies.sessionCookie.sessionId;
+    } else{
+        sessionId = uuid();
+    }
+    
     if (!userId) {
         return res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
     }

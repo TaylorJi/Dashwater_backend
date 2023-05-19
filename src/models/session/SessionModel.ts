@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 const createSession = async (sessionId: string, userId: string) => {
     try {
-        await Session.deleteMany({"userId": userId})
+        await Session.deleteMany({"userId": userId, "sessionId": sessionId})
         const expirationTime = new Date();
         expirationTime.setHours(expirationTime.getHours() + 2);
 
@@ -19,7 +19,8 @@ const createSession = async (sessionId: string, userId: string) => {
       return newSession;
     }
     return null;
-  } catch (_err) {
+  } catch (err) {
+    console.log(err)
     return null;
   }
 };
