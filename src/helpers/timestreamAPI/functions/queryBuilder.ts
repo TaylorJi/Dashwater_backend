@@ -2,36 +2,37 @@
  * This module contains helper functions for AWS queries.
  */
 
-import { Credentials, TimestreamQuery } from "aws-sdk";
-import AWS from "aws-sdk";
+import { TimestreamQueryClient, TimestreamQueryClientConfig } from "@aws-sdk/client-timestream-query";
+import { AwsCredentialIdentity } from "@aws-sdk/types";
+
 import queryInfo from "../constants/queryInfo";
 import sqlQueries from "../constants/sqlQueries";
 import { QueryParams } from "./query";
 
-// This function creates and initializes the query and querystring objects.
-// Returns an array to be destructured into the seperate objects.
+const createStaticCredentialsProvider = (): AwsCredentialIdentity => {
+  return {
+    accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
+    secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
+  };
+};
+
 const createTSQuery = (
   queryString: string,
   clientToken?: string,
   maxRows?: number,
   nextToken?: string
 ): any => {
-  //Configure the region
-  AWS.config.update({ region: queryInfo.REGION });
-  //Create credentials
-  const credentials = new Credentials({
-    accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
-    secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
-  });
-  //Create the query object
-  const timeStreamQuery = new TimestreamQuery({
-    apiVersion: queryInfo.API_VERSION,
-  });
-  //Configure the query objects using credentials.
-  timeStreamQuery.config.update({
-    credentials,
+  const credentials = createStaticCredentialsProvider();
+
+  // Create and configure the TimestreamQueryClient
+  const tsQueryConfig: TimestreamQueryClientConfig = {
     region: queryInfo.REGION,
-  });
+    credentials,
+  };
+
+  // Create the TimestreamQueryClient with the configured options
+  const timeStreamQuery = new TimestreamQueryClient(tsQueryConfig);
+
   //Create the query object.
   const queryParams: QueryParams = {
     ClientToken: clientToken,
