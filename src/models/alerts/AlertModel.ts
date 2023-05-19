@@ -7,9 +7,10 @@ import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import UserThresholdModel from "../userThreshold/UserThresholdModel";
 import { CronJob } from "cron";
-
 // Map to store the last notification timestamps for each threshold
 const lastNotificationTimestamps = new Map();
+import UserModel from '../user/UserModel';
+
 
 const compareThresholds = async () => {
     console.log('Comparing thresholds...');
@@ -56,18 +57,26 @@ const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[] | 
         thresholdData?.forEach((threshold) => {
             if (isMatchingMetricAndDevice(threshold, sensorReading.measure_name, sensorReading.buoy_id)) {
                 console.log("\nThreshold Device + Metric matched");
+              
                 if (isExceedingThreshold(threshold, sensorReading['measure_value::double'])) {
                     console.log("Threshold exceeded!");
-                    // Check if the threshold has been triggered within the past 24 hours
-                    const lastNotificationTimestamp = lastNotificationTimestamps.get(threshold.id);
-                    const currentTime = new Date().getTime();
-                    if (!lastNotificationTimestamp || (currentTime - lastNotificationTimestamp) >= 24 * 60 * 60 * 1000) {
-                    sendNodeMailerEmail(threshold, sensorReading);
-                    console.log("Email sent successfully")
-                    lastNotificationTimestamps.set(threshold.id, currentTime);
-                    } else {
-                        console.log("Notification has already been sent within the last 24 hours!")
-                    }
+                    let userId: String = threshold.userId
+                    let email = UserModel.getUserEmail(userId);
+                    email.then((value) => {
+                        // Check if the threshold has been triggered within the past 24 hours
+                      const lastNotificationTimestamp = lastNotificationTimestamps.get(threshold.id);
+                      const currentTime = new Date().getTime();
+                      
+                      if (!lastNotificationTimestamp || (currentTime - lastNotificationTimestamp) >= 24 * 60 * 60 * 1000) {
+                        sendNodeMailerEmail(threshold, sensorReading, value);
+                        console.log("Email sent successfully")
+                        lastNotificationTimestamps.set(threshold.id, currentTime);
+                      } else {
+                          console.log("Notification has already been sent within the last 24 hours!")
+                      }
+                    })
+                    
+
                 }
 
             }
@@ -102,9 +111,9 @@ const isExceedingThreshold = (threshold: any, measureValue: any) => {
     return false;
 }
 
-const sendNodeMailerEmail = (threshold: any, sensorReading: any) => {
+const sendNodeMailerEmail = (threshold: any, sensorReading: any, email: any) => {
     console.log("Sending email notification")
-    let recepient = "adedeji.toki@gmail.com"
+    let recepient = email
     let subject = "IMPORTANT: Sensor Threshold Exceeded"
     let text = `Sensor ${sensorReading.buoy_id} has exceeded the threshold for ${sensorReading.measure_name}. The current value is ${sensorReading['measure_value::double']}. The threshold is ${threshold.customMin} to ${threshold.customMax}.`
     mailSender.sendEmail(recepient, subject, text);

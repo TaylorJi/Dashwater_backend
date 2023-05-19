@@ -33,8 +33,24 @@ const validateUser = async (email: String, password: String) => {
     }
 };
 
+const getUserEmail = async (userId: any) => {
+    var ObjectId = require('mongoose').Types.ObjectId; 
+    const id = new ObjectId(userId);
+    try {
+        const user = await User.findById({"_id": id});
+        if (user) {
+            return user.email;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        return null;
+    }
+}
+
 
 export default module.exports = {
     createUser,
-    validateUser
+    validateUser,
+    getUserEmail
 };
