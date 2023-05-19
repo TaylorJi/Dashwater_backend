@@ -6,6 +6,9 @@ import mailSender from "./mailSender";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import UserThresholdModel from "../userThreshold/UserThresholdModel";
+import { CronJob } from "cron";
+// Map to store the last notification timestamps for each threshold
+const lastNotificationTimestamps = new Map();
 import UserModel from '../user/UserModel';
 
 
@@ -23,6 +26,16 @@ const compareThresholds = async () => {
         throw error;
     }
 }
+const cronJob = new CronJob('*/2 * * * *', async () => {
+    try {
+      await compareThresholds();
+    } catch (error) {
+      console.error('Error comparing thresholds:', error);
+      throw error;
+    }
+  });
+  
+  cronJob.start();
 
 const retrieveTimestreamData = async () => {
     console.log('Retrieving timestream data...');
@@ -44,15 +57,26 @@ const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[] | 
         thresholdData?.forEach((threshold) => {
             if (isMatchingMetricAndDevice(threshold, sensorReading.measure_name, sensorReading.buoy_id)) {
                 console.log("\nThreshold Device + Metric matched");
-
+              
                 if (isExceedingThreshold(threshold, sensorReading['measure_value::double'])) {
                     console.log("Threshold exceeded!");
                     let userId: String = threshold.userId
                     let email = UserModel.getUserEmail(userId);
                     email.then((value) => {
+                        // Check if the threshold has been triggered within the past 24 hours
+                      const lastNotificationTimestamp = lastNotificationTimestamps.get(threshold.id);
+                      const currentTime = new Date().getTime();
+                      
+                      if (!lastNotificationTimestamp || (currentTime - lastNotificationTimestamp) >= 24 * 60 * 60 * 1000) {
                         sendNodeMailerEmail(threshold, sensorReading, value);
+                        console.log("Email sent successfully")
+                        lastNotificationTimestamps.set(threshold.id, currentTime);
+                      } else {
+                          console.log("Notification has already been sent within the last 24 hours!")
+                      }
                     })
                     
+
                 }
 
             }
