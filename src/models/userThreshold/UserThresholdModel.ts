@@ -1,5 +1,4 @@
 import UserThreshold from "../../config/schemas/UserThreshold";
-import User from "../../config/schemas/User";
 
 const createUserThreshold = async (threshold: userThresholdType) => {
     try {
@@ -35,70 +34,6 @@ const updateUserThreshold = async (newThresholdValues: userThresholdType) => {
 }
 
 
-const deleteUserThreshold = async (userId: string, sensorId: number) => {
-    try {
-        const deletedUserThreshold = await UserThreshold.findOneAndDelete({ "userId": userId, "sensorId": sensorId });
-
-        if (deletedUserThreshold) {
-            return deletedUserThreshold;
-        }
-        return false;
-
-    } catch (err) {
-        return null;
-    }
-}
-
-
-const getUserThresholdList = async (userId: string) => {
-    try {
-        const userThresholdList = await UserThreshold.find({ "userId": userId });
-
-        if (userThresholdList) {
-            return userThresholdList;
-        }
-        return false;
-
-    } catch (err) {
-        return null;
-    }
-}
-
-
-const getSingleMetricUserThreshold = async (userId: string, deviceId: number, metric: string) => {
-    try {
-        const metricUserThreshold = await UserThreshold.findOne({ "userId": userId, "deviceId": deviceId })
-                                                            .select({ "userId": 1, "deviceId": 1, [`metricList.${metric}`]: 1 });
-
-        if (metricUserThreshold) {
-            return metricUserThreshold;
-        }
-        return false;
-
-    } catch (err) {
-        return null;
-    }
-}
-
-
-const verifyUserThresholdDocument = async ( userId: string, sensorId: number) => {
-    try {
-
-        const user = await User.findOne({ "_id": userId });
-        const userSensorExists = await UserThreshold.findOne({ "userId": userId,  "sensorId": sensorId });
-
-        if(!user || userSensorExists) {
-            return false;
-        }
-
-        return true;
-
-    } catch (err) {
-        return false;
-    }
-}
-
-
 const getUserThresholdsByDevice = async (userId: string, deviceId: number) => {
     try {
         const deviceThresholdsList = await UserThreshold.find({ "userId": userId, "deviceId": deviceId });
@@ -115,9 +50,5 @@ const getUserThresholdsByDevice = async (userId: string, deviceId: number) => {
 export default module.exports = {
     createUserThreshold,
     updateUserThreshold,
-    deleteUserThreshold,
-    getUserThresholdList,
-    getSingleMetricUserThreshold,
-    verifyUserThresholdDocument,
     getUserThresholdsByDevice
 }
