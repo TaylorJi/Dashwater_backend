@@ -65,7 +65,7 @@ const deleteSession = async (req: Request, res: Response) => {
 
     const response = await SessionModel.deleteSession(sessionId);
     if (response) {
-        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': 'localhost:8085'}).status(200).json({ message: "Session deleted." });
+        return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': DOMAIN}).status(200).json({ message: "Session deleted." });
     } else {
         return res.status(500).json({ message: "There was an error with the request." });
     }
