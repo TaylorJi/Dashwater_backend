@@ -40,17 +40,17 @@ server.listen(port, async () => {
 
     // Register cache
 
-    console.log('Populating cache with tide data...');
+    // console.log('Populating cache with tide data...');
 
-    const tideRegistration = await AppCache.registerTideCache();
+    // const tideRegistration = await AppCache.registerTideCache();
 
-    if (!tideRegistration) {
-        console.log('There was a problem populating the tide data cache. Check your query limits.');
-    } else {
-        console.log('Populated tide data cache.');
-    }
+    // if (!tideRegistration) {
+    //     console.log('There was a problem populating the tide data cache. Check your query limits.');
+    // } else {
+    //     console.log('Populated tide data cache.');
+    // }
 
-    console.log('Populating cache with device data...');
+    // console.log('Populating cache with device data...');
 
     const deviceDataRegistration = await AppCache.registerDeviceCache();
 
