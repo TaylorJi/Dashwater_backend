@@ -8,7 +8,7 @@ import Environment from "./config/Environments";
 import compression from "compression";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-// import AlertModel from "./models/alerts/AlertModel";
+import AlertModel from "./models/alerts/AlertModel";
 
 // Middleware
 // import TimestreamModel from "./models/timestreamAPI/TimestreamModel";
@@ -75,7 +75,7 @@ server.listen(port, async () => {
   db.once("open", () => {
     console.log("Connected to MongoDB");
     console.log("hello");
-    // AlertModel.compareThresholds();
+    AlertModel.compareThresholds();
   });
 
   console.log(`Server started on port ${port}!`);
