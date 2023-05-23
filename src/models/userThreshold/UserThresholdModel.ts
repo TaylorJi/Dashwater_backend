@@ -11,24 +11,54 @@ const createUserThreshold = async (userId: String, deviceId: Number, metricId: S
         return null;
 
     } catch (err) {
-        console.log(err)
+        console.log(err);
         return null;
     }
 };
 
 const updateUserThreshold = async (userId: String, deviceId: Number, metricId: String, min: Number, max: Number) => {
     try {
-        console.log("inside update")
-        const updatedUserThreshold = await UserTheshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId, "metricId": metricId}, { "customMin": min, "customMax": max })
+        console.log("inside update");
+        const updatedUserThreshold = await UserTheshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId, "metricId": metricId}, { "customMin": min, "customMax": max });
 
         if (updatedUserThreshold) {
-            console.log("success update")
+            console.log("Threshold updated");
             return updatedUserThreshold;
         }
         return false;
 
     } catch (err) {
         console.log(err)
+        return null;
+    }
+}
+
+const updateEmailTimestamp = async (userId: String, deviceId: Number, metricId: String, emailTimestamp: Number) => {
+    try {
+        console.log("updating email timestamp");
+        const updatedEmailTimestamp = await UserTheshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId, "metricId": metricId}, {"emailTimestamp": emailTimestamp});
+        if (updatedEmailTimestamp) {
+            console.log("Email timestamp updated");
+            return updatedEmailTimestamp;
+        }
+        return false;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
+
+const updateTriggerValue = async (userId: String, deviceId: Number, metricId: String, lastTriggerValue: Number) => {
+    try {
+        console.log("updating trigger value");
+        const updatedTriggerValue = await UserTheshold.findOneAndUpdate({ "userId": userId, "deviceId": deviceId, "metricId": metricId}, {"lastTriggerValue": lastTriggerValue});
+        if (updatedTriggerValue) {
+            console.log("Trigger value updated");
+            return updatedTriggerValue;
+        }
+        return false;
+    } catch (error) {
+        console.log(error);
         return null;
     }
 }
@@ -85,5 +115,7 @@ const getAllThreshold = async () => {
 export default module.exports = {
     createUserThreshold,
     updateUserThreshold,
-    getAllThreshold
+    getAllThreshold,
+    updateEmailTimestamp,
+    updateTriggerValue
 };
