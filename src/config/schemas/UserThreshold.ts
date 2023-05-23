@@ -191,6 +191,6 @@ const UserThresholdSchema = new Schema({
 
 const UserThreshold =  mongoose.model('UserThreshold', UserThresholdSchema);
 
-UserThreshold.collection.createIndex({ userId: 1, deviceId: 1 }, { unique: true });
+// UserThreshold.collection.createIndex({ userId: 1, deviceId: 1 }, { unique: true });
 
 export default UserThreshold
