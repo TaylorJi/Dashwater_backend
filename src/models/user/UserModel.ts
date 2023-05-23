@@ -94,20 +94,23 @@ const getSingleUser = async (userId: string) => {
 
 const updateUser = async (userId: string, userEmail: string, userPassword: string, userRole: string) => {
     try {
-        let hashUpdatedUser;
+        // let hashUpdatedUser;
+
+        const salt = await bcrypt.genSalt(10); // version of hashing
+        const hashedPassword =  await bcrypt.hash(userPassword, salt); // hash password
 
         const updatedUser = await User.findByIdAndUpdate(
-            { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
+            { _id: userId }, { "email": userEmail, "password": hashedPassword, "role": userRole }
         );
-        if (updatedUser) {
-            hashUpdatedUser = hashPassword(userId, updatedUser.password);
-        } else {
-            console.log("Hasing error.")
+        // if (updatedUser) {
+        //     hashUpdatedUser = hashPassword(userId, updatedUser.password);
+        // } else {
+        //     console.log("Hasing error.")
 
-        }
+        // }
       
 
-        return hashUpdatedUser;
+        return updatedUser;
 
     } catch (err) {
         console.error("Error retrieving user.");
