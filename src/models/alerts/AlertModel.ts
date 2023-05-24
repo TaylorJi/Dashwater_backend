@@ -8,7 +8,6 @@ import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import UserThresholdModel from "../userThreshold/UserThresholdModel";
 import { CronJob } from "cron";
 // Map to store the last notification timestamps for each threshold
-// const lastNotificationTimestamps = new Map();
 import UserModel from '../user/UserModel';
 
 
@@ -16,7 +15,7 @@ const compareThresholds = async () => {
   console.log("Comparing thresholds...");
   try {
     const sensorData = await retrieveTimestreamData();
-    const thresholdData = await UserThresholdModel.getAllThreshold(); //retrieveThresholdData(); retrieveMockTresholdData()
+    const thresholdData = await UserThresholdModel.getAllThreshold();
 
     console.log("Sensor data:", sensorData);
     console.log("Threshold data:", thresholdData);
@@ -41,50 +40,59 @@ const retrieveTimestreamData = async () => {
   console.log("Retrieving timestream data...");
   try {
     const buoyIdList = "1";
-    const response = await TimestreamModel.getBuoyData(buoyIdList); //fetch('http://localhost:8085/api/ts/getAllBuoyIds');
+    const response = await TimestreamModel.getBuoyData(buoyIdList);
     let data = queryParser.parseQueryResult(response);
     return data;
   } catch (error) {
     console.error("Error retrieving timestream data:", error);
     throw error;
-  }
+  }}
 
 const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[] | null) => {
-    console.log("Checking tresholds")
-    sensorData.forEach((sensorReading) => {
-        thresholdData?.forEach((threshold) => {
-            if (isMatchingMetricAndDevice(threshold, sensorReading.measure_name, sensorReading.buoy_id)) {
-                console.log("\nThreshold Device + Metric matched");
-                if (isExceedingThreshold(threshold, sensorReading['measure_value::double'])) {
-                    console.log("Threshold exceeded!");
-                    UserThresholdModel.updateTriggerValue(threshold.userId, threshold.deviceId, threshold.metricId, sensorReading['measure_value::double']);
-                    const lastNotificationTimestamp = threshold.emailTimestamp;
-                    const currentTime = new Date().getTime();
-                    if (!lastNotificationTimestamp || (currentTime - lastNotificationTimestamp) >= 24 * 60 * 60 * 1000) {
-                        UserModel.getUserEmail(threshold.userId).then((email) => {
-                            sendNodeMailerEmail(threshold, sensorReading, email);
-                            console.log("Email sent successfully")
-                            UserThresholdModel.updateEmailTimestamp(threshold.userId, threshold.deviceId, threshold.metricId, currentTime);
-                        })
-                    } else {
-                        console.log("Notification has already been sent within the last 24 hours!");
-                    }
-                }
-            }
-        })
+  console.log("Checking tresholds")
+  sensorData.forEach((sensorReading) => {
+    thresholdData?.forEach((threshold) => {
+
+      if (isMatchingMetricAndDevice(threshold, sensorReading.measure_name, sensorReading.buoy_id)) {
+        console.log("\nThreshold Device + Metric matched");
+
+        if (isExceedingThreshold(threshold, sensorReading['measure_value::double'])) {
+          console.log("Threshold exceeded!");
+          UserThresholdModel.updateTriggerValue(threshold.userId, threshold.deviceId, threshold.metricId, sensorReading['measure_value::double']);
+
+          if (isValidTimestamp(threshold)) {
+            UserModel.getUserEmail(threshold.userId).then((email) => {
+              sendNodeMailerEmail(threshold, sensorReading, email);
+            })
+          } else {
+            console.log("Notification has already been sent within the last 24 hours!");
+          }
+        }
+      }
     })
+  })
 }
 
-const isMatchingMetricAndDevice = (threshold:any, measureName: any, deviceId: any) => {
-    let thr_metricId: String = threshold.metricId;
-    let thr_deviceId: Number = parseInt(threshold.deviceId);
-    let sensor_metricId: String = measureName;
-    let sensor_deviceId: Number = parseInt(deviceId);
+const isValidTimestamp = (threshold: any) => {
+  const lastNotificationTimestamp = threshold.emailTimestamp;
+  const currentTime = new Date().getTime();
+  if (!lastNotificationTimestamp || (currentTime - lastNotificationTimestamp) >= 24 * 60 * 60 * 1000) {
+    return true;
+  }
+  return false;
+}
 
-    if (thr_metricId === sensor_metricId && thr_deviceId === sensor_deviceId) {
-        return true;
-    }
-    return false;
+
+const isMatchingMetricAndDevice = (threshold:any, measureName: any, deviceId: any) => {
+  let thr_metricId: String = threshold.metricId;
+  let thr_deviceId: Number = parseInt(threshold.deviceId);
+  let sensor_metricId: String = measureName;
+  let sensor_deviceId: Number = parseInt(deviceId);
+
+  if (thr_metricId === sensor_metricId && thr_deviceId === sensor_deviceId) {
+    return true;
+  }
+  return false;
 }
 
 const isExceedingThreshold = (threshold: any, measureValue: any) => {
@@ -120,7 +128,11 @@ const sendNodeMailerEmail = (
   let recepient = email;
   let subject = "IMPORTANT: Sensor Threshold Exceeded";
   let text = `Sensor ${sensorReading.buoy_id} has exceeded the threshold for ${sensorReading.measure_name}. The current value is ${sensorReading["measure_value::double"]}. The threshold is ${threshold.customMin} to ${threshold.customMax}.`;
-  mailSender.sendEmail(recepient, subject, text);
+  mailSender.sendEmail(recepient, subject, text).then(() => {
+    const currentTime = new Date().getTime();
+    console.log("Email sent successfully to:", recepient, "at", currentTime);
+    UserThresholdModel.updateEmailTimestamp(threshold.userId, threshold.deviceId, threshold.metricId, currentTime);
+  })
 };
 
 export default module.exports = {
