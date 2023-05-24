@@ -13,42 +13,40 @@ import UserModel from '../user/UserModel';
 
 
 const compareThresholds = async () => {
-    console.log('Comparing thresholds...');
-    try {
-        const sensorData = await retrieveTimestreamData();
-        const thresholdData = await UserThresholdModel.getAllThreshold() //retrieveThresholdData(); retrieveMockTresholdData()
+  console.log("Comparing thresholds...");
+  try {
+    const sensorData = await retrieveTimestreamData();
+    const thresholdData = await UserThresholdModel.getAllThreshold(); //retrieveThresholdData(); retrieveMockTresholdData()
 
-        console.log('Sensor data:', sensorData);
-        console.log('Threshold data:', thresholdData);
-        await checkThresholdExceeded(sensorData, thresholdData);
-    } catch (error) {
-        console.error('Error comparing thresholds:', error);
-        throw error;
-    }
-}
-const cronJob = new CronJob('*/2 * * * *', async () => {
-    try {
-      await compareThresholds();
-    } catch (error) {
-      console.error('Error comparing thresholds:', error);
-      throw error;
-    }
-  });
-  
+    console.log("Sensor data:", sensorData);
+    console.log("Threshold data:", thresholdData);
+    await checkThresholdExceeded(sensorData, thresholdData);
+  } catch (error) {
+    console.error("Error comparing thresholds:", error);
+    throw error;
+  }
+};
+const cronJob = new CronJob("*/2 * * * *", async () => {
+  try {
+    await compareThresholds();
+  } catch (error) {
+    console.error("Error comparing thresholds:", error);
+    throw error;
+  }
+});
+
 cronJob.start();
 
 const retrieveTimestreamData = async () => {
-    console.log('Retrieving timestream data...');
-    try {
-        const buoyIdList = '1';
-        const response = await TimestreamModel.getBuoyData(buoyIdList);//fetch('http://localhost:8085/api/ts/getAllBuoyIds');
-        let data = queryParser.parseQueryResult(response)
-        return data;
-
-    } catch (error) {
-        console.error('Error retrieving timestream data:', error);
-        throw error;
-    }
+  console.log("Retrieving timestream data...");
+  try {
+    const buoyIdList = "1";
+    const response = await TimestreamModel.getBuoyData(buoyIdList); //fetch('http://localhost:8085/api/ts/getAllBuoyIds');
+    let data = queryParser.parseQueryResult(response);
+    return data;
+  } catch (error) {
+    console.error("Error retrieving timestream data:", error);
+    throw error;
   }
 
 const checkThresholdExceeded = async (sensorData: any[], thresholdData: any[] | null) => {
@@ -90,27 +88,41 @@ const isMatchingMetricAndDevice = (threshold:any, measureName: any, deviceId: an
 }
 
 const isExceedingThreshold = (threshold: any, measureValue: any) => {
-    console.log("Checking if threshold is exceeded")
-    
-    let thr_customMin: Number = parseFloat(threshold.customMin);
-    let thr_customMax: Number = parseFloat(threshold.customMax);
-    let sensorMeasureValue: Number = parseFloat(measureValue);
+  console.log("Checking if threshold is exceeded");
 
-    console.log("thr_min:", thr_customMin, ",thr_max:", thr_customMax, "Sensor Value:", sensorMeasureValue)
-    if (sensorMeasureValue < thr_customMin || sensorMeasureValue > thr_customMax) {
-        return true;
-    }
-    return false;
-}
+  let thr_customMin: Number = parseFloat(threshold.customMin);
+  let thr_customMax: Number = parseFloat(threshold.customMax);
+  let sensorMeasureValue: Number = parseFloat(measureValue);
 
-const sendNodeMailerEmail = (threshold: any, sensorReading: any, email: any) => {
-    console.log("Sending email notification")
-    let recepient = email
-    let subject = "IMPORTANT: Sensor Threshold Exceeded"
-    let text = `Sensor ${sensorReading.buoy_id} has exceeded the threshold for ${sensorReading.measure_name}. The current value is ${sensorReading['measure_value::double']}. The threshold is ${threshold.customMin} to ${threshold.customMax}.`
-    mailSender.sendEmail(recepient, subject, text);
-}
+  console.log(
+    "thr_min:",
+    thr_customMin,
+    ",thr_max:",
+    thr_customMax,
+    "Sensor Value:",
+    sensorMeasureValue
+  );
+  if (
+    sensorMeasureValue < thr_customMin ||
+    sensorMeasureValue > thr_customMax
+  ) {
+    return true;
+  }
+  return false;
+};
+
+const sendNodeMailerEmail = (
+  threshold: any,
+  sensorReading: any,
+  email: any
+) => {
+  console.log("Sending email notification");
+  let recepient = email;
+  let subject = "IMPORTANT: Sensor Threshold Exceeded";
+  let text = `Sensor ${sensorReading.buoy_id} has exceeded the threshold for ${sensorReading.measure_name}. The current value is ${sensorReading["measure_value::double"]}. The threshold is ${threshold.customMin} to ${threshold.customMax}.`;
+  mailSender.sendEmail(recepient, subject, text);
+};
 
 export default module.exports = {
-    compareThresholds
-}
+  compareThresholds,
+};

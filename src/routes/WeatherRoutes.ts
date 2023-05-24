@@ -1,7 +1,7 @@
-import express, { Router } from 'express';
+import express, { Router } from "express";
 export const router: Router = express.Router();
 
-import WeatherController from '../controllers/weather/WeatherController';
+import WeatherController from "../controllers/weather/WeatherController";
 
-router.route('/getWeather').get(WeatherController.getWeather);
-router.route('/getTide').get(WeatherController.getTide);
+router.route("/getWeather").get(WeatherController.getWeather);
+router.route("/getTide").get(WeatherController.getTide);
