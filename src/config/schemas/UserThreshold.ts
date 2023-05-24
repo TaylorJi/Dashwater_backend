@@ -31,14 +31,14 @@ const UserThresholdSchema = new Schema({
         required: true
     },
 
-    trigger: {
-        type: Boolean,
-        default: false
+    lastTriggerValue: {
+        type: Number,
+        default: null
     },
 
-    emailSent: {
-        type: Boolean,
-        default: false
+    emailTimestamp: {
+        type: Number,
+        default: 0
     }
 
 
