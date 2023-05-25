@@ -29,9 +29,7 @@ const getBuoyData = async (buoyIdList: string) => {
     const query = queryBuilder.buildCurrentQuery(buoyIdList);
 
     const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
-
-    const data = await timestreamQuery.query(queryParams).promise();
-
+    const data = await timestreamQuery.send(queryParams);
     if (data) {
       return data;
     };

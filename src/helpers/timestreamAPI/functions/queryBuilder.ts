@@ -2,7 +2,7 @@
  * This module contains helper functions for AWS queries.
  */
 
-import { TimestreamQueryClient, TimestreamQueryClientConfig } from "@aws-sdk/client-timestream-query";
+import { QueryCommand, TimestreamQueryClient, TimestreamQueryClientConfig } from "@aws-sdk/client-timestream-query";
 import { AwsCredentialIdentity } from "@aws-sdk/types";
 
 import queryInfo from "../constants/queryInfo";
@@ -40,8 +40,9 @@ const createTSQuery = (
     NextToken: nextToken,
     QueryString: queryString,
   };
+  const queryCommand = new QueryCommand(queryParams);
   //Pack query and query string objects into array.
-  return [timeStreamQuery, queryParams] as const;
+  return [timeStreamQuery, queryCommand] as const;
 };
 
 // To be re-used to parse an array of ids delimited by commas
