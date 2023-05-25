@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const UserThresholdSchema = new Schema({
-    
+
     userId: {
         type: String,
         required: true,
