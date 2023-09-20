@@ -2,15 +2,13 @@
 Back-end repo for the 2023 iteration of the IoT Dashboard
 
 ## Team Members
-Susan Li
+Nash Baek
 
-Sally Poon
+Taylor Ji
 
-Jackson Marsnas
+Siwoon Lim
 
-Semih Erguven
-
-Basil Kim
+Ellen Jung
 
 ## Starting the Server
 Run the command `npm run dev` in the terminal. This will compile TypeScript and start the server.
