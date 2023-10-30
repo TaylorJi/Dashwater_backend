@@ -4,7 +4,7 @@ import cors from 'cors';
 
 //Server
 import express from 'express';
-import Environment, { CORS_URL } from './config/Environments';
+import Environment, {  } from './config/Environments';
 import compression from 'compression';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
@@ -29,7 +29,7 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: CORS_URL,
+        origin: "http://localhost:3000",
         credentials: true
     })
 );
