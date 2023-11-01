@@ -20,7 +20,7 @@ const createSession = async (sessionId: string, userId: string) => {
     }
     return null;
   } catch (err) {
-    console.log(err)
+    console.log('SessionModel: ' + err)
     return null;
   }
 };
