@@ -143,7 +143,7 @@ const getAllDevicesSettings: any = async () => {
             if (sensorsResponse.status === 200) {
                 let devices = sensorsResponse['data']['devices'];
                 devices.forEach((device: any) => {
-                    let deviceId = device['id'];
+                    let deviceId = parseInt(device['id']);
                     let sensorsResData = device['sensors'];
                     const sensorsData: sensorType[] = sensorsResData.map((sensor: any) => {
                         const newSensorItem: sensorType = {
