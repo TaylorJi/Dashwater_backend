@@ -114,9 +114,13 @@ const getAllDevicesSettings: any = async () => {
         // });
         const apiGateway = process.env.AWS_DEVICES_API_GATEWAY_TEST;
         const devicesResponse: any = await axios.post(`${apiGateway}`,
-        {
-            operation: "scan"
-        });
+            {
+                operation: "scan"
+            }).then(response => {
+                console.log(`Received response from ${apiGateway}`);
+                return response;
+            });
+
 
         if (devicesResponse.status === 200) {
             let devicesResData = devicesResponse['data']['devices'];
@@ -135,11 +139,11 @@ const getAllDevicesSettings: any = async () => {
                 return newDeviceItem;
             });
 
-            const sensorsResponse: any = await axios.post(`${apiGateway}`, 
-            {
-                operation: "scan_sensors"
-            });
-            
+            const sensorsResponse: any = await axios.post(`${apiGateway}`,
+                {
+                    operation: "scan_sensors"
+                });
+
             if (sensorsResponse.status === 200) {
                 let devices = sensorsResponse['data']['devices'];
                 devices.forEach((device: any) => {
@@ -154,15 +158,15 @@ const getAllDevicesSettings: any = async () => {
                             metric: sensor['measurement'],
                             alerts: sensor['alerts'],
                             defaultUnit: sensor['units'],
-                            threshold: sensor['threshold'],
                             // calibrated: sensor['calibrated'],
                             // enabled: sensor['enabled'],
+                            power: sensor['power'],
                             minVal: sensor['min'],
                             maxVal: sensor['max'],
                             physicalValues: sensor['calibration']['physicalValue'],
-                            calibratedValues: sensor['calibration']['digitalValue']
+                            calibratedValues: sensor['calibration']['digitalValue'],
                         }
-    
+
                         return newSensorItem;
                     });
 
@@ -174,7 +178,7 @@ const getAllDevicesSettings: any = async () => {
                         });
                     });
                 });
-                
+
                 // let sensorsResData = devices['sensor'];
                 // let sensorsResData = sensorsResponse['data']['devices'];
                 // const sensorsData: sensorType[] = sensorsResData.map((sensor: any) => {
@@ -277,43 +281,70 @@ const getAllDevicesSettings: any = async () => {
         //         return devicesData;
         //     }
         // }
+        console.log("Successfully updated device settings");
         return null;
 
     } catch (_err) {
         return null;
     }
 }
+const transformDeviceData = (device: { id: any; name: any; description: any; active: any; locationX: any; locationY: any; sensors: any[]; }) => {
+    return {
+        "operation": "update",
+        "id": device.id,
+        "Name": device.name,
+        "Description": device.description,
+        "Device Status": device.active,
+        "location": {
+            "latitude": device.locationX,
+            "longitude": device.locationY
+        },
+        "sensors": device.sensors.map(sensor => ({
+            "id": sensor.id,
+            "measurement": sensor.metric,
+            "power": sensor.alerts,
+            "min": sensor.minVal,
+            "max": sensor.maxVal,
+            "units": sensor.defaultUnit,
+            "alerts": sensor.alerts,
+            "calibration": {
+                "dateLastCalibrated": sensor.lastCalibrationDate,
+                "physicalValue": sensor.physicalValues,
+                "digitalValue": sensor.calibratedValues
+            }
+        }))
+    };
+};
 
 const updateDeviceSettings: any = async (device: deviceSettingType) => {
+    console.log(`Preparing to update settings for device ${device.id}`);
 
-    const newSettings = {
-        'device_id': device['id'],
-        'device_name': device['name'],
-        'device_description': device['description'],
-        'location_x': device['locationX'],
-        'location_y': device['locationY'],
-        'time_interval': null,      // unsure about time interval use right now, default to null
-        'active': device['active']
-    }
+    // Use device settings provided from the frontend
+    const newSettings = transformDeviceData(device);
 
     try {
-        const devicesResponse: any = await axios.put(`${process.env.AWS_DEVICES_API_GATEWAY}/devices/${device.id}`,
-            newSettings,
-            {
-                headers: {
-                    'x-api-key': process.env.AWS_DEVICES_API_KEY,
-                    'authorizationToken': process.env.AWS_DEVICES_API_AUTH_TOKEN
-                }
-            });
+        console.log(`Sending update request for device ${device.id}`);
+
+        const devicesResponse = await axios.post(
+            `${process.env.AWS_DEVICES_API_GATEWAY_TEST}`,
+            newSettings
+        );
 
         if (devicesResponse.status === 200) {
-            return true
+            console.log("Successfully updated device settings");
+            return newSettings;
+        } else {
+            console.log(`Received status ${devicesResponse.status} while updating device settings`);
         }
     } catch (_err) {
+        console.error(`Error updating device settings: ${_err}`);
         return false;
     }
+
+    console.log(`Failed to update settings for device ${device.id}`);
     return false;
-}
+};
+
 
 export default module.exports = {
     createDevice,
