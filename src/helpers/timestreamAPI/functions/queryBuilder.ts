@@ -8,6 +8,7 @@ import queryInfo from "../constants/queryInfo";
 import sqlQueries from "../constants/sqlQueries";
 import { QueryParams } from "./query";
 
+
 // This function creates and initializes the query and querystring objects.
 // Returns an array to be destructured into the seperate objects.
 const createTSQuery = (
@@ -23,6 +24,10 @@ const createTSQuery = (
     accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
     secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
   });
+  require('dotenv').config();
+// console.log(process.env.AWS_API_ACCESS_KEY);
+//   console.log("Access Key:", `${process.env.AWS_API_ACCESS_KEY}`);
+//   console.log("Secret Key:", process.env.SECRET_ACCESS_KEY);
   //Create the query object
   const timeStreamQuery = new TimestreamQuery({
     apiVersion: queryInfo.API_VERSION,
@@ -123,6 +128,9 @@ const buildThresholdQuery = (
   );
 };
 
+
+
+
 export default module.exports = {
   createTSQuery,
   buildCurrentQuery,
@@ -130,5 +138,5 @@ export default module.exports = {
   parseDeviceList,
   buildThresholdQuery,
   buildMinQuery,
-  buildMaxQuery
+  buildMaxQuery,
 };
