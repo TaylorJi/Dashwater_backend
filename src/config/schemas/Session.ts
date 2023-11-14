@@ -20,6 +20,15 @@ const SessionSchema = new Schema({
         type: String,
         default: null,
         required: true
+    },
+
+    userRole: {
+        type: String,
+        enum: ['Admin', 'User'],
+        required: true
+    },
+    isValid:{
+        type: Boolean
     }
 
 })

@@ -10,7 +10,7 @@ const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     } else {
         const sessionId = req.cookies.sessionCookie.sessionId;
         if (sessionId) {
-            const sessionCheck = await SessionModel.validateSession(sessionId, false);
+            const sessionCheck = await SessionModel.validateSession(sessionId);
     
             if (sessionCheck) {
                 next();
@@ -29,7 +29,7 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
     } else {
         const sessionId = req.cookies.sessionCookie.sessionId;
         if (sessionId) {
-            const sessionCheck = await SessionModel.validateSession(sessionId, true);
+            const sessionCheck = await SessionModel.validateSession(sessionId);
     
             if (sessionCheck) {
                 next();
