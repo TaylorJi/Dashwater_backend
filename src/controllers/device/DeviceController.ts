@@ -118,9 +118,9 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
 }
 
-const getAllDevicesSettings = async (_req: Request, res: Response) => {
+const getAllDevicesSettings = async (req: Request, res: Response) => {
 
-    const response = await DeviceModel.getAllDevicesSettings();
+    const response = await DeviceModel.getAllDevicesSettings(req.body.token);
 
     if (response) {
         res.status(200).json({ data: response });

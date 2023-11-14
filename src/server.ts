@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 // Middleware
-import AuthenticationController from './controllers/authentication/AuthenticationController';
+// import AuthenticationController from './controllers/authentication/AuthenticationController'; // Make sure uncomment this when AuthenticationController.userAuth works properly
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -92,12 +92,24 @@ import { router as calibrationRouter } from './routes/CalibrationRoutes';
 import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
 import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
-server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
-server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
+// server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
+// server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
+// server.use('/api/session', sessionRouter);
+// server.use('/api/user', userRouter);
+// server.use('/api/trackedDevice', AuthenticationController.userAuth, trackedDeviceRouter);
+// server.use('/api/device', AuthenticationController.userAuth, deviceRouter);
+// server.use('/api/calibration', AuthenticationController.userAuth, calibrationRouter);
+// server.use('/api/defaultThreshold', AuthenticationController.userAuth, defaultThresholdRouter)
+// server.use('/api/userThreshold', AuthenticationController.userAuth, userThresholdRouter)
+
+
+//!!!!!!!!!!!!!uncomment line 13 once AuthenticationController.userAuth works properly!!!!!!!!!
+server.use('/api/ts', timestreamRouter);
+server.use('/api/weather', weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
-server.use('/api/trackedDevice', AuthenticationController.userAuth, trackedDeviceRouter);
-server.use('/api/device', AuthenticationController.userAuth, deviceRouter);
-server.use('/api/calibration', AuthenticationController.userAuth, calibrationRouter);
-server.use('/api/defaultThreshold', AuthenticationController.userAuth, defaultThresholdRouter)
-server.use('/api/userThreshold', AuthenticationController.userAuth, userThresholdRouter)
+server.use('/api/trackedDevice', trackedDeviceRouter);
+server.use('/api/device', deviceRouter);
+server.use('/api/calibration', calibrationRouter);
+server.use('/api/defaultThreshold', defaultThresholdRouter)
+server.use('/api/userThreshold', userThresholdRouter)
