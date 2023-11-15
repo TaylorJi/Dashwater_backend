@@ -130,11 +130,12 @@ const getAllDevicesSettings = async (_req: Request, res: Response) => {
 }
 
 const updateDeviceSettings = async(req: Request, res: Response) => {
+    console.log(req.body); // Log the request body
+    const device: deviceSettingType = req.body;
 
-    const response = await DeviceModel.updateDeviceSettings(req.body);
-
+    const response = await DeviceModel.updateDeviceSettings(device);
     if (response) {
-        res.status(200).json({ message: `Device update successful!` });
+        res.status(200).json({ message: `Device update successful!`}); // Include response in the response body
     } else {
         res.status(500).json({ message: "There was an error with the" })
     }
