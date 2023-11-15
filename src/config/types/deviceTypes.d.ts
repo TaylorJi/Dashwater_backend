@@ -15,7 +15,7 @@ type deviceSettingType = {
 type sensorType = {
     id: number,
     deviceId: number,
-    lastCalibrationDate: string,
+    // lastCalibrationDate: string,
     // minCalibrationPts: number,
     metric: string,
     defaultUnit: string,
@@ -23,15 +23,14 @@ type sensorType = {
     power: boolean,
     minVal: number,
     maxVal: number,
-    physicalValues: number[],
-    calibratedValues: number[]
+    calibration: calibrationPointType;
 };
 
 type calibrationPointType = {
     id: number,
-    digitalValue: number,
-    physicalValue: number,
-    sensorId: string
+    dateLastCalibrated: string;
+    physicalValue: number[];
+    digitalValue: number[];
 };
 
 // types for mongoDB models

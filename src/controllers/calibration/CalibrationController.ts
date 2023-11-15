@@ -1,20 +1,20 @@
-import { Request, Response } from "express";
+// import { Request, Response } from "express";
 
-import CalibrationModel from "../../models/calibration/CalibrationModel";
+// import CalibrationModel from "../../models/calibration/CalibrationModel";
 
-const getSensorCalibrationPoints = async (req: Request, res: Response) => {
+// const getSensorCalibrationPoints = async (req: Request, res: Response) => {
 
-    const { sensorId } = req.body;
+//     const { sensorId } = req.body;
 
-    const response = await CalibrationModel.getSensorCalibrationPoints(sensorId);
+//     const response = await CalibrationModel.getSensorCalibrationPoints(sensorId);
 
-    if (response) {
-        res.status(200).json({ data: response });
-    } else {
-        res.status(500).json({ message: "There was an error with the request." });
-    }
-}
+//     if (response) {
+//         res.status(200).json({ data: response });
+//     } else {
+//         res.status(500).json({ message: "There was an error with the request." });
+//     }
+// }
 
-export default module.exports = {
-    getSensorCalibrationPoints
-}
+// export default module.exports = {
+//     getSensorCalibrationPoints
+// }
