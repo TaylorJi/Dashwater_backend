@@ -11,6 +11,7 @@ const getAllBuoyIds = async (_req: Request, res: Response) => {
   const response = await TimestreamModel.getAllBuoyIds(sqlQueries.DEVICE_IDS);
 
   if (response) {
+    console.log(response);
     res.status(200).json({ data: queryParser.parseQueryResult(response) });
 
   } else {

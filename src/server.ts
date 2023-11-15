@@ -92,7 +92,9 @@ import { router as calibrationRouter } from './routes/CalibrationRoutes';
 import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
 import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
 
-server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
+// server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
+server.use('/api/ts', timestreamRouter)
+
 server.use('/api/weather', AuthenticationController.userAuth, weatherRouter);
 server.use('/api/session', sessionRouter);
 server.use('/api/user', userRouter);
