@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 // Middleware
-import AuthenticationController from './controllers/authentication/AuthenticationController';
+import AuthenticationController from './controllers/authentication/AuthenticationController'; // Make sure uncomment this when AuthenticationController.userAuth works properly
 
 // Cache
 import AppCache from './models/cache/AppCache';
@@ -91,6 +91,8 @@ import { router as deviceRouter } from './routes/DeviceRoutes';
 import { router as calibrationRouter } from './routes/CalibrationRoutes';
 import { router as defaultThresholdRouter } from './routes/DefaultThresholdRoutes'
 import { router as userThresholdRouter } from './routes/UserThresholdRoutes'
+
+
 
 // server.use('/api/ts', AuthenticationController.userAuth, timestreamRouter)
 server.use('/api/ts', timestreamRouter)

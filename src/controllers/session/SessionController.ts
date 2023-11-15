@@ -99,6 +99,28 @@ import SessionModel from "../../models/session/SessionModel";
 //     }
 // };
 
+// const createSession = async (req: Request, res: Response) => {
+//     const { userId } = req.body;
+//     let sessionId = null;
+
+//     if (req.cookies.sessionCookie) {
+//         sessionId = req.cookies.sessionCookie.sessionId;
+//     } else{
+//         sessionId = uuid();
+//     }
+    
+//     if (!userId) {
+//         return res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
+//     }
+
+//     const response = await SessionModel.createSession(sessionId, userId);
+//     if (response) {
+//         // return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, DOMAIN: DOMAIN}, {"sameSite":"none", 'secure': true}).status(200).json({ user: response })
+//         return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ user: response })
+//     } else {
+//         return res.status(500).json({ message: "There was an error with the request." });
+//     }
+// };
 
 const createSession = async (req: Request, res: Response) => {
     const { userId, idToken, userRole } = req.body;

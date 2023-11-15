@@ -103,7 +103,7 @@ const getDevicesWithinRadius = async (coordinates: [Number], radius: Number) => 
     }
 }
 
-const getAllDevicesSettings: any = async () => {
+const getAllDevicesSettings: any = async (sessionId: String) => {
     try {
         // const apiGateway = process.env.AWS_DEVICES_API_GATEWAY;
         // const devicesResponse: any = await axios.get(`${apiGateway}/devices`, {
@@ -116,13 +116,22 @@ const getAllDevicesSettings: any = async () => {
         const devicesResponse: any = await axios.post(`${apiGateway}`,
             {
                 operation: "scan"
-            }).then(response => {
+            },
+            {
+                headers: { Authorization: `${sessionId}` },
+            }
+            )
+            .then(response => {
                 console.log(`Received response from ${apiGateway}`);
                 return response;
+            }).catch(err => {
+                console.log(`Error from ${apiGateway}: ${err}`);
+                return null;
             });
 
 
         if (devicesResponse.status === 200) {
+            console.log("devicesResponse.status = " + devicesResponse.status);
             let devicesResData = devicesResponse['data']['devices'];
             const devicesData: deviceSettingType[] = devicesResData.map((device: any) => {
                 const newDeviceItem: deviceSettingType = {
@@ -142,7 +151,11 @@ const getAllDevicesSettings: any = async () => {
             const sensorsResponse: any = await axios.post(`${apiGateway}`,
                 {
                     operation: "scan_sensors"
-                });
+                },
+                {
+                    headers: { Authorization: `${sessionId}` },
+                }
+                );
 
             if (sensorsResponse.status === 200) {
                 let devices = sensorsResponse['data']['devices'];
@@ -221,6 +234,8 @@ const getAllDevicesSettings: any = async () => {
             }
 
             return devicesData;
+        } else {
+            console.log("devicesResponse.status = " + devicesResponse.status);
         }
 
         // if (devicesResponse.status === 200) {
