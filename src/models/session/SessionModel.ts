@@ -1,7 +1,7 @@
 import Session from "../../config/schemas/Session";
 // import User from "../../config/schemas/User";
 import { getTokenKey } from "./sessionHelpers";
-import axios, { AxiosResponse } from "axios";
+// import axios, { AxiosResponse } from "axios";
 import jwt from "jsonwebtoken";
 
 // previous team logic
@@ -45,16 +45,16 @@ const createSession = async (sessionId: string, userId: string, userRole: string
           userRole: userRole,
           isValid: true
       };
-      if (localStorage.getItem("sessionArray")) {
-        var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
-        sessionArray.push(JSON.stringify(newSession));
-        localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
-        console.log("successfully saved session into localstorage");
-      } else {
-        var sessionArray: any[] = [];
-        sessionArray.push(JSON.stringify(newSession));
-        localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
-      }
+      // if (localStorage.getItem("sessionArray")) {
+      //   var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
+      //   sessionArray.push(JSON.stringify(newSession));
+      //   localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
+      //   console.log("successfully saved session into localstorage");
+      // } else {
+      //   var sessionArray: any[] = [];
+      //   sessionArray.push(JSON.stringify(newSession));
+      //   localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
+      // }
       // putting the session into sessions array, otherwise we have to use DB to store the session
       sessions[sessionId] = newSession;
       console.log(sessions)
