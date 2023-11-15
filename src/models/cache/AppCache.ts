@@ -77,7 +77,6 @@ class AppCacheManager {
             const tomorrow =
                 new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
 
-
             const tideLevelsResponse = await axios.get(`https://api.stormglass.io/v2/tide/sea-level/point?lat=${this.yvrLat}&lng=${this.yvrLong}&start=${today}&end=${tomorrow}`,
                 { headers: { Authorization: process.env.TIDE_API_KEY } }
             );
