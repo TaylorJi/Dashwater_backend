@@ -90,13 +90,7 @@ const validateSession = async (sessionId: string) => {
     } else {
       return true;
     }
-    const session = sessions[sessionId];
-    console.log(session);
-    if (!session) {
-      return false;
-    } else {
-      return true;
-    }
+ 
   } catch (err) {
     return null;
   }

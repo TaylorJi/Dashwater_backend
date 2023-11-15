@@ -331,7 +331,7 @@ const transformDeviceData = (device: { id: any; name: any; description: any; act
     };
 };
 
-const updateDeviceSettings: any = async (device: deviceSettingType) => {
+const updateDeviceSettings: any = async (device: deviceSettingType, sessionId: String) => {
     console.log(`Preparing to update settings for device ${device.id}`);
 
     // Use device settings provided from the frontend
@@ -342,7 +342,7 @@ const updateDeviceSettings: any = async (device: deviceSettingType) => {
 
         const devicesResponse = await axios.post(
             `${process.env.AWS_DEVICES_API_GATEWAY_TEST}`,
-            newSettings
+            newSettings, {headers: { Authorization: `${sessionId}` }}
         );
 
         if (devicesResponse.status === 200) {
