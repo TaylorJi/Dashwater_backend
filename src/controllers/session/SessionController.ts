@@ -152,6 +152,21 @@ const validateSession = async (req: Request, res: Response) => {
     console.log("Validate Session is being called")
     const {sessionToken} = req.body;   
 
+    if (!req.cookies.sessionCookie) {
+        return res.status(400).json({ message: "Invalid request: session cookie is required." });
+    }
+
+    const sessionId = req.cookies.sessionCookie.sessionId;
+    const expiration = req.cookies.sessionCookie.expires;
+
+    if (!sessionId) {
+        return res.status(400).json({ message: "Invalid request: session ID is required." });
+    } else if (expiration < (new Date()).toISOString()) {
+        return res.status(400).json({ message: "Invalid request: session cookie is expired. Please create a new session." });
+    }
+
+    return res.status(200).json({ message: "Validate Session is being called", sessionId: sessionId });
+    
     if (!sessionToken) {
         console.log("no cookie")
         return res.status(400).json({ message: "Invalid request: idToken is required." });
@@ -177,6 +192,16 @@ const validateSession = async (req: Request, res: Response) => {
 
 const deleteSession = async (req: Request, res: Response) => {
     console.log("Delete Session is being called")
+    if (!req.cookies.sessionCookie) {
+        return res.status(400).json({ message: "Invalid request: session cookie is required." });
+    }
+    const sessionId = req.cookies.sessionCookie.sessionId;
+    if (!sessionId) {
+        return res.status(400).json({ message: "Invalid request: session ID is required." });
+    }
+    return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': 'localhost:8085'}).status(200).json({ message: "Session deleted.", sessionId: sessionId });
+
+
     const idToken = req.headers.authorization?.split(' ')[1];
     console.log(idToken)
 
@@ -186,6 +211,14 @@ const deleteSession = async (req: Request, res: Response) => {
 
     return res.status(200).json({ success: true, message: "Delete Session is being called" });
 };
+
+const updateSessionExpiry = async (req: Request, res: Response) => {
+    const {newSession} = req.body.newSession;
+    if (newSession) {
+        return res.cookie('sessionCookie', {'sessionId': newSession.sessionId, 'expires': newSession.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ user: 'Session is not expired' });
+    }
+    return res.status(400).json({ message: "Failed to update session expiry." });
+}
 
 // const deleteSession = async (req: Request, res: Response) => {
 //     if (!req.cookies.sessionCookie) {
@@ -213,5 +246,6 @@ const deleteSession = async (req: Request, res: Response) => {
 export default module.exports = {
     createSession,
     validateSession,
-    deleteSession
+    deleteSession,
+    updateSessionExpiry
 };

@@ -6,3 +6,4 @@ export const router: Router = express.Router();
 router.route('/createSession').post(SessionController.createSession);
 router.route('/validateSession').post(SessionController.validateSession);
 router.route('/deleteSession').delete(SessionController.deleteSession);
+router.route('/updateSessionExpiry').post(SessionController.updateSessionExpiry);
