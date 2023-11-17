@@ -1,6 +1,7 @@
 import User from "../../config/schemas/User";
 import bcrypt from "bcrypt";
 import { SALT_ROUNDS } from "../../helpers/authentication/constants";
+import axios from "axios";
 
 const createUser = async (email: string, password: string, role: String) => {
     try {
@@ -41,12 +42,22 @@ const validateUser = async (email: string, password: string) => {
     }
 };
 
-const getUser = async () => {
+const getUser = async (sessionId: string) => {
     try {
-        const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
+        const headers = {
+            'Authorization': sessionId
+        }
+        const response = await axios.get('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  {
+            // headers: {
+            //     "Authorization": `${sessionId}`
+            // },
+            headers
+        });
+        console.log("getUser status: " + JSON.stringify(response.data));
+        // const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
 
-        if (users.length !== 0) {
-            return users;
+        if (response.status === 200) {
+            return response.data.items;
         }
         return false;
     } catch (err) {

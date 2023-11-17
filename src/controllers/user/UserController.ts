@@ -42,11 +42,12 @@ const validateUser = async (req: Request, res: Response) => {
     }
 }
 
-const getUser = async (_req: Request, res: Response) => {
-    const response = await UserModel.getUser();
+const getUser = async (req: Request, res: Response) => {
+    const sessionId: string = req.body.sessionId;
+    const response = await UserModel.getUser(sessionId);
 
     if (response) {
-        res.status(200).json({ data: response });
+        res.status(200).json({ items: response });
     } else {
         res.status(500).json({ message: "There was an error with the request." });
     }
