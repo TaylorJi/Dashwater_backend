@@ -134,6 +134,9 @@ const getAllDevicesSettings: any = async (sessionId: String) => {
             console.log("devicesResponse.status = " + devicesResponse.status);
             let devicesResData = devicesResponse['data']['devices'];
             const devicesData: deviceSettingType[] = devicesResData.map((device: any) => {
+                // if (typeof device['id'] != 'number') {
+                //     device['id'] = "-1";
+                // }
                 const newDeviceItem: deviceSettingType = {
                     id: parseInt(device['id']),
                     name: device['Name'],

@@ -5,12 +5,12 @@ import UserModel from "../../models/user/UserModel";
 
 const createUser = async (req: Request, res: Response) => {
 
-    const { email, password, role } =  req.body;
+    const { sessionId, email, password, role } =  req.body;
 
     if (!email || !password) {
         res.status(400).json({ message: "Invalid request: email and password are required." });
     } else {
-        const response = await UserModel.createUser( email, password, role);
+        const response = await UserModel.createUser(sessionId, email, password, role);
 
 
         if (response) {
@@ -92,9 +92,11 @@ const updateUser = async (req: Request, res: Response) => {
 
 
 const deleteUser = async (req: Request, res: Response) => {
-    const userId = req.params.id;
-    const response = await UserModel.deleteUser(userId);
-
+    // const userId = req.params.id;
+    // const response = await UserModel.deleteUser(userId);
+    const sessionId: string = req.body.sessionId;
+    const userEmail: string = req.body.email;
+    const response = await UserModel.deleteUser(sessionId, userEmail);
     if (response) {
         res.status(200).json({ data: response });
     } else {
