@@ -1,6 +1,7 @@
 import Session from "../../config/schemas/Session";
 // import User from "../../config/schemas/User";
 import { getTokenKey } from "./sessionHelpers";
+// import axios, { AxiosResponse } from "axios";
 import jwt from "jsonwebtoken";
 
 // previous team logic
@@ -28,6 +29,7 @@ import jwt from "jsonwebtoken";
 //   }
 // };
 
+
 let sessions: any = {}
 
 const createSession = async (sessionId: string, userId: string, userRole: string) => {
@@ -44,6 +46,16 @@ const createSession = async (sessionId: string, userId: string, userRole: string
           userRole: userRole,
           isValid: true
       };
+      // if (localStorage.getItem("sessionArray")) {
+      //   var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
+      //   sessionArray.push(JSON.stringify(newSession));
+      //   localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
+      //   console.log("successfully saved session into localstorage");
+      // } else {
+      //   var sessionArray: any[] = [];
+      //   sessionArray.push(JSON.stringify(newSession));
+      //   localStorage.setItem("sessionArray", JSON.stringify(sessionArray));
+      // }
       // putting the session into sessions array, otherwise we have to use DB to store the session
       sessions[sessionId] = newSession;
       console.log(sessions)
@@ -84,6 +96,34 @@ const deleteSession = async (sessionId: string) => {
 const validateSession = async (sessionId: string) => {
   try {
     console.log("Inside session model validate session");
+    // var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
+    // var session: any;
+    // sessionArray.forEach(function (ses) {
+    //   ses = JSON.parse(ses);
+    //   if (ses.sessionId == sessionId) {
+    //     session = ses;
+    //   }
+    // });
+    // if (session) {
+    //   const currentTime = new Date();
+    //   if (new Date(session.sessionExpiry) < currentTime) {
+    //     return false;
+    //   }
+    //   const response: any = await axios.get<any, AxiosResponse<string>>(`https://ma93xudga3.execute-api.us-east-1.amazonaws.com/prod/data/?email=${session.userId}`);
+    //   if (response.status === 200) {
+    //     const fetchedUser = response.data;
+    //     const user: userDataType = {
+    //       email: fetchedUser["email"],
+    //       userId: fetchedUser["_id"],
+    //       role: fetchedUser["role"],
+    //     };
+    //     return user;
+    //   } else {
+    //     return null;
+    //   }
+    // } else {
+    //   return null;
+    // }
 
     if (!sessionId) {
       return false;

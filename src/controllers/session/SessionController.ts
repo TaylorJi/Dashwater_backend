@@ -135,7 +135,13 @@ const createSession = async (req: Request, res: Response) => {
     const response = await SessionModel.createSession(idToken, userId,userRole );
     if (response) {
         // return res.status(200).json({ success: true, user: response });
-        return res.cookie('sessionCookie', {'sessionId': response.sessionId, 'expires': response.sessionExpiry, 'domain': 'localhost:8085'}).status(200).json({ success: true, user: response });
+        return res.cookie('sessionCookie', {
+            'sessionId': response.sessionId, 
+            'expires': response.sessionExpiry, 
+            'domain': 'localhost:8085',
+            'httpOnly': true,
+            'secure' : true})
+            .status(200).json({ success: true, user: response });
     } else {
         return res.status(500).json({ success: false, message: "There was an error with the request." });
     }
@@ -179,14 +185,27 @@ const deleteSession = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({ success: true, message: "Delete Session is being called" });
-
-    // const response = await SessionModel.deleteSession(idToken);
-    // if (response) {
-    //     return res.status(200).json({ message: "Session deleted." });
-    // } else {
-    //     return res.status(500).json({ message: "There was an error with the request." });
-    // }
 };
+
+// const deleteSession = async (req: Request, res: Response) => {
+//     if (!req.cookies.sessionCookie) {
+//         return res.status(400).json({ message: "Invalid request: session cookie is required." });
+//     }
+
+//     const sessionId = req.cookies.sessionCookie.sessionId;
+
+//     if (!sessionId) {
+//         return res.status(400).json({ message: "Invalid request: session ID is required." });
+//     }
+
+    // const response = await SessionModel.deleteSession(sessionId);
+//     if (response) {
+//         return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': 'localhost:8085'}).status(200).json({ message: "Session deleted." });
+//         // return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': DOMAIN}).status(200).json({ message: "Session deleted." });
+//     } else {
+//         return res.status(500).json({ message: "There was an error with the request." });
+//     }
+// };
 
 
 

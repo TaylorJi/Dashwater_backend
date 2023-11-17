@@ -3,7 +3,9 @@ import TimestreamController from "../controllers/timestreamAPI/TimestreamControl
 
 export const router: Router = express.Router();
 
+// router.route("/getAllBuoyIds").post(TimestreamController.getAllBuoyIds);
 router.route("/getAllBuoyIds").get(TimestreamController.getAllBuoyIds);
+
 router.route("/getCurrentBuoyData").get(TimestreamController.getCurrentBuoyData);
 router.route("/getBuoyHistory").get(TimestreamController.getBuoyHistory);
 router.route("/getBuoyThreshold").get(TimestreamController.getBuoyThreshold);
