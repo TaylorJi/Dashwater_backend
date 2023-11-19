@@ -95,12 +95,20 @@ const getUser = async (sessionId: string) => {
 };
 
 
-const getSingleUser = async (userId: string) => {
+const getSingleUser = async (sessionId: string, userId: string) => {
     try {
-        const user = await User.findById(
-            { _id: userId },
-        );
-        return user;
+        const headers = {
+            'Authorization': sessionId
+        };
+        const response = await axios.get('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  { // change it once provided
+            headers
+        });
+        // const user = await User.findById(
+        //     { _id: userId },
+        // );
+        if (response.status === 200) {
+            return response.data;
+        }
 
     } catch (err) {
         console.error("Error retrieving user.");
@@ -109,12 +117,24 @@ const getSingleUser = async (userId: string) => {
 };
 
 
-const updateUser = async (userId: string, userEmail: string, userPassword: string, userRole: string) => {
+const updateUser = async (sessionId: string, user: any) => {
     try {
-        const users = await User.findByIdAndUpdate(
-            { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
+        // const users = await User.findByIdAndUpdate(
+        //     { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
+        // );
+        const response = await axios.post('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  
+            {
+                operation: "update",
+                "old email": user.oldEmail,
+                "new email": user.email,
+                password: user.password,
+                role: user.role
+            },
+            {
+                headers: { Authorization: `${sessionId}` },
+            }
         );
-        return users;
+        return response.data;
 
     } catch (err) {
         console.error("Error retrieving user.");

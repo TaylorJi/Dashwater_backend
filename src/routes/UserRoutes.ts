@@ -9,6 +9,6 @@ router.route('/validateUser').post(UserController.validateUser);
 router.route('/validateUser').post(UserController.validateUser);
 // router.route('/getUser').get(UserController.getUser);
 router.route('/getUser').post(UserController.getUser);
-router.route('/getSingleUser/:id').get(UserController.getSingleUser);
+router.route('/getSingleUser').post(UserController.getSingleUser);
 router.route('/deleteUser').post(UserController.deleteUser);
-router.route('/updateUser/:id').put(UserController.updateUser);
+router.route('/updateUser').post(UserController.updateUser);

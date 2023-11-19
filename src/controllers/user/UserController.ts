@@ -56,8 +56,9 @@ const getUser = async (req: Request, res: Response) => {
 
 const getSingleUser = async (req: Request, res: Response) => {
     try {
-        const userId = req.params.id;
-        const user = await UserModel.getSingleUser(userId);
+        const sessionId: string = req.body.sessionId;
+        const userEmail: string = req.body.email;
+        const user = await UserModel.getSingleUser(sessionId, userEmail);
 
         if (user) {
             res.status(200).json(user);
@@ -73,14 +74,19 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 const updateUser = async (req: Request, res: Response) => {
     try {
-        const userId = req.params.id;
-        const userEmail = req.body.email
-        const userPassword = req.body.password
-        const userRole = req.body.role
-        const user = await UserModel.updateUser(userId, userEmail ,userPassword, userRole);
+        const sessionId: string = req.body.sessionId;
+        const user: any = req.body.user;
 
-        if (user) {
-            res.status(200).json(user);
+        // const userId = req.params.id;
+        // const userEmail = req.body.email
+        // const userPassword = req.body.password
+        // const userRole = req.body.role
+        // const user = await UserModel.updateUser(userId, userEmail ,userPassword, userRole);
+
+        const response = await UserModel.updateUser(sessionId, user);
+
+        if (response) {
+            res.status(200).json(response);
         } else {
             res.status(404).json({ message: "User not found"});
         }
