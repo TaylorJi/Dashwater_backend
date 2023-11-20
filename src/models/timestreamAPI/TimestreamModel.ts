@@ -131,9 +131,6 @@ const getHistoricalHigh = async (buoyId: string, measureName: string) => {
 }
 
 const test = async () => {
-  console.log('test');
-  console.log('AWS_API_ACCESS_KEY', `${process.env.AWS_API_ACCESS_KEY}`)
-  console.log('SECRET_ACCESS_KEY', `${process.env.SECRET_ACCESS_KEY}`)
   AWS.config.update({
     accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
     secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
@@ -146,7 +143,14 @@ const test = async () => {
   const params = {
     QueryString: query
   };
-
+  try {
+    const data = await timestreamClient.query(params).promise();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 
 
 

@@ -188,18 +188,18 @@ const getCustomRangeLogData = async (req: Request, res: Response) => {
 
 };
 
-const test = async (_req: Request, _res: Response) => {
+const test = async (_req: Request, res: Response) => {
   console.log("backend controller test is being called")
 
   const response = await TimestreamModel.test();
 
-  // if (response) {
-  //   console.log(response);
-  //   res.status(200).json({ data: queryParser.parseQueryResult(response) });
+  if (response) {
+    console.log(response);
+    res.status(200).json({ data: queryParser.parseQueryResult(response) });
 
-  // } else {
-  //   res.status(500).json({ error: "There was an error with your request." });
-  // }
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
 
   console.log(response);
 
