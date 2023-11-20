@@ -75,6 +75,12 @@ const ORDER_ASC = "') " + "ORDER BY time ASC";
 
 const TIMESTREAM_TABLES = `SHOW TABLES IN ${queryInfo.DATABASE_NAME}`;
 
+const TEST = `SELECT *
+FROM "${queryInfo.DATABASE_NAME}"."${queryInfo.TABLE_NAME}"
+WHERE time BETWEEN '2023-11-13 02:00:00.000000000' AND '2023-11-19 00:00:00.000000000'
+order by time`
+
+
 export default module.exports = {
   DEVICE_IDS,
   DEVICE_ID_MEASURE_TIME,
@@ -85,4 +91,5 @@ export default module.exports = {
   ORDER_ASC,
   END_TIME,
   TIMESTREAM_TABLES,
+  TEST
 };
