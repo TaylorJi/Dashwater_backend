@@ -2,7 +2,9 @@
  * This module contains the timestream data model, to interact with AWS timestream db
  */
 
+import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
+const AWS = require('aws-sdk');
 
 const getAllBuoyIds = async (queryString: string) => {
 
@@ -128,11 +130,52 @@ const getHistoricalHigh = async (buoyId: string, measureName: string) => {
   }
 }
 
+const test = async () => {
+  console.log('test');
+  console.log('AWS_API_ACCESS_KEY', `${process.env.AWS_API_ACCESS_KEY}`)
+  console.log('SECRET_ACCESS_KEY', `${process.env.SECRET_ACCESS_KEY}`)
+  AWS.config.update({
+    accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
+    secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
+    region: 'us-west-2',
+  });
+
+  const timestreamClient = new AWS.TimestreamQuery();
+  const query = sqlQueries.TEST;
+  console.log(query);
+  const params = {
+    QueryString: query
+  };
+
+
+
+
+  timestreamClient.query(params, (err:AWS.AWSError, data:AWS.TimestreamQuery.QueryResponse) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(data);
+      data.Rows.forEach((row) => {
+        const rowData = row.Data.map((datum, index) => {
+          const key = data.ColumnInfo[index].Name as string;
+
+          return {
+            [key]: datum.ScalarValue,
+          };
+        });
+        console.log('Row Data:', rowData);
+      });
+    }
+  })
+
+}
+
 export default module.exports = {
   getAllBuoyIds,
   getBuoyData,
   getHistoricalData,
   getThresholdData,
   getHistoricalLow,
-  getHistoricalHigh
+  getHistoricalHigh,
+  test
 };
