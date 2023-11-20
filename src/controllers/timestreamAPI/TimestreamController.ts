@@ -188,6 +188,24 @@ const getCustomRangeLogData = async (req: Request, res: Response) => {
 
 };
 
+const test = async (_req: Request, res: Response) => {
+
+  const response = await TimestreamModel.test();
+
+  if (response) {
+    console.log(response);
+    res.status(200).json({ data: queryParser.parseQueryResult(response) });
+
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+
+  console.log(response);
+
+
+
+}
+
 export default module.exports = {
   getAllBuoyIds,
   getCurrentBuoyData,
@@ -197,5 +215,6 @@ export default module.exports = {
   getCachedHistoricalHighLow,
   getCachedLogData,
   getCustomRangeData,
-  getCustomRangeLogData
+  getCustomRangeLogData,
+  test
 };
