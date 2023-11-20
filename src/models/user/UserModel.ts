@@ -2,16 +2,11 @@ import User from "../../config/schemas/User";
 import bcrypt from "bcrypt";
 // import { SALT_ROUNDS } from "../../helpers/authentication/constants";
 import axios from "axios";
+import { USER_URL } from "../../config/Environments";
 
 const createUser = async (sessionId: string, email: string, password: string, role: String) => {
     try {
-        // const headers = {
-        //     'Authorization': sessionId
-        // }
-        const response = await axios.post('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  
-            // headers: {
-            //     "Authorization": `${sessionId}`
-            // },
+        const response = await axios.post(USER_URL,  
             {
                 operation: "add",
                 email: email,
@@ -26,24 +21,6 @@ const createUser = async (sessionId: string, email: string, password: string, ro
         if (response.status === 200) {
             return response.data;
         }
-        // {
-        //     operation: "add",
-        //     email: user.email,
-        //     password: user.password,
-        //     role: user.role
-        // },
-        // {
-        //     headers: { Authorization: `${sessionId}` },
-        // }
-
-        // const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-        // const hash = bcrypt.hashSync(password, salt);
-
-        // const newUser = await User.create({ "email": email, "password": hash, "role": role });
-
-        // if (newUser) {
-        //     return newUser;
-        // }
         return null;
 
     } catch (err) {
@@ -77,13 +54,9 @@ const getUser = async (sessionId: string) => {
         const headers = {
             'Authorization': sessionId
         };
-        const response = await axios.get('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  {
-            // headers: {
-            //     "Authorization": `${sessionId}`
-            // },
+        const response = await axios.get(USER_URL,  {
             headers
         });
-        // const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
 
         if (response.status === 200) {
             return response.data.items;
@@ -97,17 +70,16 @@ const getUser = async (sessionId: string) => {
 
 const getSingleUser = async (sessionId: string, userId: string) => {
     try {
-        const headers = {
-            'Authorization': sessionId
-        };
-        const response = await axios.get('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  { // change it once provided
-            headers
+        const response = await axios.post(`${USER_URL}/role`,  
+        {
+            email: userId
+        },
+        {
+            headers: { Authorization: `${sessionId}` },
         });
-        // const user = await User.findById(
-        //     { _id: userId },
-        // );
         if (response.status === 200) {
-            return response.data;
+            console.log('getSingleUser: ' + JSON.stringify(response.data));
+            return response.data.body;
         }
 
     } catch (err) {
@@ -119,10 +91,7 @@ const getSingleUser = async (sessionId: string, userId: string) => {
 
 const updateUser = async (sessionId: string, user: any) => {
     try {
-        // const users = await User.findByIdAndUpdate(
-        //     { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
-        // );
-        const response = await axios.post('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  
+        const response = await axios.post(USER_URL,  
             {
                 operation: "update",
                 "old email": user.oldEmail,
@@ -145,7 +114,7 @@ const updateUser = async (sessionId: string, user: any) => {
 
 const deleteUser = async (sessionId: string, userEmail: string) => {
     try {
-        const response = await axios.post('https://c5hn9pagt5.execute-api.us-west-2.amazonaws.com/prod/user',  
+        const response = await axios.post(USER_URL,  
             {
                 operation: "delete",
                 email: userEmail
@@ -154,7 +123,6 @@ const deleteUser = async (sessionId: string, userEmail: string) => {
                 headers: { Authorization: `${sessionId}` },
             }
         );
-        // const deletedUser = await User.findOneAndDelete({ "_id": userId });
         if (response.status === 200) {
             return response.data;
         } else {

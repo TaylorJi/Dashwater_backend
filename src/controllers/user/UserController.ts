@@ -77,12 +77,6 @@ const updateUser = async (req: Request, res: Response) => {
         const sessionId: string = req.body.sessionId;
         const user: any = req.body.user;
 
-        // const userId = req.params.id;
-        // const userEmail = req.body.email
-        // const userPassword = req.body.password
-        // const userRole = req.body.role
-        // const user = await UserModel.updateUser(userId, userEmail ,userPassword, userRole);
-
         const response = await UserModel.updateUser(sessionId, user);
 
         if (response) {
@@ -98,8 +92,6 @@ const updateUser = async (req: Request, res: Response) => {
 
 
 const deleteUser = async (req: Request, res: Response) => {
-    // const userId = req.params.id;
-    // const response = await UserModel.deleteUser(userId);
     const sessionId: string = req.body.sessionId;
     const userEmail: string = req.body.email;
     const response = await UserModel.deleteUser(sessionId, userEmail);
