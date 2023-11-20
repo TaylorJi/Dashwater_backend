@@ -95,7 +95,6 @@ const deleteSession = async (sessionId: string) => {
 
 const validateSession = async (sessionId: string) => {
   try {
-    console.log("Inside session model validate session");
     // var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
     // var session: any;
     // sessionArray.forEach(function (ses) {
