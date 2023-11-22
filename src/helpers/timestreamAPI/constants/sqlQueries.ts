@@ -77,8 +77,20 @@ const TIMESTREAM_TABLES = `SHOW TABLES IN ${queryInfo.DATABASE_NAME}`;
 
 const TEST = `SELECT sensor_name, measure_value::double, time
 FROM "${queryInfo.DATABASE_NAME}"."${queryInfo.TABLE_NAME}"
-WHERE time BETWEEN '2023-11-13 02:00:00.000000000' AND '2023-11-16 23:00:00.000000000'
+WHERE time BETWEEN '2023-11-16 05:00:00.000000000' AND '2023-11-16 19:00:00.000000000'
 order by time`
+
+
+const DEVICES = `SELECT device_name
+FROM "${queryInfo.DATABASE_NAME}"."${queryInfo.TABLE_NAME}"
+GROUP BY device_name
+ORDER BY device_name ASC`;
+
+const SENSORS = `SELECT sensor_name
+FROM "${queryInfo.DATABASE_NAME}"."${queryInfo.TABLE_NAME}"'
+GROUP BY sensor_name
+ORDER BY sensor_name ASC`
+
 
 export default module.exports = {
   DEVICE_IDS,
@@ -90,5 +102,7 @@ export default module.exports = {
   ORDER_ASC,
   END_TIME,
   TIMESTREAM_TABLES,
-  TEST
+  TEST,
+  DEVICES,
+  SENSORS
 };

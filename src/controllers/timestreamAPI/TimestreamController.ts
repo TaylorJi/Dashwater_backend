@@ -3,7 +3,7 @@ import TimestreamModel from "../../models/timestreamAPI/TimestreamModel";
 import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
-import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
+// import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
 
 //GET request for all device IDs
 const getAllBuoyIds = async (_req: Request, res: Response) => {
@@ -108,90 +108,144 @@ const getBuoyThreshold = async (
   }
 };
 
-const getCachedDeviceData = async (req: Request, res: Response) => {
+// const getCachedDeviceData = async (req: Request, res: Response) => {
 
-  const { end } = req.body;
+//   const { end } = req.body;
 
-  const response = await TimestreamCacheModel.getCachedDeviceData(end);
+//   const response = await TimestreamCacheModel.getCachedDeviceData(end);
 
-  if (response) {
-    res.status(200).json({ data: response });
+//   if (response) {
+//     res.status(200).json({ data: response });
 
-  } else {
-    res.status(500).json({ error: "There was an error with the cache." });
-  }
+//   } else {
+//     res.status(500).json({ error: "There was an error with the cache." });
+//   }
 
-};
+// };
 
-const getCachedLogData = async (req: Request, res: Response) => {
+// const getCachedLogData = async (req: Request, res: Response) => {
 
-  const { end } = req.body;
+//   const { end } = req.body;
 
-  const response = await TimestreamCacheModel.getCachedLogData(end);
+//   const response = await TimestreamCacheModel.getCachedLogData(end);
 
-  if (response) {
-    res.status(200).json({ data: response });
+//   if (response) {
+//     res.status(200).json({ data: response });
 
-  } else {
-    res.status(500).json({ error: "There was an error with the cache." });
-  }
+//   } else {
+//     res.status(500).json({ error: "There was an error with the cache." });
+//   }
 
-};
+// };
 
-const getCachedHistoricalHighLow = async (_req: Request, res: Response) => {
-  const response = await TimestreamCacheModel.getCachedHistoricalHighLow();
+// const getCachedHistoricalHighLow = async (_req: Request, res: Response) => {
+//   const response = await TimestreamCacheModel.getCachedHistoricalHighLow();
 
-  if (response) {
-    res.status(200).json({ data: response });
-  } else {
-    res.status(500).json({ error: "There was an error with the cache." });
-  }
-};
+//   if (response) {
+//     res.status(200).json({ data: response });
+//   } else {
+//     res.status(500).json({ error: "There was an error with the cache." });
+//   }
+// };
 
-const getCustomRangeData = async (req: Request, res: Response) => {
+// const getCustomRangeData = async (req: Request, res: Response) => {
 
-  const { start, end } = req.body;
+//   const { start, end } = req.body;
 
-  if (!start || !end) {
-    res.status(400).json({ error: "Invalid request; query is missing values" });
+//   if (!start || !end) {
+//     res.status(400).json({ error: "Invalid request; query is missing values" });
 
-  } else {
-    const response = await TimestreamCacheModel.getCustomRangeData(start, end);
+//   } else {
+//     const response = await TimestreamCacheModel.getCustomRangeData(start, end);
 
-    if (response) {
-      res.status(200).json({ data: response });
+//     if (response) {
+//       res.status(200).json({ data: response });
 
-    } else {
-      res.status(500).json({ error: "There was an error with fetching custom range data." });
-    }
-  }
+//     } else {
+//       res.status(500).json({ error: "There was an error with fetching custom range data." });
+//     }
+//   }
 
-};
+// };
 
-const getCustomRangeLogData = async (req: Request, res: Response) => {
+// const getCustomRangeLogData = async (req: Request, res: Response) => {
 
-  const { start, end } = req.body;
+//   const { start, end } = req.body;
 
-  if (!start || !end) {
-    res.status(400).json({ error: "Invalid request; query is missing values" });
+//   if (!start || !end) {
+//     res.status(400).json({ error: "Invalid request; query is missing values" });
 
-  } else {
-    const response = await TimestreamCacheModel.getCustomRangeLogData(start, end);
+//   } else {
+//     const response = await TimestreamCacheModel.getCustomRangeLogData(start, end);
 
-    if (response) {
-      res.status(200).json({ data: response });
+//     if (response) {
+//       res.status(200).json({ data: response });
 
-    } else {
-      res.status(500).json({ error: "There was an error with fetching custom range log data." });
-    }
-  }
+//     } else {
+//       res.status(500).json({ error: "There was an error with fetching custom range log data." });
+//     }
+//   }
 
-};
+// };
 
 const test = async (_req: Request, res: Response) => {
   console.log("backend controller test is being called")
 
   const response = await TimestreamModel.test();
+
+  if (response) {
+    res.status(200).json({ data: queryParser.parseQueryResult(response) });
+
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+
+
+
+
+}
+
+const getHistoricalHighLow = async (req: Request, res: Response) => {
+  console.log("backend controller test is being called")
+  const devices = await TimestreamModel.getAllDevices(); // get all devices
+  // console.log("devices are: ----------------------");
+  // console.log(devices);
+
+  const deviceName = req.body.device_name;
+  const sensor_name = req.body.sensor_name;
+  // console.log("sensor_name is: ----------------------");
+  // console.log(sensor_name);
+
+  // console.log("deviceName is: ----------------------");
+  // console.log(deviceName);
+
+  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name);
+  console.log("maxCO2 is: ----------------------");
+  console.log(max.Rows[0].Data[0].ScalarValue);
+
+  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name);
+  console.log("minCO2 is: ----------------------");
+  console.log(min.Rows[0].Data[0].ScalarValue);
+
+  if (devices && max && min) {
+    res.status(200).json({ data: { max: max.Rows[0].Data[0].ScalarValue, min: min.Rows[0].Data[0].ScalarValue } });
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+
+
+
+
+
+
+}
+
+const getSensors = async (req: Request, res: Response) => {
+  const deviceName = req.body.device_name;
+  console.log("deviceName is: ----------------------");
+  console.log(deviceName);
+
+  const response = await TimestreamModel.getSensors(deviceName);
 
   if (response) {
     console.log(response);
@@ -200,22 +254,26 @@ const test = async (_req: Request, res: Response) => {
   } else {
     res.status(500).json({ error: "There was an error with your request." });
   }
-
-  console.log(response);
-
-
-
 }
+
+
+
+
+
 
 export default module.exports = {
   getAllBuoyIds,
   getCurrentBuoyData,
   getBuoyHistory,
   getBuoyThreshold,
-  getCachedDeviceData,
-  getCachedHistoricalHighLow,
-  getCachedLogData,
-  getCustomRangeData,
-  getCustomRangeLogData,
-  test
+  // getCachedDeviceData,
+  // getCachedHistoricalHighLow,
+  // getCachedLogData,
+  // getCustomRangeData,
+  // getCustomRangeLogData,
+  test,
+  getHistoricalHighLow,
+  getSensors
+
+  
 };
