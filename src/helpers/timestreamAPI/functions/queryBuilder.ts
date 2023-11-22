@@ -9,6 +9,29 @@ import sqlQueries from "../constants/sqlQueries";
 import { QueryParams } from "./query";
 
 
+
+const setUpQuery = (queryString: string) => {
+  AWS.config.update({
+    accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
+    secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`, 
+    region: queryInfo.REGION 
+  });
+
+    // const timestreamClient = new AWS.TimestreamQuery();
+  // const query = sqlQueries.TEST;
+  // const params = {
+  //   QueryString: query
+  // };
+  const timestreamQuery = new AWS.TimestreamQuery();
+  const params = {
+    QueryString: queryString
+  };
+  return [timestreamQuery, params] as const; 
+
+}
+
+
+
 // This function creates and initializes the query and querystring objects.
 // Returns an array to be destructured into the seperate objects.
 const createTSQuery = (
@@ -82,24 +105,48 @@ const buildHistoricalQuery = (
 };
 
 // Build minimum query for circle graph data
+// const buildMinQuery = (
+//   buoyId: string,
+//   measureName: string
+// ) => {
+//   return (
+//     `SELECT min(measure_value::double) AS minimum FROM YVR_water_sensor.EMA_C22_main_data_v00 WHERE buoy_id IN (${buoyId}) AND measure_name = '${measureName}'`
+//   );
+// };
+
+// Build minimum query for circle graph data
 const buildMinQuery = (
-  buoyId: string,
-  measureName: string
+  deviceName: string,
+  sensorName: string
 ) => {
   return (
-    `SELECT min(measure_value::double) AS minimum FROM YVR_water_sensor.EMA_C22_main_data_v00 WHERE buoy_id IN (${buoyId}) AND measure_name = '${measureName}'`
+    `SELECT min(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}'`
   );
 };
 
 // Build maximum query for circle graph data
 const buildMaxQuery = (
-  buoyId: string,
-  measureName: string
+  deviceName : string,
+
+  sensorName: string
 ) => {
   return (
-    `SELECT max(measure_value::double) AS maximum FROM YVR_water_sensor.EMA_C22_main_data_v00 WHERE buoy_id IN (${buoyId}) AND measure_name = '${measureName}'`
-  );
+    `SELECT max(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}'`  
+    );
 };
+
+
+
+
+const allSensor = (
+  deviceName:string
+) => {
+  return (
+    `SELECT sensor_name FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' group by sensor_name order by sensor_name asc` 
+  );
+
+}
+
 
 // Build query for each device's historical data
 const buildThresholdQuery = (
@@ -139,4 +186,6 @@ export default module.exports = {
   buildThresholdQuery,
   buildMinQuery,
   buildMaxQuery,
+  setUpQuery,
+  allSensor
 };
