@@ -117,21 +117,22 @@ const buildHistoricalQuery = (
 // Build minimum query for circle graph data
 const buildMinQuery = (
   deviceName: string,
-  sensorName: string
+  sensorName: string,
+  time: string
 ) => {
   return (
-    `SELECT min(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}'`
+    `SELECT min(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`
   );
 };
 
 // Build maximum query for circle graph data
 const buildMaxQuery = (
   deviceName : string,
-
-  sensorName: string
+  sensorName: string,
+  time: string
 ) => {
   return (
-    `SELECT max(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}'`  
+    `SELECT max(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`  
     );
 };
 
@@ -144,6 +145,15 @@ const allSensor = (
   return (
     `SELECT sensor_name FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' group by sensor_name order by sensor_name asc` 
   );
+
+}
+
+const getData = (
+  deviceName:string,
+  time: string) =>{
+  return (
+    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' and time >= ago(${time})`
+  )
 
 }
 
@@ -187,5 +197,6 @@ export default module.exports = {
   buildMinQuery,
   buildMaxQuery,
   setUpQuery,
-  allSensor
+  allSensor,
+  getData
 };

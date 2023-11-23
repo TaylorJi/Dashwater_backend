@@ -15,6 +15,7 @@ router.route("/getBuoyThreshold").get(TimestreamController.getBuoyThreshold);
 // router for getting historical high and low
 router.route("/getHistoricalHighLow").post(TimestreamController.getHistoricalHighLow);
 router.route("/getSensors").post(TimestreamController.getSensors);
+router.route("/getData").post(TimestreamController.getData);
 
 // cached data routes, we no longer use them
 // router.route("/getCachedData").post(TimestreamController.getCachedDeviceData);

@@ -249,8 +249,8 @@ class AppCacheManager {
                 historicalHighLow[id] = {};
 
                 await Promise.all(Object.keys(metricRef).map(async (metric) => {
-                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric);
-                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric);
+                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric, "12");
+                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric, "12");
 
                     if (fetchedLow && fetchedHigh) {
                         fetchedLow = queryParser.parseQueryResult(fetchedLow);

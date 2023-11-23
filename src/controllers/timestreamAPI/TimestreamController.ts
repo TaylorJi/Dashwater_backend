@@ -213,19 +213,25 @@ const getHistoricalHighLow = async (req: Request, res: Response) => {
 
   const deviceName = req.body.device_name;
   const sensor_name = req.body.sensor_name;
+  const time = req.body.time;
   // console.log("sensor_name is: ----------------------");
   // console.log(sensor_name);
 
   // console.log("deviceName is: ----------------------");
   // console.log(deviceName);
 
-  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name);
-  console.log("maxCO2 is: ----------------------");
-  console.log(max.Rows[0].Data[0].ScalarValue);
+  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name, time);
+  // console.log("maxCO2 is: ----------------------");
+  // console.log(max.Rows[0].Data[0].ScalarValue);
 
-  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name);
-  console.log("minCO2 is: ----------------------");
-  console.log(min.Rows[0].Data[0].ScalarValue);
+  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name, time);
+  // console.log("minCO2 is: ----------------------");
+  // console.log(min.Rows[0].Data[0].ScalarValue);
+
+
+
+
+
 
   if (devices && max && min) {
     res.status(200).json({ data: { max: max.Rows[0].Data[0].ScalarValue, min: min.Rows[0].Data[0].ScalarValue } });
@@ -256,6 +262,41 @@ const getSensors = async (req: Request, res: Response) => {
   }
 }
 
+const getData = async (req: Request, res: Response) => {
+  const deviceName = req.body.device_name;
+  const interval  = req.body.time;
+  console.log("deviceName is: ----------------------");
+  console.log(deviceName);
+
+
+  const response = await TimestreamModel.getData(deviceName, interval);
+  const device_name = response.Rows[0].Data[0].ScalarValue
+  const sensor_unit = response.Rows[0].Data[1].ScalarValue
+  const sensor_name = response.Rows[0].Data[2].ScalarValue
+  const measure_value = response.Rows[0].Data[5].ScalarValue
+  const time = response.Rows[0].Data[4].ScalarValue
+
+
+  // const sensor_name = response.Rows[0].sensor_name
+
+  console.log("first " + response.Rows[0].Data[0].ScalarValue)
+  console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
+  console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
+  console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
+  console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
+  console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
+
+
+
+  if (response) {
+    console.log(response);
+    res.status(200).json({ data: {device_name: device_name, sensor_unit: sensor_unit, sensor_name: sensor_name, measure_value: measure_value, time: time} });
+
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+}
+
 
 
 
@@ -273,7 +314,8 @@ export default module.exports = {
   // getCustomRangeLogData,
   test,
   getHistoricalHighLow,
-  getSensors
+  getSensors,
+  getData
 
   
 };
