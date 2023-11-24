@@ -5,6 +5,11 @@ import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 // import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
 
+interface deviceSensor {
+  sensorUnit: string;
+  measureValue: number;
+}
+
 //GET request for all device IDs
 const getAllBuoyIds = async (_req: Request, res: Response) => {
 
@@ -287,10 +292,28 @@ const getData = async (req: Request, res: Response) => {
   // console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
 
 
-
+  const deviceSensorArray: { [key: string]: deviceSensor } = {};
   if (response) {
-    console.log(response);
-    res.status(200).json({ data: queryParser.parseQueryResult(response) });
+    for (let i = 0; i < response.Rows.length; i++) {
+      if (!(response.Rows[i].Data[2].ScalarValue in deviceSensorArray)) {
+        deviceSensorArray[response.Rows[i].Data[2].ScalarValue] = {
+          sensorUnit: response.Rows[i].Data[1].ScalarValue,
+          measureValue: parseFloat(response.Rows[i].Data[5].ScalarValue),
+        };
+      } 
+      // else {
+      //   if (deviceSensorArray[response.Rows[i].Data[2].ScalarValue].measureValue < parseFloat(response.Rows[i].Data[5].ScalarValue)) {
+      //     let tempSensorUnit = deviceSensorArray[response.Rows[i].Data[2].ScalarValue].sensorUnit;
+      //     deviceSensorArray[response.Rows[i].Data[2].ScalarValue] = {
+      //       sensorUnit: tempSensorUnit,
+      //       measureValue: parseFloat(response.Rows[i].Data[5].ScalarValue),
+      //     };
+      //   }
+      // }
+    }
+    // console.log(JSON.stringify(deviceSensorArray));
+    // res.status(200).json({ data: queryParser.parseQueryResult(response) });
+    res.status(200).json({ data: deviceSensorArray });
     // res.status(200).json({ data: {device_name: device_name, sensor_unit: sensor_unit, sensor_name: sensor_name, measure_value: measure_value, time: time} });
 
   } else {

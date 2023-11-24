@@ -152,7 +152,7 @@ const getData = (
   deviceName:string,
   time: string) =>{
   return (
-    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' and time >= ago(${time}) order by time desc`
+    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' and time >= ago(${time}) order by time desc LIMIT 100`
   )
 
 }
