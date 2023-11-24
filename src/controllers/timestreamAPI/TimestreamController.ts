@@ -270,27 +270,28 @@ const getData = async (req: Request, res: Response) => {
 
 
   const response = await TimestreamModel.getData(deviceName, interval);
-  const device_name = response.Rows[0].Data[0].ScalarValue
-  const sensor_unit = response.Rows[0].Data[1].ScalarValue
-  const sensor_name = response.Rows[0].Data[2].ScalarValue
-  const measure_value = response.Rows[0].Data[5].ScalarValue
-  const time = response.Rows[0].Data[4].ScalarValue
+  // const device_name = response.Rows[0].Data[0].ScalarValue
+  // const sensor_unit = response.Rows[0].Data[1].ScalarValue
+  // const sensor_name = response.Rows[0].Data[2].ScalarValue
+  // const measure_value = response.Rows[0].Data[5].ScalarValue
+  // const time = response.Rows[0].Data[4].ScalarValue
 
 
   // const sensor_name = response.Rows[0].sensor_name
 
-  console.log("first " + response.Rows[0].Data[0].ScalarValue)
-  console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
-  console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
-  console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
-  console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
-  console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
+  // console.log("first " + response.Rows[0].Data[0].ScalarValue)
+  // console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
+  // console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
+  // console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
+  // console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
+  // console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
 
 
 
   if (response) {
     console.log(response);
-    res.status(200).json({ data: {device_name: device_name, sensor_unit: sensor_unit, sensor_name: sensor_name, measure_value: measure_value, time: time} });
+    res.status(200).json({ data: queryParser.parseQueryResult(response) });
+    // res.status(200).json({ data: {device_name: device_name, sensor_unit: sensor_unit, sensor_name: sensor_name, measure_value: measure_value, time: time} });
 
   } else {
     res.status(500).json({ error: "There was an error with your request." });
