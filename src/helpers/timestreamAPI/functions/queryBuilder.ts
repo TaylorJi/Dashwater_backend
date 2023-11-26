@@ -121,7 +121,7 @@ const buildMinQuery = (
   time: string
 ) => {
   return (
-    `SELECT min(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`
+    `SELECT min(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`
   );
 };
 
@@ -132,7 +132,7 @@ const buildMaxQuery = (
   time: string
 ) => {
   return (
-    `SELECT max(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`  
+    `SELECT max(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' and time >= ago(${time})`  
     );
 };
 
