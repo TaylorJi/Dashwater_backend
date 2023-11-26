@@ -86,21 +86,23 @@ const buildCurrentQuery = (buoyIdList: string) => {
 const buildHistoricalQuery = (
   buoyIdList: string,
   measureName: string,
-  start: string,
-  end: string
+  time: string,
+  // start: string,
+  // end: string
 ) => {
   return (
-    sqlQueries.DEVICE_INFO +
-    buoyIdList +
-    sqlQueries.MEASURE_NAME +
-    "'" +
-    measureName +
-    "'" +
-    sqlQueries.START_TIME +
-    start +
-    sqlQueries.END_TIME +
-    end +
-    sqlQueries.ORDER_ASC
+    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${buoyIdList}' AND sensor_name = '${measureName}' AND time >= ago(${time}) ORDER BY time ASC`
+    // sqlQueries.DEVICE_INFO +
+    // buoyIdList +
+    // sqlQueries.MEASURE_NAME +
+    // "'" +
+    // measureName +
+    // "'" +
+    // sqlQueries.START_TIME +
+    // start +
+    // sqlQueries.END_TIME +
+    // end +
+    // sqlQueries.ORDER_ASC
   );
 };
 

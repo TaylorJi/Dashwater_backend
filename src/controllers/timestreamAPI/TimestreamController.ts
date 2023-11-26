@@ -3,7 +3,7 @@ import TimestreamModel from "../../models/timestreamAPI/TimestreamModel";
 import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
-// import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
+import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
 
 interface deviceSensor {
   sensorUnit: string;
@@ -65,7 +65,7 @@ const getBuoyHistory = async (
 
   } else {
     const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, start, end);
+    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName); //, start, end
 
     if (response) {
       res.status(200).json({ data: queryParser.parseQueryResult(response) });
@@ -113,20 +113,20 @@ const getBuoyThreshold = async (
   }
 };
 
-// const getCachedDeviceData = async (req: Request, res: Response) => {
+const getCachedDeviceData = async (req: Request, res: Response) => {
 
-//   const { end } = req.body;
+  const { end } = req.body;
 
-//   const response = await TimestreamCacheModel.getCachedDeviceData(end);
+  const response = await TimestreamCacheModel.getCachedDeviceData(end);
 
-//   if (response) {
-//     res.status(200).json({ data: response });
+  if (response) {
+    res.status(200).json({ data: response });
 
-//   } else {
-//     res.status(500).json({ error: "There was an error with the cache." });
-//   }
+  } else {
+    res.status(500).json({ error: "There was an error with the cache." });
+  }
 
-// };
+};
 
 // const getCachedLogData = async (req: Request, res: Response) => {
 
@@ -285,7 +285,7 @@ export default module.exports = {
   getCurrentBuoyData,
   getBuoyHistory,
   getBuoyThreshold,
-  // getCachedDeviceData,
+  getCachedDeviceData,
   // getCachedHistoricalHighLow,
   // getCachedLogData,
   // getCustomRangeData,

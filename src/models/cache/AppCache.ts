@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DEVICE_IDS, metricRef } from "./timestreamConstants";
-import { floorToSecond, formatTSTime } from "./timestreamHelpers";
+import { formatTSTime } from "./timestreamHelpers"; //floorToSecond
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
@@ -137,34 +137,50 @@ class AppCacheManager {
     private fetchMonthlyDeviceData = async () => {
 
         try {
-            const now = floorToSecond(new Date().toISOString());
-            const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
+            // const now = floorToSecond(new Date().toISOString());
+            // const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
 
             const deviceData: any = {};
+            const deviceIds = queryParser.parseQueryResult(await TimestreamModel.getAllDevices());
+            
+            await Promise.all(deviceIds.map(async (id) => {
+                // const parsedDeviceId = queryBuilder.parseDeviceList(id);
+                // console.log("parsedDeviceId: ", parsedDeviceId);
 
-            await Promise.all(DEVICE_IDS.map(async (id) => {
-                const parsedDeviceId = queryBuilder.parseDeviceList(id);
-
-                deviceData[id] = {}
+                deviceData[id.device_name] = {};
+                const sensorList = queryParser.parseQueryResult(await TimestreamModel.getSensors('device'));
+                const sensorNames: string[] = [];
+                for (let i = 0; i < sensorList.length; i++) {
+                    sensorNames.push(sensorList[i].sensor_name);
+                }
 
                 await Promise.all(
-                    Object.keys(metricRef).map(async (metric) => {
+                    sensorNames.map(async (metric) => {
 
                         let fetchedData = await TimestreamModel.getHistoricalData(
-                            parsedDeviceId, metric, prevMonth, now);
+                            id.device_name, metric);
 
                         if (fetchedData) {
 
-                            fetchedData = queryParser.parseQueryResult(fetchedData);
+                            // const sensor_name = response.Rows[0].sensor_name
+                            // console.log("first " + response.Rows[0].Data[0].ScalarValue)
+                            // console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
+                            // console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
+                            // console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
+                            // console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
+                            // console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
 
-                            if (fetchedData.length > 0) {
+                            // fetchedData = queryParser.parseQueryResult(fetchedData);
+                            // console.log("!!!!!!!!!!! " + JSON.stringify(fetchedData));
 
-                                deviceData[id][metricRef[metric]] =
-                                    fetchedData.map((datum: any) => {
+                            if (fetchedData.Rows.length > 0) {
+                                // console.log("!!!!!!!!!!! " + fetchedData.Rows[0].Data[2].ScalarValue);
+                                deviceData[id.device_name][metric] =
+                                    fetchedData.Rows.map((datum: any) => {
                                         return (
                                             {
-                                                'time': formatTSTime(datum['time']),
-                                                'value': parseFloat(datum['measure_value::double'])
+                                                'time': formatTSTime(datum.Data[4].ScalarValue),
+                                                'value': parseFloat(datum.Data[5].ScalarValue)
                                             }
                                         )
                                     });
@@ -173,8 +189,42 @@ class AppCacheManager {
 
                     })
                 );
-
+                // console.log("!!!!!!!!!!!! " + JSON.stringify(deviceData));
             }));
+
+            // await Promise.all(DEVICE_IDS.map(async (id) => {
+            //     const parsedDeviceId = queryBuilder.parseDeviceList(id);
+            //     console.log("parsedDeviceId: ", parsedDeviceId);
+
+            //     deviceData[id] = {};
+
+            // await Promise.all(
+            //     Object.keys(metricRef).map(async (metric) => {
+
+            //         let fetchedData = await TimestreamModel.getHistoricalData(
+            //             parsedDeviceId, metric, prevMonth, now);
+
+            //         if (fetchedData) {
+
+            //             fetchedData = queryParser.parseQueryResult(fetchedData);
+
+            //             if (fetchedData.length > 0) {
+
+            //                 deviceData[id][metricRef[metric]] =
+            //                     fetchedData.map((datum: any) => {
+            //                         return (
+            //                             {
+            //                                 'time': formatTSTime(datum['time']),
+            //                                 'value': parseFloat(datum['measure_value::double'])
+            //                             }
+            //                         )
+            //                     });
+            //             }
+            //         }
+
+            //     })
+            // );
+            // }));
 
             if (Object.keys(deviceData).length === 0) {
                 // This means it failed to fetch
