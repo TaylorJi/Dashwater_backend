@@ -74,7 +74,7 @@ const getHistoricalData = async (buoyIdList: string, measureName: string) => {
   });
 
   const timestreamClient = new AWS.TimestreamQuery();
-  const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, '3d'); // start, end
+  const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, '90d'); // start, end
   // console.log("~~~~~~~~~~~~~~ query: " + query);
   const params = {
     QueryString: query

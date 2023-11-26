@@ -11,7 +11,7 @@ class AppCacheManager {
     private readonly yvrLat = '49.1967';
     private readonly yvrLong = '123.1815';
 
-    private readonly deviceRefreshRate = 3600000; // 1 hour
+    // private readonly deviceRefreshRate = 3600000; // 1 hour
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
@@ -113,15 +113,15 @@ class AppCacheManager {
             return null;
         }
 
-        this.cachedDeviceMetricInterval = setInterval(async () => {
+        // this.cachedDeviceMetricInterval = setInterval(async () => {
 
-            const refreshedMetricData = await this.fetchDeviceCurrentData();
+        //     const refreshedMetricData = await this.fetchDeviceCurrentData();
 
-            if (refreshedMetricData) {
-                this.cachedDeviceMetricData = refreshedMetricData;
-            }
+        //     if (refreshedMetricData) {
+        //         this.cachedDeviceMetricData = refreshedMetricData;
+        //     }
 
-        }, this.deviceRefreshRate);
+        // }, this.deviceRefreshRate);
 
         return this.cachedDeviceMetricInterval;
     };
@@ -238,56 +238,56 @@ class AppCacheManager {
         }
     };
 
-    private fetchDeviceCurrentData = async () => {
+    // private fetchDeviceCurrentData = async () => {
 
-        try {
-            if (this.cachedDeviceMetricData) {
+    //     try {
+    //         if (this.cachedDeviceMetricData) {
 
-                const updatedCachedData: any = { ...this.cachedDeviceMetricData };
+    //             const updatedCachedData: any = { ...this.cachedDeviceMetricData };
 
-                await Promise.all(DEVICE_IDS.map(async (id) => {
+    //             await Promise.all(DEVICE_IDS.map(async (id) => {
 
-                    let fetchedData = await TimestreamModel.getBuoyData(id);
+    //                 let fetchedData = await TimestreamModel.getBuoyData(id);
 
-                    if (fetchedData) {
+    //                 if (fetchedData) {
 
-                        fetchedData = queryParser.parseQueryResult(fetchedData)
-                            .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
+    //                     fetchedData = queryParser.parseQueryResult(fetchedData)
+    //                         .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
 
-                        fetchedData.map((datum: any) => {
-                            this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], datum['measure_value::double'])
+    //                     fetchedData.map((datum: any) => {
+    //                         this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], datum['measure_value::double'])
 
-                            let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
+    //                         let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
 
-                            if (prevCachedMetricData) {
+    //                         if (prevCachedMetricData) {
 
-                                prevCachedMetricData.shift();
+    //                             prevCachedMetricData.shift();
 
-                                prevCachedMetricData.push(
-                                    {
-                                        'time': formatTSTime(datum['time']),
-                                        'value': parseFloat(datum['measure_value::double'])
-                                    }
-                                );
+    //                             prevCachedMetricData.push(
+    //                                 {
+    //                                     'time': formatTSTime(datum['time']),
+    //                                     'value': parseFloat(datum['measure_value::double'])
+    //                                 }
+    //                             );
 
-                                updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
-                            }
+    //                             updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
+    //                         }
 
-                        });
+    //                     });
 
-                    }
+    //                 }
 
-                }));
-                return updatedCachedData;
-            }
+    //             }));
+    //             return updatedCachedData;
+    //         }
 
-            return null;
+    //         return null;
 
-        } catch (_err) {
-            return null;
-        }
+    //     } catch (_err) {
+    //         return null;
+    //     }
 
-    };
+    // };
 
     public registerHistoricalHighLow = async () => {
         const historicalHighLow: any = {};
@@ -329,17 +329,17 @@ class AppCacheManager {
         }
     };
 
-    private updateHistoricalHighLow = async (buoyId: string, metric: string, value: string) => {
-        if (this.cachedHighLow && this.cachedHighLow[buoyId][metricRef[metric]]) {
-            if (this.cachedHighLow[buoyId][metricRef[metric]]['low'] > parseFloat(value)) {
-                this.cachedHighLow[buoyId][metricRef[metric]]['low'] = parseFloat(value);
-            }
+    // private updateHistoricalHighLow = async (buoyId: string, metric: string, value: string) => {
+    //     if (this.cachedHighLow && this.cachedHighLow[buoyId][metricRef[metric]]) {
+    //         if (this.cachedHighLow[buoyId][metricRef[metric]]['low'] > parseFloat(value)) {
+    //             this.cachedHighLow[buoyId][metricRef[metric]]['low'] = parseFloat(value);
+    //         }
 
-            if (this.cachedHighLow[buoyId][metricRef[metric]]['high'] < parseFloat(value)) {
-                this.cachedHighLow[buoyId][metricRef[metric]]['high'] = parseFloat(value);
-            }
-        }
-    }
+    //         if (this.cachedHighLow[buoyId][metricRef[metric]]['high'] < parseFloat(value)) {
+    //             this.cachedHighLow[buoyId][metricRef[metric]]['high'] = parseFloat(value);
+    //         }
+    //     }
+    // }
 
     public getHistoricalHighLow = async () => {
         if (!this.cachedHighLow) {

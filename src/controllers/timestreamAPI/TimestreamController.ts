@@ -128,20 +128,20 @@ const getCachedDeviceData = async (req: Request, res: Response) => {
 
 };
 
-// const getCachedLogData = async (req: Request, res: Response) => {
+const getCachedLogData = async (req: Request, res: Response) => {
 
-//   const { end } = req.body;
+  const { end } = req.body;
 
-//   const response = await TimestreamCacheModel.getCachedLogData(end);
+  const response = await TimestreamCacheModel.getCachedLogData(end);
 
-//   if (response) {
-//     res.status(200).json({ data: response });
+  if (response) {
+    res.status(200).json({ data: response });
 
-//   } else {
-//     res.status(500).json({ error: "There was an error with the cache." });
-//   }
+  } else {
+    res.status(500).json({ error: "There was an error with the cache." });
+  }
 
-// };
+};
 
 // const getCachedHistoricalHighLow = async (_req: Request, res: Response) => {
 //   const response = await TimestreamCacheModel.getCachedHistoricalHighLow();
@@ -300,7 +300,7 @@ export default module.exports = {
   getBuoyThreshold,
   getCachedDeviceData,
   // getCachedHistoricalHighLow,
-  // getCachedLogData,
+  getCachedLogData,
   // getCustomRangeData,
   // getCustomRangeLogData,
   test,
