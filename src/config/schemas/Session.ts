@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const SessionSchema = new Schema({
     userId: {
-        type: Schema.Types.ObjectId,
+        type: String,
+        // type: Schema.Types.ObjectId,
         ref: 'users',
         required: true
     },
@@ -19,6 +20,15 @@ const SessionSchema = new Schema({
         type: String,
         default: null,
         required: true
+    },
+
+    userRole: {
+        type: String,
+        enum: ['Admin', 'User'],
+        required: true
+    },
+    isValid:{
+        type: Boolean
     }
 
 })

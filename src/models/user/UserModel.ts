@@ -1,17 +1,25 @@
 import User from "../../config/schemas/User";
 import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "../../helpers/authentication/constants";
+// import { SALT_ROUNDS } from "../../helpers/authentication/constants";
+import axios from "axios";
+import { USER_URL } from "../../config/Environments";
 
-const createUser = async (email: string, password: string, role: String) => {
+const createUser = async (sessionId: string, email: string, password: string, role: String) => {
     try {
+        const response = await axios.post(USER_URL,  
+            {
+                operation: "add",
+                email: email,
+                password: password,
+                role: role
+            },
+            {
+                headers: { Authorization: `${sessionId}` },
+            }
+        );
 
-        const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-        const hash = bcrypt.hashSync(password, salt);
-
-        const newUser = await User.create({ "email": email, "password": hash, "role": role });
-
-        if (newUser) {
-            return newUser;
+        if (response.status === 200) {
+            return response.data;
         }
         return null;
 
@@ -41,12 +49,17 @@ const validateUser = async (email: string, password: string) => {
     }
 };
 
-const getUser = async () => {
+const getUser = async (sessionId: string) => {
     try {
-        const users = await User.find({}).select({ "email": 1, "password": 1, "role": 1 });
+        const headers = {
+            'Authorization': sessionId
+        };
+        const response = await axios.get(USER_URL,  {
+            headers
+        });
 
-        if (users.length !== 0) {
-            return users;
+        if (response.status === 200) {
+            return response.data.items;
         }
         return false;
     } catch (err) {
@@ -55,12 +68,19 @@ const getUser = async () => {
 };
 
 
-const getSingleUser = async (userId: string) => {
+const getSingleUser = async (sessionId: string, userId: string) => {
     try {
-        const user = await User.findById(
-            { _id: userId },
-        );
-        return user;
+        const response = await axios.post(`${USER_URL}/role`,  
+        {
+            email: userId
+        },
+        {
+            headers: { Authorization: `${sessionId}` },
+        });
+        if (response.status === 200) {
+            console.log('getSingleUser: ' + JSON.stringify(response.data));
+            return response.data.body;
+        }
 
     } catch (err) {
         console.error("Error retrieving user.");
@@ -69,12 +89,21 @@ const getSingleUser = async (userId: string) => {
 };
 
 
-const updateUser = async (userId: string, userEmail: string, userPassword: string, userRole: string) => {
+const updateUser = async (sessionId: string, user: any) => {
     try {
-        const users = await User.findByIdAndUpdate(
-            { _id: userId }, { "email": userEmail, "password": userPassword, "role": userRole }
+        const response = await axios.post(USER_URL,  
+            {
+                operation: "update",
+                "old email": user.oldEmail,
+                "new email": user.email,
+                password: user.password,
+                role: user.role
+            },
+            {
+                headers: { Authorization: `${sessionId}` },
+            }
         );
-        return users;
+        return response.data;
 
     } catch (err) {
         console.error("Error retrieving user.");
@@ -83,14 +112,20 @@ const updateUser = async (userId: string, userEmail: string, userPassword: strin
 };
 
 
-const deleteUser = async (userId: string) => {
+const deleteUser = async (sessionId: string, userEmail: string) => {
     try {
-        const deletedUser = await User.findOneAndDelete({ "_id": userId });
-        if (deletedUser) {
-            console.log(`Deleted user with ID ${userId}`);
-            return deletedUser;
+        const response = await axios.post(USER_URL,  
+            {
+                operation: "delete",
+                email: userEmail
+            },
+            {
+                headers: { Authorization: `${sessionId}` },
+            }
+        );
+        if (response.status === 200) {
+            return response.data;
         } else {
-            console.log(`User with ID ${userId} not found`);
             return false;
         }
     } catch (err) {

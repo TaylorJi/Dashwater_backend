@@ -118,9 +118,9 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
 }
 
-const getAllDevicesSettings = async (_req: Request, res: Response) => {
+const getAllDevicesSettings = async (req: Request, res: Response) => {
 
-    const response = await DeviceModel.getAllDevicesSettings();
+    const response = await DeviceModel.getAllDevicesSettings(req.body.token);
 
     if (response) {
         res.status(200).json({ data: response });
@@ -131,9 +131,10 @@ const getAllDevicesSettings = async (_req: Request, res: Response) => {
 
 const updateDeviceSettings = async(req: Request, res: Response) => {
     console.log(req.body); // Log the request body
-    const device: deviceSettingType = req.body;
+    const device: deviceSettingType = req.body.newSettings;
+    const sessionId: string = req.body.sessionId;
 
-    const response = await DeviceModel.updateDeviceSettings(device);
+    const response = await DeviceModel.updateDeviceSettings(device, sessionId);
     if (response) {
         res.status(200).json({ message: `Device update successful!`}); // Include response in the response body
     } else {

@@ -5,12 +5,14 @@ import SessionModel from "../../models/session/SessionModel";
 // It may be possible to combine userAuth and adminAuth into one function, but it would be harder to understand for future teams
 // One appraoch would be to pass a flag, isAdmin, from the calling route, which would then be passes from controller to model
 const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
+    console.log("userAuth is being called")
+    console.log(req.cookies.sessionCookie)
     if (!req.cookies.sessionCookie) {
         res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
     } else {
         const sessionId = req.cookies.sessionCookie.sessionId;
         if (sessionId) {
-            const sessionCheck = await SessionModel.validateSession(sessionId, false);
+            const sessionCheck = await SessionModel.validateSession(sessionId);
     
             if (sessionCheck) {
                 next();
@@ -29,7 +31,7 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
     } else {
         const sessionId = req.cookies.sessionCookie.sessionId;
         if (sessionId) {
-            const sessionCheck = await SessionModel.validateSession(sessionId, true);
+            const sessionCheck = await SessionModel.validateSession(sessionId);
     
             if (sessionCheck) {
                 next();

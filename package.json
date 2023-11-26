@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.334.0",
+    "@aws-sdk/client-timestream-query": "^3.449.0",
     "aws-sdk": "^2.1310.0",
     "axios": "^1.6.1",
     "axios-cookiejar-support": "^4.0.7",
