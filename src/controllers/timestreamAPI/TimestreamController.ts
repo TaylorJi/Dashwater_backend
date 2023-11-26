@@ -275,6 +275,19 @@ const getData = async (req: Request, res: Response) => {
   }
 }
 
+const getAllDevice = async () => {
+  const response = await TimestreamModel.getAllDevices();
+
+  if (response) {
+    console.log(response);
+    return response;
+
+  } else {
+    console.log("error");
+    return null;
+  }
+}
+
 
 
 
@@ -293,7 +306,8 @@ export default module.exports = {
   test,
   getHistoricalHighLow,
   getSensors,
-  getData
+  getData,
+  getAllDevice,
 
   
 };

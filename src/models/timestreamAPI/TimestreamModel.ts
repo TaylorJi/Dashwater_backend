@@ -268,6 +268,8 @@ const getData = async (deviceName: string, time: string) => {
   }
 }
 
+
+
 export default module.exports = {
   getAllBuoyIds,
   getBuoyData,
@@ -278,5 +280,5 @@ export default module.exports = {
   test,
   getAllDevices,
   getSensors,
-  getData
+  getData,
 };
