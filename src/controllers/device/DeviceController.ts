@@ -119,14 +119,12 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 }
 
 const getAllDevicesSettings = async (req: Request, res: Response) => {
-
-    const response = await DeviceModel.getAllDevicesSettings(req.body.token);
-
-    if (response) {
+    try {
+        const response = await DeviceModel.getAllDevicesSettings(req.body.token);
         res.status(200).json({ data: response });
-    } else {
-        console.log("Error in getAllDevicesSettings");
-        res.status(500).json({ message: "There was an error with the request." });
+    } catch (error) {
+        console.error("Error in getAllDevicesSettings", error);
+        res.status(500).json({ message: "There was an error with the request.", error: (error as Error).message });
     }
 }
 
