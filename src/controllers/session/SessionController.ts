@@ -138,7 +138,7 @@ const createSession = async (req: Request, res: Response) => {
         return res.cookie('sessionCookie', {
             'sessionId': response.sessionId, 
             'expires': response.sessionExpiry, 
-            'domain': 'localhost:8085',
+            'domain': 'https://iot-dashboard-backend-server.onrender.com',
             'httpOnly': true,
             'secure' : true})
             .status(200).json({ success: true, user: response });

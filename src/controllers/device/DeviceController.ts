@@ -125,6 +125,7 @@ const getAllDevicesSettings = async (req: Request, res: Response) => {
     if (response) {
         res.status(200).json({ data: response });
     } else {
+        console.log("Error in getAllDevicesSettings");
         res.status(500).json({ message: "There was an error with the request." });
     }
 }
