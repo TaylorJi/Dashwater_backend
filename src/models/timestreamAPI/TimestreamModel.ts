@@ -48,7 +48,7 @@ const getBuoyData = async (buoyIdList: string) => {
 
 // This function gets historical data of a specified measure name 
 // for each buoyId in list based on start and end time.
-const getHistoricalData = async (buoyIdList: string, measureName: string) => {
+const getHistoricalData = async (buoyIdList: string, measureName: string, end: string) => {
   // try {
   //   const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, start, end);
   //   console.log("!!!!!!!! query: " + query);
@@ -74,7 +74,7 @@ const getHistoricalData = async (buoyIdList: string, measureName: string) => {
   });
 
   const timestreamClient = new AWS.TimestreamQuery();
-  const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, '90d'); // start, end
+  const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, end); // start, end
   // console.log("~~~~~~~~~~~~~~ query: " + query);
   const params = {
     QueryString: query

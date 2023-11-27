@@ -52,7 +52,7 @@ server.listen(port, async () => {
 
     console.log('Populating cache with device data...');
 
-    const deviceDataRegistration = await AppCache.registerDeviceCache();
+    const deviceDataRegistration = await AppCache.registerDeviceCache('12h');
 
     if (!deviceDataRegistration) {
         console.log('There was a problem populating the device data cache. Check AWS.');

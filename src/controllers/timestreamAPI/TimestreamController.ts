@@ -65,7 +65,7 @@ const getBuoyHistory = async (
 
   } else {
     const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName); //, start, end
+    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, '12h'); //, start, end
 
     if (response) {
       res.status(200).json({ data: queryParser.parseQueryResult(response) });

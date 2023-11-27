@@ -38,7 +38,7 @@ class AppCacheManager {
     public getTideData = async () => {
 
         if (!this.cachedTideData || !this.cachedTideExtremeData) {
-            await this.registerDeviceCache();
+            await this.registerDeviceCache('12h');
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
@@ -102,9 +102,9 @@ class AppCacheManager {
 
     /* Timestream Data */
 
-    public registerDeviceCache = async () => {
+    public registerDeviceCache = async (end: string) => {
 
-        const deviceData = await this.fetchMonthlyDeviceData();
+        const deviceData = await this.fetchMonthlyDeviceData(end);
 
         if (deviceData) {
             this.cachedDeviceMetricData = deviceData;
@@ -126,15 +126,15 @@ class AppCacheManager {
         return this.cachedDeviceMetricInterval;
     };
 
-    public getDeviceData = async () => {
+    public getDeviceData = async (end: string) => {
         if (!this.cachedDeviceMetricData) {
-            await this.registerDeviceCache();
+            await this.registerDeviceCache(end);
         }
 
         return this.cachedDeviceMetricData;
     };
 
-    private fetchMonthlyDeviceData = async () => {
+    private fetchMonthlyDeviceData = async (end: string) => {
 
         try {
             // const now = floorToSecond(new Date().toISOString());
@@ -158,7 +158,7 @@ class AppCacheManager {
                     sensorNames.map(async (metric) => {
 
                         let fetchedData = await TimestreamModel.getHistoricalData(
-                            id.device_name, metric);
+                            id.device_name, metric, end);
 
                         if (fetchedData) {
 
@@ -180,7 +180,8 @@ class AppCacheManager {
                                         return (
                                             {
                                                 'time': formatTSTime(datum.Data[4].ScalarValue),
-                                                'value': parseFloat(datum.Data[5].ScalarValue)
+                                                'value': parseFloat(datum.Data[5].ScalarValue),
+                                                'unit': datum.Data[1].ScalarValue
                                             }
                                         )
                                     });

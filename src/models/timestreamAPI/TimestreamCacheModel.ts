@@ -1,14 +1,14 @@
 // import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 // import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import AppCache from "../cache/AppCache";
-import {metricUnitRef, logDataRef } from "../cache/timestreamConstants"; // DEVICE_IDS, VALUE_NOT_FOUND, metricRef, 
+import {logDataRef } from "../cache/timestreamConstants"; // DEVICE_IDS, VALUE_NOT_FOUND, metricRef, metricUnitRef, 
 import { formatTSTime } from "../cache/timestreamHelpers"; // floorToSecond,
 // import TimestreamModel from "./TimestreamModel";
 
 const getCachedDeviceData = async (end: string) => {
 
     try {
-        const cachedData = await AppCache.getDeviceData();
+        const cachedData = await AppCache.getDeviceData(end);
 
         if (cachedData) {
             return remapDeviceDataFromCache(cachedData, end);
@@ -57,19 +57,40 @@ const getCachedDeviceData = async (end: string) => {
 // };
 
 
+// const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
+//     const mappedData: any = {};
+
+//     Object.keys(cachedData).map((device) => {
+
+//         mappedData[device] = Object.keys(cachedData[device]).map((metric: any) => {
+//             return {
+//                 measureName: metric,
+//                 xAxisName: metricUnitRef[metric]['xAxisName'],
+//                 yAxisName: metricUnitRef[metric]['yAxisName'],
+//                 data: !end ? cachedData[device][metric] :
+//                     cachedData[device][metric].filter((metric: any) =>
+//                         new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime())
+//             };
+
+//         });
+//     });
+
+//     return mappedData;
+
+// };
+
 const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
     const mappedData: any = {};
+    console.log("end: " + end);
 
     Object.keys(cachedData).map((device) => {
 
         mappedData[device] = Object.keys(cachedData[device]).map((metric: any) => {
             return {
                 measureName: metric,
-                xAxisName: metricUnitRef[metric]['xAxisName'],
-                yAxisName: metricUnitRef[metric]['yAxisName'],
-                data: !end ? cachedData[device][metric] :
-                    cachedData[device][metric].filter((metric: any) =>
-                        new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime())
+                xAxisName: 'Time',
+                yAxisName: cachedData[device][metric][0].unit,
+                data: cachedData[device][metric] 
             };
 
         });
@@ -82,7 +103,7 @@ const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
 const getCachedLogData = async (end: string) => {
 
     try {
-        const cachedData = await AppCache.getDeviceData();
+        const cachedData = await AppCache.getDeviceData('12h');
 
         if (cachedData) {
             return remapLogDataFromCache(cachedData, end);
