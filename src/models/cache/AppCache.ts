@@ -103,7 +103,6 @@ class AppCacheManager {
     /* Timestream Data */
 
     public registerDeviceCache = async (end: string) => {
-
         const deviceData = await this.fetchMonthlyDeviceData(end);
 
         if (deviceData) {
@@ -127,9 +126,9 @@ class AppCacheManager {
     };
 
     public getDeviceData = async (end: string) => {
-        if (!this.cachedDeviceMetricData) {
+        // if (!this.cachedDeviceMetricData) {
             await this.registerDeviceCache(end);
-        }
+        // }
 
         return this.cachedDeviceMetricData;
     };
