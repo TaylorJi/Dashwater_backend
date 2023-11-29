@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import SessionModel from "../../models/session/SessionModel";
-
 // import { v4 as uuid } from 'uuid'
 import { DOMAIN } from "../../helpers/authentication/constants";
 
@@ -138,8 +137,8 @@ const createSession = async (req: Request, res: Response) => {
         // return res.status(200).json({ success: true, user: response });
         return res.cookie('sessionCookie', {
             'sessionId': response.sessionId, 
-            'expires': response.sessionExpiry, 
-            DOMAIN: DOMAIN,
+            'expires': response.sessionExpiry,
+            'domin': DOMAIN,
             "sameSite":"none",
             'secure' : true})
             .status(200).json({ success: true, user: response });
@@ -150,16 +149,17 @@ const createSession = async (req: Request, res: Response) => {
 
 
 const validateSession = async (req: Request, res: Response) => {
-    console.log("Validate Session is being called")
-    const {sessionToken} = req.body;   
+    console.log("Validate Session is being called");
+    const { sessionToken } = req.body;
 
-    if (!sessionToken) {
-        console.log("no cookie")
-        return res.status(400).json({ message: "Invalid request: idToken is required." });
+    if (sessionToken === undefined || !sessionToken) {
+
+        console.log("no cookie");
+        return res.status(400).json({ message: "Invalid request: sessionToken is required." });
     }
 
-    const isValid = await SessionModel.validateSession(sessionToken); // Implement this function based on your validation logic
-    console.log(isValid)
+    const isValid = await SessionModel.validateSession(sessionToken);
+    console.log(isValid);
     if (!isValid) {
         return res.status(403).json({ message: 'Session is invalid or expired' });
     } else {
