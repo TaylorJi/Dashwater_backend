@@ -5,10 +5,10 @@ import {logDataRef } from "../cache/timestreamConstants"; // DEVICE_IDS, VALUE_N
 import { formatTSTime } from "../cache/timestreamHelpers"; // floorToSecond,
 // import TimestreamModel from "./TimestreamModel";
 
-const getCachedDeviceData = async (end: string) => {
+const getCachedDeviceData = async (end: string, startDate: string, endDate: string) => {
 
     try {
-        const cachedData = await AppCache.getDeviceData(end);
+        const cachedData = await AppCache.getDeviceData(end, startDate, endDate);
 
         if (cachedData) {
             return remapDeviceDataFromCache(cachedData, end);
@@ -103,7 +103,7 @@ const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
 const getCachedLogData = async (end: string) => {
 
     try {
-        const cachedData = await AppCache.getDeviceData('12h');
+        const cachedData = await AppCache.getDeviceData('12h', '', '');
 
         if (cachedData) {
             return remapLogDataFromCache(cachedData, end);

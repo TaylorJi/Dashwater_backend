@@ -48,25 +48,7 @@ const getBuoyData = async (buoyIdList: string) => {
 
 // This function gets historical data of a specified measure name 
 // for each buoyId in list based on start and end time.
-const getHistoricalData = async (buoyIdList: string, measureName: string, end: string) => {
-  // try {
-  //   const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, start, end);
-  //   console.log("!!!!!!!! query: " + query);
-
-  //   const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
-
-  //   const data = await timestreamQuery.query(queryParams).promise();
-
-  //   if (data) {
-  //     return data;
-  //   }
-
-  //   return null;
-
-  // } catch (_err) {
-  //   return null;
-  // }
-
+const getHistoricalData = async (buoyIdList: string, measureName: string, end: string, startDate: string, endDate: string) => {
   AWS.config.update({
     accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
     secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
@@ -74,7 +56,12 @@ const getHistoricalData = async (buoyIdList: string, measureName: string, end: s
   });
 
   const timestreamClient = new AWS.TimestreamQuery();
-  const query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, end); // start, end
+  let query;
+  if (end === 'Custom') {
+    query = queryBuilder.getCustomRangeData(buoyIdList, measureName, startDate, endDate);
+  } else {
+    query = queryBuilder.buildHistoricalQuery(buoyIdList, measureName, end); // start, end
+  }
   // console.log("~~~~~~~~~~~~~~ query: " + query);
   const params = {
     QueryString: query
@@ -111,9 +98,14 @@ const getThresholdData = async (buoyIdList: string, measureName: string, start: 
   }
 };
 
-const getHistoricalLow = async (deviceName: string, sensorName: string, time: string) => {
+const getHistoricalLow = async (deviceName: string, sensorName: string, time: string, startDate: string, endDate: string) => {
   try {
-    const query = queryBuilder.buildMinQuery(deviceName, sensorName, time);
+    let query;
+    if (time === 'Custom') {
+      query = queryBuilder.buildCustomMinQuery(deviceName, sensorName, startDate, endDate);
+    } else {
+      query = queryBuilder.buildMinQuery(deviceName, sensorName, time);
+    }
 
     const [timestreamQuery, queryParams] = queryBuilder.createTSQuery(query);
 
@@ -129,7 +121,7 @@ const getHistoricalLow = async (deviceName: string, sensorName: string, time: st
   }
 }
 
-const getHistoricalHigh = async (deviceName: string, measureName: string, time: string) => {
+const getHistoricalHigh = async (deviceName: string, measureName: string, time: string, startDate: string, endDate: string) => {
   AWS.config.update({
     accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
     secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
@@ -137,7 +129,12 @@ const getHistoricalHigh = async (deviceName: string, measureName: string, time: 
   });
 
   const timestreamClient = new AWS.TimestreamQuery();
-  const query = queryBuilder.buildMaxQuery(deviceName, measureName, time);
+  let query;
+  if (time === 'Custom') {
+    query = queryBuilder.buildCustomMaxQuery(deviceName, measureName, startDate, endDate);
+  } else {
+    query = queryBuilder.buildMaxQuery(deviceName, measureName, time);
+  }
   console.log("made qury ---------------------------")
   console.log(query)
   const params = {
@@ -244,7 +241,7 @@ const getSensors = async (deviceName: string) => {
 }
 
 
-const getData = async (deviceName: string, time: string) => {
+const getData = async (deviceName: string, time: string, startDate: string, endDate: string) => {
   AWS.config.update({
     accessKeyId: `${process.env.AWS_API_ACCESS_KEY}`,
     secretAccessKey: `${process.env.SECRET_ACCESS_KEY}`,
@@ -252,7 +249,12 @@ const getData = async (deviceName: string, time: string) => {
   });
 
   const timestreamClient = new AWS.TimestreamQuery();
-  const query = queryBuilder.getData(deviceName, time);
+  let query;
+  if (time === 'Custom') {
+    query = queryBuilder.getCustomData(deviceName, startDate, endDate);
+  } else {
+    query = queryBuilder.getData(deviceName, time);
+  }
   console.log(query)
   const params = {
     QueryString: query

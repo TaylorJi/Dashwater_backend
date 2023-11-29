@@ -92,20 +92,20 @@ const buildHistoricalQuery = (
 ) => {
   return (
     `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${buoyIdList}' AND sensor_name = '${measureName}' AND time >= ago(${time}) ORDER BY time ASC`
-    // sqlQueries.DEVICE_INFO +
-    // buoyIdList +
-    // sqlQueries.MEASURE_NAME +
-    // "'" +
-    // measureName +
-    // "'" +
-    // sqlQueries.START_TIME +
-    // start +
-    // sqlQueries.END_TIME +
-    // end +
-    // sqlQueries.ORDER_ASC
   );
 };
 
+const getCustomRangeData = (
+  deviceName:string,
+  measureName: string,
+  start: string,
+  end: string
+) => {
+  return (
+    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' and sensor_name = '${measureName}'  AND time BETWEEN '${start} 00:00:00' AND '${end} 23:59:59'`
+
+  );
+};
 // Build minimum query for circle graph data
 // const buildMinQuery = (
 //   buoyId: string,
@@ -127,6 +127,17 @@ const buildMinQuery = (
   );
 };
 
+const buildCustomMinQuery = (
+  deviceName: string,
+  sensorName: string,
+  startDate: string,
+  endDate: string,
+) => {
+  return (
+    `SELECT min(measure_value::double) AS minimum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' AND time BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
+  );
+};
+
 // Build maximum query for circle graph data
 const buildMaxQuery = (
   deviceName : string,
@@ -138,7 +149,16 @@ const buildMaxQuery = (
     );
 };
 
-
+const buildCustomMaxQuery = (
+  deviceName : string,
+  sensorName: string,
+  startDate: string,
+  endDate: string,
+) => {
+  return (
+    `SELECT max(measure_value::double) AS maximum FROM "yvr-stage-db"."calibrated_device_data" WHERE sensor_name = '${sensorName}' and device_name = '${deviceName}' AND time BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`  
+    );
+};
 
 
 const allSensor = (
@@ -156,9 +176,16 @@ const getData = (
   return (
     `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' and time >= ago(${time}) order by time desc LIMIT 100`
   )
-
 }
 
+const getCustomData = (
+  deviceName:string,
+  startDate: string,
+  endDate: string) =>{
+  return (
+    `SELECT * FROM "yvr-stage-db"."calibrated_device_data" WHERE device_name = '${deviceName}' AND time BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59' order by time desc LIMIT 100`
+  )
+}
 
 // Build query for each device's historical data
 const buildThresholdQuery = (
@@ -200,5 +227,9 @@ export default module.exports = {
   buildMaxQuery,
   setUpQuery,
   allSensor,
-  getData
+  getData,
+  getCustomRangeData,
+  buildCustomMaxQuery,
+  buildCustomMinQuery,
+  getCustomData
 };

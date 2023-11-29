@@ -38,7 +38,7 @@ class AppCacheManager {
     public getTideData = async () => {
 
         if (!this.cachedTideData || !this.cachedTideExtremeData) {
-            await this.registerDeviceCache('12h');
+            await this.registerDeviceCache('12h', '', '');
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
@@ -102,8 +102,8 @@ class AppCacheManager {
 
     /* Timestream Data */
 
-    public registerDeviceCache = async (end: string) => {
-        const deviceData = await this.fetchMonthlyDeviceData(end);
+    public registerDeviceCache = async (end: string, startDate: string, endDate: string) => {
+        const deviceData = await this.fetchMonthlyDeviceData(end, startDate, endDate);
 
         if (deviceData) {
             this.cachedDeviceMetricData = deviceData;
@@ -125,15 +125,15 @@ class AppCacheManager {
         return this.cachedDeviceMetricInterval;
     };
 
-    public getDeviceData = async (end: string) => {
+    public getDeviceData = async (end: string, startDate: string, endDate: string) => {
         // if (!this.cachedDeviceMetricData) {
-            await this.registerDeviceCache(end);
+            await this.registerDeviceCache(end, startDate, endDate);
         // }
 
         return this.cachedDeviceMetricData;
     };
 
-    private fetchMonthlyDeviceData = async (end: string) => {
+    private fetchMonthlyDeviceData = async (end: string, startDate: string, endDate: string) => {
 
         try {
             // const now = floorToSecond(new Date().toISOString());
@@ -155,9 +155,16 @@ class AppCacheManager {
 
                 await Promise.all(
                     sensorNames.map(async (metric) => {
+                        let fetchedData;
+                        if (end === 'Custom') {
+                            fetchedData = await TimestreamModel.getHistoricalData(
+                                id.device_name, metric, end, startDate, endDate);
+                        } else {
+                            fetchedData = await TimestreamModel.getHistoricalData(
+                                id.device_name, metric, end, '', '');
+                        }
 
-                        let fetchedData = await TimestreamModel.getHistoricalData(
-                            id.device_name, metric, end);
+
 
                         if (fetchedData) {
 
@@ -264,8 +271,8 @@ class AppCacheManager {
                 historicalHighLow[id] = {};
 
                 await Promise.all(Object.keys(metricRef).map(async (metric) => {
-                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric, "12");
-                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric, "12");
+                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric, "12", '', '');
+                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric, "12", '', '');
 
                     if (fetchedLow && fetchedHigh) {
                         fetchedLow = queryParser.parseQueryResult(fetchedLow);
@@ -306,7 +313,7 @@ class AppCacheManager {
     //     }
     // }
 
-    public getHistoricalHighLow = async () => {
+    public getHistoricalHighLow = async () => { // not being called
         if (!this.cachedHighLow) {
             await this.registerHistoricalHighLow();
         }

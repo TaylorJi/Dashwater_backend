@@ -149,8 +149,8 @@ const createSession = async (req: Request, res: Response) => {
 
 
 const validateSession = async (req: Request, res: Response) => {
-    console.log("Validate Session is being called");
-    const { sessionToken } = req.body;
+    console.log("Validate Session is being called")
+    const sessionToken = req.body.sessionToken;   
 
     if (sessionToken === undefined || !sessionToken) {
 
