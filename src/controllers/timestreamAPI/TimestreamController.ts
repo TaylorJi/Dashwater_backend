@@ -65,7 +65,7 @@ const getBuoyHistory = async (
 
   } else {
     const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, '12h'); //, start, end
+    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, '12h', '', ''); //, start, end
 
     if (response) {
       res.status(200).json({ data: queryParser.parseQueryResult(response) });
@@ -115,9 +115,16 @@ const getBuoyThreshold = async (
 
 const getCachedDeviceData = async (req: Request, res: Response) => {
 
-  const { end } = req.body;
+  const end = req.body.time;
+  console.log("??????????????????????? end: " + end);
+  let response: any;
+  if (end === 'Custom') {
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    response = await TimestreamCacheModel.getCachedDeviceData(end, startDate, endDate);
+  }
 
-  const response = await TimestreamCacheModel.getCachedDeviceData(end);
+  response = await TimestreamCacheModel.getCachedDeviceData(end, '', '');
 
   if (response) {
     res.status(200).json({ data: response });
@@ -213,10 +220,15 @@ const getHistoricalHighLow = async (req: Request, res: Response) => {
   const deviceName = req.body.device_name;
   const sensor_name = req.body.sensor_name;
   const time = req.body.time;
+  let startDate = '', endDate = '';
+  if (time === 'Custom') {
+    startDate = req.body.startDate;
+    endDate = req.body.endDate;
+  }
 
-  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name, time);
+  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name, time, startDate, endDate);
 
-  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name, time);
+  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name, time, startDate, endDate);
 
   if (devices && max && min) {
     res.status(200).json({ data: { max: max.Rows[0].Data[0].ScalarValue, min: min.Rows[0].Data[0].ScalarValue } });
@@ -246,9 +258,13 @@ const getData = async (req: Request, res: Response) => {
   const interval  = req.body.time;
   console.log("deviceName is: ----------------------");
   console.log(deviceName);
+  let startDate = '', endDate = '';
+  if (interval === 'Custom') {
+    startDate = req.body.startDate;
+    endDate = req.body.endDate;
+  }
 
-
-  const response = await TimestreamModel.getData(deviceName, interval);
+  const response = await TimestreamModel.getData(deviceName, interval, startDate, endDate);
 
   // const sensor_name = response.Rows[0].sensor_name
   // console.log("first " + response.Rows[0].Data[0].ScalarValue)
