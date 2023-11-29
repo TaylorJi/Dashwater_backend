@@ -279,8 +279,8 @@ const getAllDevice = async () => {
   const response = await TimestreamModel.getAllDevices();
 
   if (response) {
-    console.log(response);
-    return response;
+    // console.log("!!!!!!!!!!!!!!!!!!!! " + JSON.stringify(queryParser.parseQueryResult(response))); // [{"device_name":"device"}]
+    return queryParser.parseQueryResult(response);
 
   } else {
     console.log("error");
@@ -288,7 +288,16 @@ const getAllDevice = async () => {
   }
 }
 
+const getAllDeviceToFrontEnd = async (_req: Request, res: Response) => {
+  const response = await TimestreamModel.getAllDevices();
 
+  if (response) {
+    // console.log("!!!!!!!!!!!!!!!!!!!! " + JSON.stringify(queryParser.parseQueryResult(response))); // [{"device_name":"device"}]
+    res.status(200).json({ data: queryParser.parseQueryResult(response) });
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+}
 
 
 
@@ -301,6 +310,7 @@ export default module.exports = {
   getCachedDeviceData,
   // getCachedHistoricalHighLow,
   getCachedLogData,
+  getAllDeviceToFrontEnd,
   // getCustomRangeData,
   // getCustomRangeLogData,
   test,
