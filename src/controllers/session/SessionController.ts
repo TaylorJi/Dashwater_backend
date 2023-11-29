@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import SessionModel from "../../models/session/SessionModel";
 
 // import { v4 as uuid } from 'uuid'
-// import { DOMAIN } from "../../helpers/authentication/constants";
+import { DOMAIN } from "../../helpers/authentication/constants";
 
 // const createSession = async (req: Request, res: Response) => {
 //     const { userId } = req.body;
@@ -139,7 +139,7 @@ const createSession = async (req: Request, res: Response) => {
         return res.cookie('sessionCookie', {
             'sessionId': response.sessionId, 
             'expires': response.sessionExpiry, 
-            'domain': 'iot-dashboard-backend-server.onrender.com',
+            DOMAIN: DOMAIN,
             "sameSite":"none",
             'secure' : true})
             .status(200).json({ success: true, user: response });
