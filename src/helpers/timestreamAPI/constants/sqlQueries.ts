@@ -57,15 +57,15 @@ const CURRENT_INFO =
   ".measure_name ASC";
 
 const DEVICE_INFO =
-  "SELECT *" +
+  "SELECT * " +
   "FROM " +
   queryInfo.DATABASE_NAME +
   "." +
   queryInfo.TABLE_NAME +
   " " +
-  "WHERE buoy_id IN ";
+  "WHERE device_name = ";
 
-const MEASURE_NAME = " AND measure_name = ";
+const MEASURE_NAME = " AND sensor_name = ";
 
 const START_TIME = " AND time BETWEEN from_iso8601_timestamp('";
 

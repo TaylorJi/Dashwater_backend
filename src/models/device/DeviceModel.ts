@@ -131,7 +131,6 @@ const getAllDevicesSettings: any = async (sessionId: String) => {
 
 
         if (devicesResponse.status === 200) {
-            console.log("devicesResponse.status = " + devicesResponse.status);
             let devicesResData = devicesResponse['data']['devices'];
             const devicesData: deviceSettingType[] = devicesResData.map((device: any) => {
                 const newDeviceItem: deviceSettingType = {
@@ -246,7 +245,6 @@ const updateDeviceSettings: any = async (device: deviceSettingType, sessionId: S
         );
 
         if (devicesResponse.status === 200) {
-            console.log("Successfully updated device settings");
             return newSettings;
         } else {
             console.log(`Received status ${devicesResponse.status} while updating device settings`);

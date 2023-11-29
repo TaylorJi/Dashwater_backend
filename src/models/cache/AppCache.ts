@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DEVICE_IDS, metricRef } from "./timestreamConstants";
-import { floorToSecond, formatTSTime } from "./timestreamHelpers";
+import { formatTSTime } from "./timestreamHelpers"; //floorToSecond
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 import TimestreamModel from "../timestreamAPI/TimestreamModel";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
@@ -11,7 +11,7 @@ class AppCacheManager {
     private readonly yvrLat = '49.1967';
     private readonly yvrLong = '123.1815';
 
-    private readonly deviceRefreshRate = 3600000; // 1 hour
+    // private readonly deviceRefreshRate = 3600000; // 1 hour
 
     private cachedTideData: rawTideDataType[] | null;
     private cachedTideExtremeData: rawTideExtremeDataType[] | null;
@@ -38,7 +38,7 @@ class AppCacheManager {
     public getTideData = async () => {
 
         if (!this.cachedTideData || !this.cachedTideExtremeData) {
-            await this.registerDeviceCache();
+            await this.registerDeviceCache('12h');
         }
 
         return { 'tideData': this.cachedTideData, 'tideExtremes': this.cachedTideExtremeData };;
@@ -102,9 +102,8 @@ class AppCacheManager {
 
     /* Timestream Data */
 
-    public registerDeviceCache = async () => {
-
-        const deviceData = await this.fetchMonthlyDeviceData();
+    public registerDeviceCache = async (end: string) => {
+        const deviceData = await this.fetchMonthlyDeviceData(end);
 
         if (deviceData) {
             this.cachedDeviceMetricData = deviceData;
@@ -113,58 +112,75 @@ class AppCacheManager {
             return null;
         }
 
-        this.cachedDeviceMetricInterval = setInterval(async () => {
+        // this.cachedDeviceMetricInterval = setInterval(async () => {
 
-            const refreshedMetricData = await this.fetchDeviceCurrentData();
+        //     const refreshedMetricData = await this.fetchDeviceCurrentData();
 
-            if (refreshedMetricData) {
-                this.cachedDeviceMetricData = refreshedMetricData;
-            }
+        //     if (refreshedMetricData) {
+        //         this.cachedDeviceMetricData = refreshedMetricData;
+        //     }
 
-        }, this.deviceRefreshRate);
+        // }, this.deviceRefreshRate);
 
         return this.cachedDeviceMetricInterval;
     };
 
-    public getDeviceData = async () => {
-        if (!this.cachedDeviceMetricData) {
-            await this.registerDeviceCache();
-        }
+    public getDeviceData = async (end: string) => {
+        // if (!this.cachedDeviceMetricData) {
+            await this.registerDeviceCache(end);
+        // }
 
         return this.cachedDeviceMetricData;
     };
 
-    private fetchMonthlyDeviceData = async () => {
+    private fetchMonthlyDeviceData = async (end: string) => {
 
         try {
-            const now = floorToSecond(new Date().toISOString());
-            const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
+            // const now = floorToSecond(new Date().toISOString());
+            // const prevMonth = floorToSecond(new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString());
 
             const deviceData: any = {};
+            const deviceIds = queryParser.parseQueryResult(await TimestreamModel.getAllDevices());
+            
+            await Promise.all(deviceIds.map(async (id) => {
+                // const parsedDeviceId = queryBuilder.parseDeviceList(id);
+                // console.log("parsedDeviceId: ", parsedDeviceId);
 
-            await Promise.all(DEVICE_IDS.map(async (id) => {
-                const parsedDeviceId = queryBuilder.parseDeviceList(id);
-
-                deviceData[id] = {}
+                deviceData[id.device_name] = {};
+                const sensorList = queryParser.parseQueryResult(await TimestreamModel.getSensors('device'));
+                const sensorNames: string[] = [];
+                for (let i = 0; i < sensorList.length; i++) {
+                    sensorNames.push(sensorList[i].sensor_name);
+                }
 
                 await Promise.all(
-                    Object.keys(metricRef).map(async (metric) => {
+                    sensorNames.map(async (metric) => {
 
                         let fetchedData = await TimestreamModel.getHistoricalData(
-                            parsedDeviceId, metric, prevMonth, now);
+                            id.device_name, metric, end);
 
                         if (fetchedData) {
 
-                            fetchedData = queryParser.parseQueryResult(fetchedData);
+                            // const sensor_name = response.Rows[0].sensor_name
+                            // console.log("first " + response.Rows[0].Data[0].ScalarValue)
+                            // console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
+                            // console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
+                            // console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
+                            // console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
+                            // console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
 
-                            if (fetchedData.length > 0) {
+                            // fetchedData = queryParser.parseQueryResult(fetchedData);
+                            // console.log("!!!!!!!!!!! " + JSON.stringify(fetchedData));
 
-                                deviceData[id][metricRef[metric]] =
-                                    fetchedData.map((datum: any) => {
+                            if (fetchedData.Rows.length > 0) {
+                                // console.log("!!!!!!!!!!! " + fetchedData.Rows[0].Data[2].ScalarValue);
+                                deviceData[id.device_name][metric] =
+                                    fetchedData.Rows.map((datum: any) => {
                                         return (
                                             {
-                                                'time': formatTSTime(datum['time']),
-                                                'value': parseFloat(datum['measure_value::double'])
+                                                'time': formatTSTime(datum.Data[4].ScalarValue),
+                                                'value': parseFloat(datum.Data[5].ScalarValue),
+                                                'unit': datum.Data[1].ScalarValue
                                             }
                                         )
                                     });
@@ -173,8 +189,42 @@ class AppCacheManager {
 
                     })
                 );
-
+                // console.log("!!!!!!!!!!!! " + JSON.stringify(deviceData));
             }));
+
+            // await Promise.all(DEVICE_IDS.map(async (id) => {
+            //     const parsedDeviceId = queryBuilder.parseDeviceList(id);
+            //     console.log("parsedDeviceId: ", parsedDeviceId);
+
+            //     deviceData[id] = {};
+
+            // await Promise.all(
+            //     Object.keys(metricRef).map(async (metric) => {
+
+            //         let fetchedData = await TimestreamModel.getHistoricalData(
+            //             parsedDeviceId, metric, prevMonth, now);
+
+            //         if (fetchedData) {
+
+            //             fetchedData = queryParser.parseQueryResult(fetchedData);
+
+            //             if (fetchedData.length > 0) {
+
+            //                 deviceData[id][metricRef[metric]] =
+            //                     fetchedData.map((datum: any) => {
+            //                         return (
+            //                             {
+            //                                 'time': formatTSTime(datum['time']),
+            //                                 'value': parseFloat(datum['measure_value::double'])
+            //                             }
+            //                         )
+            //                     });
+            //             }
+            //         }
+
+            //     })
+            // );
+            // }));
 
             if (Object.keys(deviceData).length === 0) {
                 // This means it failed to fetch
@@ -188,56 +238,56 @@ class AppCacheManager {
         }
     };
 
-    private fetchDeviceCurrentData = async () => {
+    // private fetchDeviceCurrentData = async () => {
 
-        try {
-            if (this.cachedDeviceMetricData) {
+    //     try {
+    //         if (this.cachedDeviceMetricData) {
 
-                const updatedCachedData: any = { ...this.cachedDeviceMetricData };
+    //             const updatedCachedData: any = { ...this.cachedDeviceMetricData };
 
-                await Promise.all(DEVICE_IDS.map(async (id) => {
+    //             await Promise.all(DEVICE_IDS.map(async (id) => {
 
-                    let fetchedData = await TimestreamModel.getBuoyData(id);
+    //                 let fetchedData = await TimestreamModel.getBuoyData(id);
 
-                    if (fetchedData) {
+    //                 if (fetchedData) {
 
-                        fetchedData = queryParser.parseQueryResult(fetchedData)
-                            .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
+    //                     fetchedData = queryParser.parseQueryResult(fetchedData)
+    //                         .filter((datum: any) => Object.keys(metricRef).includes(datum['measure_name']));
 
-                        fetchedData.map((datum: any) => {
-                            this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], datum['measure_value::double'])
+    //                     fetchedData.map((datum: any) => {
+    //                         this.updateHistoricalHighLow(datum['buoy_id'], datum['measure_name'], datum['measure_value::double'])
 
-                            let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
+    //                         let prevCachedMetricData = updatedCachedData[id][metricRef[datum['measure_name']]];
 
-                            if (prevCachedMetricData) {
+    //                         if (prevCachedMetricData) {
 
-                                prevCachedMetricData.shift();
+    //                             prevCachedMetricData.shift();
 
-                                prevCachedMetricData.push(
-                                    {
-                                        'time': formatTSTime(datum['time']),
-                                        'value': parseFloat(datum['measure_value::double'])
-                                    }
-                                );
+    //                             prevCachedMetricData.push(
+    //                                 {
+    //                                     'time': formatTSTime(datum['time']),
+    //                                     'value': parseFloat(datum['measure_value::double'])
+    //                                 }
+    //                             );
 
-                                updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
-                            }
+    //                             updatedCachedData[id][metricRef[datum['measure_name']]] = prevCachedMetricData;
+    //                         }
 
-                        });
+    //                     });
 
-                    }
+    //                 }
 
-                }));
-                return updatedCachedData;
-            }
+    //             }));
+    //             return updatedCachedData;
+    //         }
 
-            return null;
+    //         return null;
 
-        } catch (_err) {
-            return null;
-        }
+    //     } catch (_err) {
+    //         return null;
+    //     }
 
-    };
+    // };
 
     public registerHistoricalHighLow = async () => {
         const historicalHighLow: any = {};
@@ -249,8 +299,8 @@ class AppCacheManager {
                 historicalHighLow[id] = {};
 
                 await Promise.all(Object.keys(metricRef).map(async (metric) => {
-                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric);
-                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric);
+                    let fetchedLow = await TimestreamModel.getHistoricalLow(parsedDeviceId, metric, "12");
+                    let fetchedHigh = await TimestreamModel.getHistoricalHigh(parsedDeviceId, metric, "12");
 
                     if (fetchedLow && fetchedHigh) {
                         fetchedLow = queryParser.parseQueryResult(fetchedLow);
@@ -279,17 +329,17 @@ class AppCacheManager {
         }
     };
 
-    private updateHistoricalHighLow = async (buoyId: string, metric: string, value: string) => {
-        if (this.cachedHighLow && this.cachedHighLow[buoyId][metricRef[metric]]) {
-            if (this.cachedHighLow[buoyId][metricRef[metric]]['low'] > parseFloat(value)) {
-                this.cachedHighLow[buoyId][metricRef[metric]]['low'] = parseFloat(value);
-            }
+    // private updateHistoricalHighLow = async (buoyId: string, metric: string, value: string) => {
+    //     if (this.cachedHighLow && this.cachedHighLow[buoyId][metricRef[metric]]) {
+    //         if (this.cachedHighLow[buoyId][metricRef[metric]]['low'] > parseFloat(value)) {
+    //             this.cachedHighLow[buoyId][metricRef[metric]]['low'] = parseFloat(value);
+    //         }
 
-            if (this.cachedHighLow[buoyId][metricRef[metric]]['high'] < parseFloat(value)) {
-                this.cachedHighLow[buoyId][metricRef[metric]]['high'] = parseFloat(value);
-            }
-        }
-    }
+    //         if (this.cachedHighLow[buoyId][metricRef[metric]]['high'] < parseFloat(value)) {
+    //             this.cachedHighLow[buoyId][metricRef[metric]]['high'] = parseFloat(value);
+    //         }
+    //     }
+    // }
 
     public getHistoricalHighLow = async () => {
         if (!this.cachedHighLow) {

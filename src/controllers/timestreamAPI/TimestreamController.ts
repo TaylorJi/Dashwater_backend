@@ -3,7 +3,12 @@ import TimestreamModel from "../../models/timestreamAPI/TimestreamModel";
 import sqlQueries from "../../helpers/timestreamAPI/constants/sqlQueries";
 import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
 import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
-// import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
+import TimestreamCacheModel from "../../models/timestreamAPI/TimestreamCacheModel";
+
+interface deviceSensor {
+  sensorUnit: string;
+  measureValue: number;
+}
 
 //GET request for all device IDs
 const getAllBuoyIds = async (_req: Request, res: Response) => {
@@ -60,7 +65,7 @@ const getBuoyHistory = async (
 
   } else {
     const deviceIds = queryBuilder.parseDeviceList(buoyIdList);
-    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, start, end);
+    const response = await TimestreamModel.getHistoricalData(deviceIds, measureName, '12h'); //, start, end
 
     if (response) {
       res.status(200).json({ data: queryParser.parseQueryResult(response) });
@@ -108,35 +113,35 @@ const getBuoyThreshold = async (
   }
 };
 
-// const getCachedDeviceData = async (req: Request, res: Response) => {
+const getCachedDeviceData = async (req: Request, res: Response) => {
 
-//   const { end } = req.body;
+  const { end } = req.body;
 
-//   const response = await TimestreamCacheModel.getCachedDeviceData(end);
+  const response = await TimestreamCacheModel.getCachedDeviceData(end);
 
-//   if (response) {
-//     res.status(200).json({ data: response });
+  if (response) {
+    res.status(200).json({ data: response });
 
-//   } else {
-//     res.status(500).json({ error: "There was an error with the cache." });
-//   }
+  } else {
+    res.status(500).json({ error: "There was an error with the cache." });
+  }
 
-// };
+};
 
-// const getCachedLogData = async (req: Request, res: Response) => {
+const getCachedLogData = async (req: Request, res: Response) => {
 
-//   const { end } = req.body;
+  const { end } = req.body;
 
-//   const response = await TimestreamCacheModel.getCachedLogData(end);
+  const response = await TimestreamCacheModel.getCachedLogData(end);
 
-//   if (response) {
-//     res.status(200).json({ data: response });
+  if (response) {
+    res.status(200).json({ data: response });
 
-//   } else {
-//     res.status(500).json({ error: "There was an error with the cache." });
-//   }
+  } else {
+    res.status(500).json({ error: "There was an error with the cache." });
+  }
 
-// };
+};
 
 // const getCachedHistoricalHighLow = async (_req: Request, res: Response) => {
 //   const response = await TimestreamCacheModel.getCachedHistoricalHighLow();
@@ -199,45 +204,25 @@ const test = async (_req: Request, res: Response) => {
   } else {
     res.status(500).json({ error: "There was an error with your request." });
   }
-
-
-
-
 }
 
 const getHistoricalHighLow = async (req: Request, res: Response) => {
   console.log("backend controller test is being called")
   const devices = await TimestreamModel.getAllDevices(); // get all devices
-  // console.log("devices are: ----------------------");
-  // console.log(devices);
 
   const deviceName = req.body.device_name;
   const sensor_name = req.body.sensor_name;
-  // console.log("sensor_name is: ----------------------");
-  // console.log(sensor_name);
+  const time = req.body.time;
 
-  // console.log("deviceName is: ----------------------");
-  // console.log(deviceName);
+  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name, time);
 
-  const max = await TimestreamModel.getHistoricalHigh(deviceName, sensor_name);
-  console.log("maxCO2 is: ----------------------");
-  console.log(max.Rows[0].Data[0].ScalarValue);
-
-  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name);
-  console.log("minCO2 is: ----------------------");
-  console.log(min.Rows[0].Data[0].ScalarValue);
+  const min = await TimestreamModel.getHistoricalLow(deviceName, sensor_name, time);
 
   if (devices && max && min) {
     res.status(200).json({ data: { max: max.Rows[0].Data[0].ScalarValue, min: min.Rows[0].Data[0].ScalarValue } });
   } else {
     res.status(500).json({ error: "There was an error with your request." });
   }
-
-
-
-
-
-
 }
 
 const getSensors = async (req: Request, res: Response) => {
@@ -256,6 +241,53 @@ const getSensors = async (req: Request, res: Response) => {
   }
 }
 
+const getData = async (req: Request, res: Response) => {
+  const deviceName = req.body.device_name;
+  const interval  = req.body.time;
+  console.log("deviceName is: ----------------------");
+  console.log(deviceName);
+
+
+  const response = await TimestreamModel.getData(deviceName, interval);
+
+  // const sensor_name = response.Rows[0].sensor_name
+  // console.log("first " + response.Rows[0].Data[0].ScalarValue)
+  // console.log("second " + response.Rows[0].Data[1].ScalarValue) // sensor_unit
+  // console.log("third " + response.Rows[0].Data[2].ScalarValue) // sensor_name
+  // console.log("fourth " + response.Rows[0].Data[3].ScalarValue) // measure_value
+  // console.log("fifth " + response.Rows[0].Data[4].ScalarValue) // time
+  // console.log("sixth " + response.Rows[0].Data[5].ScalarValue) // measure_value
+
+
+  const deviceSensorArray: { [key: string]: deviceSensor } = {};
+  if (response) {
+    for (let i = 0; i < response.Rows.length; i++) {
+      if (!(response.Rows[i].Data[2].ScalarValue in deviceSensorArray)) {
+        deviceSensorArray[response.Rows[i].Data[2].ScalarValue] = {
+          sensorUnit: response.Rows[i].Data[1].ScalarValue,
+          measureValue: parseFloat(response.Rows[i].Data[5].ScalarValue),
+        };
+      } 
+    }
+    res.status(200).json({ data: deviceSensorArray });
+  } else {
+    res.status(500).json({ error: "There was an error with your request." });
+  }
+}
+
+const getAllDevice = async () => {
+  const response = await TimestreamModel.getAllDevices();
+
+  if (response) {
+    console.log(response);
+    return response;
+
+  } else {
+    console.log("error");
+    return null;
+  }
+}
+
 
 
 
@@ -266,14 +298,16 @@ export default module.exports = {
   getCurrentBuoyData,
   getBuoyHistory,
   getBuoyThreshold,
-  // getCachedDeviceData,
+  getCachedDeviceData,
   // getCachedHistoricalHighLow,
-  // getCachedLogData,
+  getCachedLogData,
   // getCustomRangeData,
   // getCustomRangeLogData,
   test,
   getHistoricalHighLow,
-  getSensors
+  getSensors,
+  getData,
+  getAllDevice,
 
   
 };

@@ -1,26 +1,26 @@
 // import queryBuilder from "../../helpers/timestreamAPI/functions/queryBuilder";
 // import queryParser from "../../helpers/timestreamAPI/functions/queryParser";
-// import AppCache from "../cache/AppCache";
-// import { DEVICE_IDS, VALUE_NOT_FOUND, logDataRef, metricRef, metricUnitRef } from "../cache/timestreamConstants";
-// import { floorToSecond, formatTSTime } from "../cache/timestreamHelpers";
+import AppCache from "../cache/AppCache";
+import {logDataRef } from "../cache/timestreamConstants"; // DEVICE_IDS, VALUE_NOT_FOUND, metricRef, metricUnitRef, 
+import { formatTSTime } from "../cache/timestreamHelpers"; // floorToSecond,
 // import TimestreamModel from "./TimestreamModel";
 
-// const getCachedDeviceData = async (end: string) => {
+const getCachedDeviceData = async (end: string) => {
 
-//     try {
-//         const cachedData = await AppCache.getDeviceData();
+    try {
+        const cachedData = await AppCache.getDeviceData(end);
 
-//         if (cachedData) {
-//             return remapDeviceDataFromCache(cachedData, end);
-//         }
+        if (cachedData) {
+            return remapDeviceDataFromCache(cachedData, end);
+        }
 
-//         return null;
+        return null;
 
-//     } catch (_err) {
-//         return null;
-//     }
+    } catch (_err) {
+        return null;
+    }
 
-// };
+};
 
 // const getCachedHistoricalHighLow = async () => {
 //     try {
@@ -79,81 +79,102 @@
 
 // };
 
-// const getCachedLogData = async (end: string) => {
+const remapDeviceDataFromCache = (cachedData: any, end?: string) => {
+    const mappedData: any = {};
+    console.log("end: " + end);
 
-//     try {
-//         const cachedData = await AppCache.getDeviceData();
+    Object.keys(cachedData).map((device) => {
 
-//         if (cachedData) {
-//             return remapLogDataFromCache(cachedData, end);
-//         }
+        mappedData[device] = Object.keys(cachedData[device]).map((metric: any) => {
+            return {
+                measureName: metric,
+                xAxisName: 'Time',
+                yAxisName: cachedData[device][metric][0].unit,
+                data: cachedData[device][metric] 
+            };
 
-//         return null;
+        });
+    });
 
-//     } catch (_err) {
-//         return null;
-//     }
+    return mappedData;
 
-// };
+};
 
-// const remapLogDataFromCache = (cachedData: any, end?: string) => {
+const getCachedLogData = async (end: string) => {
 
-//     let mappedData: any[] = [];
+    try {
+        const cachedData = await AppCache.getDeviceData('12h');
 
-//     Object.keys(cachedData).map((device) => {
+        if (cachedData) {
+            return remapLogDataFromCache(cachedData, end);
+        }
 
-//         // have to start a new array to keep track of all devices
-//         const deviceData: any[] = [];
+        return null;
 
-//         Object.keys(cachedData[device]).map((metric: string) => {
+    } catch (_err) {
+        return null;
+    }
 
-//             cachedData[device][metric].map((measurement: any, index: number) => {
+};
 
-//                 if (deviceData.length === index) {
-//                     // it doesn't exist and must be created
+const remapLogDataFromCache = (cachedData: any, end?: string) => {
 
-//                     deviceData.push({
-//                         'id': Number(device),
-//                         'time': measurement['time'],
-//                         [logDataRef[metric]]: measurement['value']
-//                     });
+    let mappedData: any[] = [];
 
-//                 } else {
+    Object.keys(cachedData).map((device) => {
 
-//                     deviceData[index] = {
-//                         ...deviceData[index],
-//                         [logDataRef[metric]]: measurement['value']
-//                     };
-//                 }
+        // have to start a new array to keep track of all devices
+        const deviceData: any[] = [];
 
-//             });
+        Object.keys(cachedData[device]).map((metric: string) => {
 
-//         });
+            cachedData[device][metric].map((measurement: any, index: number) => {
 
-//         mappedData = [...mappedData, ...deviceData];
+                if (deviceData.length === index) {
+                    // it doesn't exist and must be created
 
-//     });
+                    deviceData.push({
+                        'id': Number(device),
+                        'time': measurement['time'],
+                        [logDataRef[metric]]: measurement['value']
+                    });
 
-//     if (end) {
-//         mappedData = mappedData.filter((metric: any) =>
-//             new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime());
-//     }
+                } else {
 
-//     Object.keys(logDataRef).map((metric) => {
+                    deviceData[index] = {
+                        ...deviceData[index],
+                        [logDataRef[metric]]: measurement['value']
+                    };
+                }
 
-//         mappedData.map((measurement) => {
+            });
 
-//             if (!(logDataRef[metric] in measurement)) {
-//                 measurement[logDataRef[metric]] = -9999;
-//             }
+        });
 
-//         });
+        mappedData = [...mappedData, ...deviceData];
 
-//     });
+    });
 
-//     return mappedData;
+    if (end) {
+        mappedData = mappedData.filter((metric: any) =>
+            new Date(metric.time).getTime() > new Date(formatTSTime(end)).getTime());
+    }
 
-// };
+    Object.keys(logDataRef).map((metric) => {
+
+        mappedData.map((measurement) => {
+
+            if (!(logDataRef[metric] in measurement)) {
+                measurement[logDataRef[metric]] = -9999;
+            }
+
+        });
+
+    });
+
+    return mappedData;
+
+};
 
 // const getTimeStreamDataForRange = async (start: string, end: string) => {
 
@@ -234,11 +255,11 @@
 // };
 
 
-// export default module.exports = {
-//     getCachedDeviceData,
+export default module.exports = {
+    getCachedDeviceData,
 //     getCachedHistoricalHighLow,
 //     remapHistoricalHighLow,
-//     getCachedLogData,
+    getCachedLogData,
 //     getCustomRangeData,
 //     getCustomRangeLogData
-// };
+};

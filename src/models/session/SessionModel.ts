@@ -58,8 +58,6 @@ const createSession = async (sessionId: string, userId: string, userRole: string
       // }
       // putting the session into sessions array, otherwise we have to use DB to store the session
       sessions[sessionId] = newSession;
-      console.log(sessions)
-
       return newSession;
   } catch (err) {
       console.log('Error creating session: ' + err)
