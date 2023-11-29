@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import SessionModel from "../../models/session/SessionModel";
+
 // import { v4 as uuid } from 'uuid'
 // import { DOMAIN } from "../../helpers/authentication/constants";
 
@@ -139,7 +140,7 @@ const createSession = async (req: Request, res: Response) => {
             'sessionId': response.sessionId, 
             'expires': response.sessionExpiry, 
             'domain': 'https://iot-dashboard-backend-server.onrender.com',
-            'httpOnly': true,
+            "sameSite":"none",
             'secure' : true})
             .status(200).json({ success: true, user: response });
     } else {
