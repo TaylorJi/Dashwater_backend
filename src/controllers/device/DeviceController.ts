@@ -120,7 +120,7 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 
 const getAllDevicesSettings = async (req: Request, res: Response) => {
     try {
-        const response = await DeviceModel.getAllDevicesSettings(req.body.token);
+        const response = await DeviceModel.getAllDevicesSettings(req.body.Cookie);
         console.log("Response from getAllDevicesSettings:", response);
         res.status(200).json({ data: response });
     } catch (error) {
