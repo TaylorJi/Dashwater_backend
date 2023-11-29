@@ -189,42 +189,7 @@ class AppCacheManager {
 
                     })
                 );
-                // console.log("!!!!!!!!!!!! " + JSON.stringify(deviceData));
             }));
-
-            // await Promise.all(DEVICE_IDS.map(async (id) => {
-            //     const parsedDeviceId = queryBuilder.parseDeviceList(id);
-            //     console.log("parsedDeviceId: ", parsedDeviceId);
-
-            //     deviceData[id] = {};
-
-            // await Promise.all(
-            //     Object.keys(metricRef).map(async (metric) => {
-
-            //         let fetchedData = await TimestreamModel.getHistoricalData(
-            //             parsedDeviceId, metric, prevMonth, now);
-
-            //         if (fetchedData) {
-
-            //             fetchedData = queryParser.parseQueryResult(fetchedData);
-
-            //             if (fetchedData.length > 0) {
-
-            //                 deviceData[id][metricRef[metric]] =
-            //                     fetchedData.map((datum: any) => {
-            //                         return (
-            //                             {
-            //                                 'time': formatTSTime(datum['time']),
-            //                                 'value': parseFloat(datum['measure_value::double'])
-            //                             }
-            //                         )
-            //                     });
-            //             }
-            //         }
-
-            //     })
-            // );
-            // }));
 
             if (Object.keys(deviceData).length === 0) {
                 // This means it failed to fetch
