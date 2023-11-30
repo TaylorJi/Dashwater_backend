@@ -138,8 +138,8 @@ const createSession = async (req: Request, res: Response) => {
         return res.cookie('sessionCookie', {
             'sessionId': response.sessionId, 
             'expires': response.sessionExpiry,
-            'domain': DOMAIN,
-            "sameSite":"none",
+            DOMAIN: DOMAIN},
+            {"sameSite":"none",
             'secure' : true})
             .status(200).json({ success: true, user: response });
     } else {
