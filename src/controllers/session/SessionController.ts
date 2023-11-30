@@ -135,18 +135,13 @@ const createSession = async (req: Request, res: Response) => {
     const response = await SessionModel.createSession(idToken, userId, userRole);
     if (response) {
         // return res.status(200).json({ success: true, user: response });
-        // return res.cookie('sessionCookie', {
-        //     'sessionId': response.sessionId, 
-        //     'expires': response.sessionExpiry,
-        //     'domain': DOMAIN,
-        //     "sameSite":"none",
-        //     'secure' : true})
-        //     .status(200).json({ success: true, user: response });
-        return res
-            .cookie('sessionId', response.sessionId, { domain: DOMAIN, sameSite: 'none', secure: true })
-            .cookie('expires', response.sessionExpiry, { domain: DOMAIN, sameSite: 'none', secure: true })
-            .status(200)
-            .json({ success: true, user: response });
+        return res.cookie('sessionCookie', {
+            'sessionId': response.sessionId, 
+            'expires': response.sessionExpiry,
+            'domain': DOMAIN,
+            "sameSite":"none",
+            'secure' : true})
+            .status(200).json({ success: true, user: response });
     } else {
         return res.status(500).json({ success: false, message: "There was an error with the request." });
     }

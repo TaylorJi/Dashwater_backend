@@ -4,50 +4,30 @@ import SessionModel from "../../models/session/SessionModel";
 
 // It may be possible to combine userAuth and adminAuth into one function, but it would be harder to understand for future teams
 // One appraoch would be to pass a flag, isAdmin, from the calling route, which would then be passes from controller to model
-// const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
-//     console.log("userAuth is being called")
-//     console.log("test------------------- " + req.cookies.sessionCookie)
-//     // const isAuth = req.body.isAuthenticated;
-//     // console.log(isAuth)
-//     // console.log(req.cookies.sessionCookie)
-//     if (!req.cookies.sessionCookie) {
-//         res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
-//     } else {
-//         const sessionId = req.cookies.sessionCookie;
-//         if (sessionId) {
-//             const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
-    
-//             if (sessionCheck) {
-//                 next();
-//             } else {
-//                 res.status(403).json({ message: "You must be logged in to perform this action." });
-//             }
-//         } else {
-//             res.status(403).json({ message: "You must be logged in to perform this action." });
-//         }
-//     }
-// }
-
-const userAuth = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("userAuth is being called");
-    console.log("test------------------- " + req.cookies.sessionId); // changed from req.cookies.sessionCookie to req.cookies.sessionId
-  
-    if (!req.cookies.sessionId) { // changed from req.cookies.sessionCookie to req.cookies.sessionId
-      res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." });
+const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
+    console.log("userAuth is being called")
+    console.log("test------------------- " + req.cookies.sessionCookie)
+    console.log("!!!!!! " + JSON.stringify(req.cookies));
+    // const isAuth = req.body.isAuthenticated;
+    // console.log(isAuth)
+    // console.log(req.cookies.sessionCookie)
+    if (!req.cookies.sessionCookie) {
+        res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
     } else {
-      const sessionId = req.cookies.sessionId; // changed from req.cookies.sessionCookie to req.cookies.sessionId
-      if (sessionId) {
-        const sessionCheck = await SessionModel.validateSession(sessionId);
-        if (sessionCheck) {
-          next();
+        const sessionId = req.cookies.sessionCookie;
+        if (sessionId) {
+            const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
+    
+            if (sessionCheck) {
+                next();
+            } else {
+                res.status(403).json({ message: "You must be logged in to perform this action." });
+            }
         } else {
-          res.status(403).json({ message: "You must be logged in to perform this action." });
+            res.status(403).json({ message: "You must be logged in to perform this action." });
         }
-      } else {
-        res.status(403).json({ message: "You must be logged in to perform this action." });
-      }
     }
-  }
+}
 
 // const userAuth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 //     console.log("userAuth is being called");
