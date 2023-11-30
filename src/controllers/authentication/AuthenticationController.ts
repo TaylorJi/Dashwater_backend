@@ -13,8 +13,8 @@ const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     // console.log(isAuth)
     // console.log(req.cookies.sessionCookie)
     if (!req.cookies.sessionCookie) {
-        console.log("!!!!!!! " + req.body.sessionCookie);
-        if (req.body.sessionCookie) {
+        console.log("!!!!!!! " + req.body.sessionId);
+        if (req.body.sessionId) {
             const sessionId = req.body.sessionId;
             if (sessionId) {
                 const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
