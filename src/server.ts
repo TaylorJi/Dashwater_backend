@@ -29,7 +29,7 @@ server.use(compression());
 server.use(helmet());
 server.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: "https://yvrdashboard.netlify.app",
         credentials: true
     })
 );
