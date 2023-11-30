@@ -91,7 +91,7 @@ const deleteSession = async (sessionId: string) => {
 };
 
 
-const validateSession = async (sessionId: string, isAuthenticated: boolean) => {
+const validateSession = async (sessionId: string) => { //, isAuthenticated: boolean
   try {
     // var sessionArray: any[] = JSON.parse(localStorage.getItem("sessionArray")!);
     // var session: any;
@@ -122,7 +122,7 @@ const validateSession = async (sessionId: string, isAuthenticated: boolean) => {
     //   return null;
     // }
 
-    if (sessionId && isAuthenticated) {
+    if (sessionId) {
       return true;
     } else {
       return false;

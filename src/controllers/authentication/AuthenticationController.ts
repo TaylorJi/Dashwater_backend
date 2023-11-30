@@ -9,18 +9,18 @@ const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     console.log("test------------------- " + req.cookies.sessionCookie)
 
 
-    const isAuth = req.body.isAuthenticated;
-    console.log(isAuth)
+    // const isAuth = req.body.isAuthenticated;
+    // console.log(isAuth)
 
 
 
-    console.log(req.cookies.sessionCookie)
+    // console.log(req.cookies.sessionCookie)
     if (!req.cookies.sessionCookie) {
         res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
     } else {
         const sessionId = req.cookies.sessionCookie;
         if (sessionId) {
-            const sessionCheck = await SessionModel.validateSession(sessionId, isAuth);
+            const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
     
             if (sessionCheck) {
                 next();

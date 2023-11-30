@@ -150,8 +150,8 @@ const createSession = async (req: Request, res: Response) => {
 
 const validateSession = async (req: Request, res: Response) => {
     console.log("Validate Session is being called")
-    const isAuth = req.body.isAuthenticated;
-    console.log(isAuth)
+    // const isAuth = req.body.isAuthenticated;
+    // console.log(isAuth)
     const sessionToken = req.body.sessionToken;   
 
     if (sessionToken === undefined || !sessionToken) {
@@ -160,7 +160,7 @@ const validateSession = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Invalid request: sessionToken is required." });
     }
 
-    const isValid = await SessionModel.validateSession(sessionToken, isAuth);
+    const isValid = await SessionModel.validateSession(sessionToken); //, isAuth
     console.log(isValid);
     if (!isValid) {
         return res.status(403).json({ message: 'Session is invalid or expired' });
