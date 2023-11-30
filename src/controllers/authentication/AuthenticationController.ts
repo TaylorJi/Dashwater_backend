@@ -7,11 +7,27 @@ import SessionModel from "../../models/session/SessionModel";
 const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     console.log("userAuth is being called")
     console.log("test------------------- " + req.cookies.sessionCookie)
-    console.log("!!!!!! " + JSON.stringify(req.cookies));
+    // console.log("!!!!!! " + JSON.stringify(req.cookies));
+    
     // const isAuth = req.body.isAuthenticated;
     // console.log(isAuth)
     // console.log(req.cookies.sessionCookie)
     if (!req.cookies.sessionCookie) {
+        console.log("!!!!!!! " + req.body.sessionCookie);
+        if (req.body.sessionCookie) {
+            const sessionId = req.body.sessionCookie;
+            if (sessionId) {
+                const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
+        
+                if (sessionCheck) {
+                    next();
+                } else {
+                    res.status(403).json({ message: "You must be logged in to perform this action." });
+                }
+            } else {
+                res.status(403).json({ message: "You must be logged in to perform this action." });
+            }
+        }
         res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
     } else {
         const sessionId = req.cookies.sessionCookie;
