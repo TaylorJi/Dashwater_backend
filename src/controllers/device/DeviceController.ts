@@ -121,7 +121,7 @@ const getDevicesWithinRadius = async (req: Request, res: Response) => {
 const getAllDevicesSettings = async (req: Request, res: Response) => {
     try {
         // const sessionCookie = req.headers.cookie;
-        const sessionCookie = req.body.sessionCookie;
+        const sessionCookie = req.body.sessionId;
         console.log("Session cookie---------------------------- ", sessionCookie);
         const response = await DeviceModel.getAllDevicesSettings(sessionCookie);
         console.log("Response from getAllDevicesSettings:", response);
