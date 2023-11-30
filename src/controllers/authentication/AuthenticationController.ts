@@ -15,7 +15,7 @@ const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     if (!req.cookies.sessionCookie) {
         console.log("!!!!!!! " + req.body.sessionCookie);
         if (req.body.sessionCookie) {
-            const sessionId = req.body.sessionCookie;
+            const sessionId = req.body.sessionId;
             if (sessionId) {
                 const sessionCheck = await SessionModel.validateSession(sessionId); //, isAuth
         
