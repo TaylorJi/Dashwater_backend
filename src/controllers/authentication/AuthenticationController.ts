@@ -6,6 +6,10 @@ import SessionModel from "../../models/session/SessionModel";
 // One appraoch would be to pass a flag, isAdmin, from the calling route, which would then be passes from controller to model
 const userAuth = async ( req: Request, res: Response, next: NextFunction ) => {
     console.log("userAuth is being called")
+    console.log("test------------------- " + req.body.sessionToken)
+
+
+
     console.log(req.cookies.sessionCookie)
     if (!req.cookies.sessionCookie) {
         res.status(403).json({ message: "No cookie found in request. You must be logged in to perform this action." })
