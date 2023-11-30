@@ -16,7 +16,7 @@ import { DOMAIN } from "../../helpers/authentication/constants";
 //         console.log("no cookie, so create a new session ID")
 //         sessionId = uuid();
 //     }
-    
+
 //     if (!userId) {
 //         return res.status(400).json({ 
 //             sucess: false,
@@ -57,7 +57,7 @@ import { DOMAIN } from "../../helpers/authentication/constants";
 //     } else if (expiration < (new Date()).toISOString()) {
 //         return res.status(400).json({ message: "Invalid request: session cookie is expired. Please create a new session." });
 //     }
-    
+
 //     const response = await SessionModel.validateSession(sessionId);
 //     console.log(response)
 
@@ -108,7 +108,7 @@ import { DOMAIN } from "../../helpers/authentication/constants";
 //     } else{
 //         sessionId = uuid();
 //     }
-    
+
 //     if (!userId) {
 //         return res.status(400).json({ message: "Invalid request: user ID is required in the request body." });
 //     }
@@ -126,22 +126,27 @@ const createSession = async (req: Request, res: Response) => {
     const { userId, idToken, userRole } = req.body;
 
     if (!userId || !idToken) {
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
             message: "Invalid request: both user ID and idToken are required."
         });
     }
 
-    const response = await SessionModel.createSession(idToken, userId,userRole );
+    const response = await SessionModel.createSession(idToken, userId, userRole);
     if (response) {
         // return res.status(200).json({ success: true, user: response });
-        return res.cookie('sessionCookie', {
-            'sessionId': response.sessionId, 
-            'expires': response.sessionExpiry,
-            'domain': DOMAIN,
-            "sameSite":"none",
-            'secure' : true})
-            .status(200).json({ success: true, user: response });
+        // return res.cookie('sessionCookie', {
+        //     'sessionId': response.sessionId, 
+        //     'expires': response.sessionExpiry,
+        //     'domain': DOMAIN,
+        //     "sameSite":"none",
+        //     'secure' : true})
+        //     .status(200).json({ success: true, user: response });
+        return res
+            .cookie('sessionId', response.sessionId, { domain: DOMAIN, sameSite: 'none', secure: true })
+            .cookie('expires', response.sessionExpiry, { domain: DOMAIN, sameSite: 'none', secure: true })
+            .status(200)
+            .json({ success: true, user: response });
     } else {
         return res.status(500).json({ success: false, message: "There was an error with the request." });
     }
@@ -152,7 +157,7 @@ const validateSession = async (req: Request, res: Response) => {
     console.log("Validate Session is being called")
     // const isAuth = req.body.isAuthenticated;
     // console.log(isAuth)
-    const sessionToken = req.body.sessionToken;   
+    const sessionToken = req.body.sessionToken;
 
     if (sessionToken === undefined || !sessionToken) {
 
@@ -201,7 +206,7 @@ const deleteSession = async (req: Request, res: Response) => {
 //         return res.status(400).json({ message: "Invalid request: session ID is required." });
 //     }
 
-    // const response = await SessionModel.deleteSession(sessionId);
+// const response = await SessionModel.deleteSession(sessionId);
 //     if (response) {
 //         return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': 'localhost:8085'}).status(200).json({ message: "Session deleted." });
 //         // return res.cookie('sessionCookie', {'sessionId': sessionId, 'expires': '1970-01-01T00:00:00.000Z', 'domain': DOMAIN}).status(200).json({ message: "Session deleted." });
