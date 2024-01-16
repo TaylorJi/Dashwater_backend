@@ -10,4 +10,4 @@ Siwoon Lim
 
 Ellen Jung
 
-Note: uncomment the cache and import on server.ts for tide data to fetch tide data, if needed. This is due to API limitations of ~5x calls a day on stormglass.io's free plan.
+
