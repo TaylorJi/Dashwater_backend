@@ -20,7 +20,7 @@ Dashwater is an IoT-based water quality monitoring system developed as a group p
 - **RESTful API**
 
 ## 📁 Project Structure
-
+```
 dashwater_backend/
 ├── src/
 │   ├── controllers/        # API endpoint logic
@@ -32,7 +32,7 @@ dashwater_backend/
 ├── package.json            # Dependencies and scripts
 ├── tsconfig.json           # TypeScript config
 └── README.md               # Project documentation
-
+```
 ## ⚙️ Setup Instructions
 
 ### Prerequisites
